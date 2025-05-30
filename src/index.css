@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Modern CSS Reset geïnspireerd op Andy Bell en Josh W. Comeau
+ * https://github.com/hankchizljaw/modern-css-reset
+ * https://www.joshwcomeau.com/css/custom-css-reset/
+ */
+
+/* 1. Box sizing border-box */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* 2. Reset margins */
+body,
+h1, h2, h3, h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+    margin: 0;
+}
+
+/* 3. Remove list styles on ul, ol elements with a list role */
+ul[role='list'],
+ol[role='list'] {
+    list-style: none;
+}
+
+/* 4. Set core body defaults */
+body {
+    min-height: 100vh;
+    line-height: 1.5;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 5. Improve media defaults */
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+/* 6. Remove built-in form typography styles */
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+/* 7. Avoid text overflows */
+p,
+h1, h2, h3, h4,
+span {
+    overflow-wrap: break-word;
+}
+
+/* 8. Create a root stacking context */
+#root {
+    isolation: isolate;
+}
+
+/* FONTS */
+
+h1, h2, h3, h4 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+}
+
+/* COLORS & STYLING */
+
+:root {
+    --color-primary: hsl(342 100 62);
+    --color-primary-light: hsl(342 100 82);
+    --color-primary-dark: hsl(342 100 42);
+    --color-secondary: hsl(162 100 38);
+    --color-secondary-light: hsl(162 100 58);
+    --color-secondary-dark: hsl(162 100 20);
+
+    --color-gray-light: hsl(162 5 96);
+    --color-gray-dark: hsl(162 0 60);
+
+    --color-white: hsl(210 10 98);
+    --color-black: hsl(0 0 13);
+    --color-error: hsl(46 100 70);
+    --color-success: hsl(162 100 58);
+    --color-warning: hsl(342 100 62);
+    --color-accent: hsl(191 100 50);
+}
