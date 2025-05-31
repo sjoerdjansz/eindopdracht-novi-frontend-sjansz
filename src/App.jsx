@@ -1,14 +1,18 @@
-import './App.css';
+// CSS
+import "./App.css";
+
+// Images
+import sweatDaddyHeroImage from "./assets/sweat-daddy-hero-image.png";
+
+// Pages
+import { Signup } from "./pages/signup/Signup.jsx";
 
 function App() {
-
-    return (
-        <>
-            <h1>Hello World</h1>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto, nostrum?</p>
-            <i className="fa-solid fa-user"></i>
-        </>
-    );
+  return (
+    <>
+      <Signup image={sweatDaddyHeroImage} />
+    </>
+  );
 }
 
 export default App;
