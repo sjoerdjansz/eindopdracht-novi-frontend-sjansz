@@ -9,7 +9,7 @@ export function Layout({ children }) {
     <div className={styles.layout}>
       <TopNav />
       <SideNav />
-      <main>{children}</main>
+      <main className={styles["page-content-container"]}>{children}</main>
     </div>
   );
 }

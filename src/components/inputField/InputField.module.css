@@ -1,5 +1,6 @@
 .input-container {
   display: flex;
+  position: relative;
   flex-direction: column;
   gap: 0.5rem;
 }
@@ -17,15 +18,10 @@
   box-shadow: 0 0 0 2px hsla(342, 100%, 62%, 0.3);
 }
 
-.input-wrapper {
-  position: relative;
-}
-
 .input-field-icon {
   position: absolute;
   color: var(--color-black);
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: 0.3rem;
   font-size: 1.2rem;
   right: 1rem;
   cursor: pointer;
@@ -37,4 +33,4 @@
   color: var(--color-primary);
 }
 
-/* Sizes */
+/* Sizes en styles */

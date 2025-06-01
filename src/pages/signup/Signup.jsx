@@ -7,8 +7,8 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 
 // Components
-import { InputField } from "../../components/InputField/InputField.jsx";
-import { Button } from "../../components/Button/Button.jsx";
+import { InputField } from "../../components/inputField/InputField.jsx";
+import { Button } from "../../components/button/Button.jsx";
 
 export function Signup() {
   const [userDetails, setUserDetails] = useState({
@@ -16,7 +16,7 @@ export function Signup() {
     password: "",
   });
 
-  // password icon state - kan ook met één state, maar voor later
+  // Password icon state - kan ook met één state, maar voor later
   const [icon, setIcon] = useState(faEyeSlash);
   const [inputType, setInputType] = useState("password");
 

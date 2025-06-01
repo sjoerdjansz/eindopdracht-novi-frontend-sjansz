@@ -10,5 +10,14 @@ In de main komt een component die zelf nog een grid (bijv 12 stuks) of flexbox h
   grid-template-areas:
     "sidenav topnav"
     "sidenav main";
-  background-color: var(--color-gray-light);
+}
+
+/* Centreert de content container in het midden en geeft de child container van de content pagina mogelijkheid tot flex basis*/
+.page-content-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 2rem;
+  background-color: var(--color-white);
+  overflow-y: scroll;
 }

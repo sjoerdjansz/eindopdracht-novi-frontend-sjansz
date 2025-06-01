@@ -137,6 +137,7 @@ h4 {
 
   /* 3. Grays */
   --color-gray-light: hsl(162 3 96);
+  --color-gray-mediumlight: hsl(162 3 82);
   --color-gray-medium: hsl(162 0 70);
   --color-gray-dark: hsl(162 0 55);
   --color-white: hsl(210 10 98);
