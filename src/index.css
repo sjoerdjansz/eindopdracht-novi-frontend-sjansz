@@ -37,6 +37,7 @@ body {
   min-height: 100vh;
   line-height: 1.5;
   font-family: "Inter", sans-serif;
+  color: var(--color-black);
   font-size: var(--font-base);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -58,6 +59,17 @@ button,
 textarea,
 select {
   font: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--color-accent);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
 }
 
 /* 7. Avoid text overflows */
@@ -124,8 +136,9 @@ h4 {
   --color-secondary-dark: hsl(162 100 20);
 
   /* 3. Grays */
-  --color-gray-light: hsl(162 5 96);
-  --color-gray-dark: hsl(162 0 60);
+  --color-gray-light: hsl(162 3 96);
+  --color-gray-medium: hsl(162 0 70);
+  --color-gray-dark: hsl(162 0 55);
   --color-white: hsl(210 10 98);
   --color-black: hsl(0 0 13);
 
@@ -133,7 +146,7 @@ h4 {
   --color-error: hsl(46 100 70);
   --color-success: hsl(162 100 58);
   --color-warning: hsl(342 100 62);
-  --color-accent: hsl(191 100 50);
+  --color-accent: hsl(201 100 50);
 
   /* Spacing */
   --space-xs: 0.25rem; /* 4px */

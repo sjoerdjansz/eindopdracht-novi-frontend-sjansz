@@ -19,11 +19,29 @@
   flex-shrink: 1;
   flex-direction: column;
   justify-content: space-evenly;
-  align-items: flex-start;
+  align-items: center;
   padding: var(--space-xl);
   background-color: var(--color-white);
 }
 
+.signup__content-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-width: 400px;
+  margin: var(--space-xl);
+}
+
+.signup__content-form p {
+  font-weight: 600;
+}
+
+hr {
+  border: 1px solid var(--color-black);
+  width: 100%;
+}
+
+/* Media Queries */
 @media (max-width: 768px) {
   .signup {
     flex-direction: column;
@@ -43,5 +61,11 @@
     flex-basis: 0;
     justify-content: space-around;
     align-items: center;
+  }
+  .signup__content-form {
+    display: flex;
+    flex-direction: column;
+    min-width: 320px;
+    gap: var(--space-sm);
   }
 }

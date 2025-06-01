@@ -1,5 +1,40 @@
-.input-field {
+.input-container {
   display: flex;
   flex-direction: column;
-  background-color: red;
+  gap: 0.5rem;
 }
+
+.input-field {
+  width: 100%;
+  border: 1px solid var(--color-black);
+  border-radius: 0.3rem;
+  outline: none;
+  padding: 0.5rem 1rem;
+  background-color: transparent;
+}
+
+.input-field:focus {
+  box-shadow: 0 0 0 2px hsla(342, 100%, 62%, 0.3);
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-field-icon {
+  position: absolute;
+  color: var(--color-black);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  right: 1rem;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+}
+
+.input-field-icon:hover {
+  color: var(--color-primary);
+}
+
+/* Sizes */
