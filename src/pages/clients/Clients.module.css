@@ -1,0 +1,26 @@
+.clients {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.clients__controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-controls {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-basis: 300px;
+  flex-shrink: 1;
+  flex-grow: 0;
+}
+
+.clients__list {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}

@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
-/* Modern CSS Reset geïnspireerd op Andy Bell en Josh W. Comeau
+/* MODERN CSS RESET (obv. Andy Bell en Josh W. Comeau)
  * https://github.com/hankchizljaw/modern-css-reset
  * https://www.joshwcomeau.com/css/custom-css-reset/
  */
@@ -9,33 +9,38 @@
 *,
 *::before,
 *::after {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 /* 2. Reset margins */
 body,
-h1, h2, h3, h4,
+h1,
+h2,
+h3,
+h4,
 p,
 figure,
 blockquote,
 dl,
 dd {
-    margin: 0;
+  margin: 0;
 }
 
 /* 3. Remove list styles on ul, ol elements with a list role */
-ul[role='list'],
-ol[role='list'] {
-    list-style: none;
+ul[role="list"],
+ol[role="list"] {
+  list-style: none;
 }
 
-/* 4. Set core body defaults */
+/* 4. Set core body defaults en general font family */
 body {
-    min-height: 100vh;
-    line-height: 1.5;
-    font-family: 'Inter', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  line-height: 1.5;
+  font-family: "Inter", sans-serif;
+  color: var(--color-black);
+  font-size: var(--font-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* 5. Improve media defaults */
@@ -44,8 +49,8 @@ picture,
 video,
 canvas,
 svg {
-    display: block;
-    max-width: 100%;
+  display: block;
+  max-width: 100%;
 }
 
 /* 6. Remove built-in form typography styles */
@@ -53,45 +58,102 @@ input,
 button,
 textarea,
 select {
-    font: inherit;
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--color-accent);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
 }
 
 /* 7. Avoid text overflows */
 p,
-h1, h2, h3, h4,
+h1,
+h2,
+h3,
+h4,
 span {
-    overflow-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* 8. Create a root stacking context */
 #root {
-    isolation: isolate;
+  isolation: isolate;
 }
 
-/* FONTS */
+/* ----------------- FONTS ----------------- */
 
-h1, h2, h3, h4 {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
+/* 1. Header font family and styles */
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Montserrat", sans-serif;
+  line-height: 1.2;
 }
 
-/* COLORS & STYLING */
+h1 {
+  font-size: var(--font-3xl);
+}
+
+h2 {
+  font-size: var(--font-2xl);
+}
+
+h3 {
+  font-size: var(--font-xl);
+}
+
+h4 {
+  font-size: var(--font-lg);
+}
+
+/* ----------------- CSS VARIABLES ----------------- */
 
 :root {
-    --color-primary: hsl(342 100 62);
-    --color-primary-light: hsl(342 100 82);
-    --color-primary-dark: hsl(342 100 42);
-    --color-secondary: hsl(162 100 38);
-    --color-secondary-light: hsl(162 100 58);
-    --color-secondary-dark: hsl(162 100 20);
+  /* 1. Font sizes */
+  --font-xs: 0.75rem; /* 12px voor labels, icons etc. */
+  --font-sm: 0.875rem; /* 14px */
+  --font-base: 1rem; /* 16px standaard */
+  --font-md: 1.125rem; /* 18px */
+  --font-lg: 1.25rem; /* 20px voor subtitles*/
+  --font-xl: 1.5rem; /* 24px voor H3 */
+  --font-2xl: 2rem; /* 32px voor H2 */
+  --font-3xl: 2.5rem; /* 40px voor H1 */
 
-    --color-gray-light: hsl(162 5 96);
-    --color-gray-dark: hsl(162 0 60);
+  /* 2. Primary and secondary colors */
+  --color-primary: hsl(342 100 62);
+  --color-primary-light: hsl(342 100 82);
+  --color-primary-dark: hsl(342 100 42);
+  --color-secondary: hsl(162 100 38);
+  --color-secondary-light: hsl(162 100 58);
+  --color-secondary-dark: hsl(162 100 20);
 
-    --color-white: hsl(210 10 98);
-    --color-black: hsl(0 0 13);
-    --color-error: hsl(46 100 70);
-    --color-success: hsl(162 100 58);
-    --color-warning: hsl(342 100 62);
-    --color-accent: hsl(191 100 50);
+  /* 3. Grays */
+  --color-gray-light: hsl(162 3 96);
+  --color-gray-mediumlight: hsl(162 3 82);
+  --color-gray-medium: hsl(162 0 70);
+  --color-gray-dark: hsl(162 0 55);
+  --color-white: hsl(210 10 98);
+  --color-black: hsl(0 0 13);
+
+  /* 4. Other */
+  --color-error: hsl(46 100 70);
+  --color-success: hsl(162 100 58);
+  --color-warning: hsl(342 100 62);
+  --color-accent: hsl(201 100 50);
+
+  /* Spacing */
+  --space-xs: 0.25rem; /* 4px */
+  --space-sm: 0.5rem; /* 8px */
+  --space-md: 1rem; /* 16px */
+  --space-lg: 1.5rem; /* 24px */
+  --space-xl: 2rem; /* 32px */
+  --space-2xl: 3rem; /* 48px */
 }
