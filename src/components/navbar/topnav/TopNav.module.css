@@ -1,0 +1,4 @@
+.top-nav {
+  grid-area: topnav;
+  background-color: var(--color-secondary-light);
+}

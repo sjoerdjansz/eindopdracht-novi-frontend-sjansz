@@ -1,0 +1,14 @@
+/* We maken een grid layout die de hele vh neemt en bestaat uit de sidenav, topnav en main.
+De side en top navs moeten de breedte/hoogte krijgen obv de content. De main pakt de rest automatisch.
+In de main komt een component die zelf nog een grid (bijv 12 stuks) of flexbox heeft.
+*/
+.layout {
+  display: grid;
+  height: 100vh;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "sidenav topnav"
+    "sidenav main";
+  background-color: var(--color-gray-light);
+}
