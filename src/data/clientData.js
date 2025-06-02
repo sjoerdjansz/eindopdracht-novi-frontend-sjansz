@@ -44,7 +44,7 @@ export const CLIENTS = [
     lastActive: "yesterday",
     clientSince: "September 2023",
     workouts: 78,
-    complianceRate: 82,
+    complianceRate: 50,
     currentPlan: "strength program",
   },
   {

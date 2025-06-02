@@ -1,36 +1,10 @@
 import styles from "./Card.module.css";
 
-export function Card({
-  profilePicture,
-  clientName,
-  lastActive,
-  activeSince,
-  id,
-  workouts,
-  compliance,
-  program,
-}) {
+// Card component moet zelfde stijl hebben maar inhoud moet alleen verschillen.
+export function Card({ variant, size, children }) {
   return (
-    <div key={id} className={styles.card}>
-      <div className={styles["card__left-content"]}>
-        <img src={profilePicture} alt={clientName} />
-        <div>
-          <p className={styles.title}>{clientName}</p>
-          <span>{lastActive}</span>
-          <span>{activeSince}</span>
-        </div>
-      </div>
-      <div className={styles["card__middle-content"]}>
-        <p className={styles.title}>Client info</p>
-        <div>
-          <span>Workouts: {workouts}</span>
-          <span>Compliance: {compliance}</span>
-          <span>Program: {program}</span>
-        </div>
-      </div>
-      <div className={styles["card__right-content"]}>
-        <a href="/">View</a>
-      </div>
-    </div>
+    <article className={`${styles.card} ${styles[variant]} ${styles[size]}`}>
+      {children}
+    </article>
   );
 }
