@@ -17,6 +17,7 @@
   flex-basis: 300px;
   flex-shrink: 1;
   flex-grow: 0;
+  margin: 1rem 0;
 }
 
 .clients__list {

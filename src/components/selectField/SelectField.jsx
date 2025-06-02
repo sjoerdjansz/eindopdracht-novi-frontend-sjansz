@@ -6,7 +6,7 @@ export function SelectField({ options, label, id, name, styling }) {
       {label && <label htmlFor={id}>{label}</label>}
       <select className={styles[styling]} id={id} name={name}>
         <option value="" placeholder="--Filter by--">
-          --Filter by--
+          Filter by --
         </option>
         <hr />
         {options.map((option) => {
