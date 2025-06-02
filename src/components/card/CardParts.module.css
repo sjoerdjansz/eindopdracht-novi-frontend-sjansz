@@ -1,0 +1,13 @@
+.header {
+  flex: 1 0 200px;
+  padding: 0 0.5rem;
+}
+
+.content {
+  flex: 2 0 200px;
+  padding: 0 0.5rem;
+}
+
+.footer {
+  padding: 0 0.5rem;
+}

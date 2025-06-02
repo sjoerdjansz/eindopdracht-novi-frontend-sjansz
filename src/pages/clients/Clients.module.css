@@ -24,3 +24,58 @@
   gap: 1rem;
   flex-wrap: wrap;
 }
+
+.card__avatar {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.card__client-info {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2rem;
+}
+
+.card__client-info * p {
+  text-transform: capitalize;
+  font-size: 0.8rem;
+}
+
+.card__client-info p:first-child {
+  font-weight: 600;
+}
+
+.card__training-info {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+}
+
+.card__training-info > p {
+  margin-right: 1rem;
+}
+
+.card__training-info span {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.high {
+  color: var(--color-secondary);
+  font-weight: 600;
+}
+
+.medium {
+  color: var(--color-error);
+  font-weight: 600;
+}
+
+.low {
+  color: var(--color-warning);
+  font-weight: 600;
+}
