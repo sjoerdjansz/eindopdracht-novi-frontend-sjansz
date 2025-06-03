@@ -10,4 +10,7 @@
 
 .footer {
   padding: 0 0.5rem;
+  height: 100%;
+  flex: 1 0 auto;
+  /*  in de gaten houden in andere cards wat deze flex doet*/
 }
