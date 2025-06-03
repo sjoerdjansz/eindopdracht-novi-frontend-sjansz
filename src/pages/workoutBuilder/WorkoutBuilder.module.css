@@ -1,0 +1,106 @@
+.workout-builder {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.workout-builder__controls {
+  display: flex;
+  margin-top: 1rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.workout-builder__controls-search {
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 1;
+  gap: 0.5rem;
+}
+
+.workout-builder__controls-input-wrapper {
+  display: flex;
+  flex-basis: 250px;
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+.workout-builder__exercise-list {
+  display: flex;
+  flex-direction: row;
+}
+
+.workout__table * {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+}
+
+.workout__table {
+  width: 100%;
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.workout-table thead {
+  background-color: var(--color-primary-dark);
+  color: red;
+}
+
+.workout__table td {
+  border-bottom: 1px solid var(--color-gray-medium);
+}
+
+.workout__table th,
+.workout__table td {
+  padding: var(--space-lg);
+}
+
+.workout__table th {
+  font-weight: 600;
+}
+
+.table-align-left {
+  text-align: left;
+}
+
+.table-align-center {
+  text-align: center;
+}
+
+.drag-icon {
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.draggable:hover {
+  background-color: var(--color-gray-light);
+}
+
+/* Table controls */
+
+.table-controls {
+  display: flex;
+  justify-content: space-evenly;
+  height: 100%;
+}
+
+.table-controls > span {
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 1.5rem;
+}
+
+.table-controls__edit {
+  color: var(--color-gray-dark);
+}
+
+.table-controls__superset {
+  color: var(--color-gray-dark);
+}
+
+.table-controls__delete {
+  color: var(--color-warning);
+  font-size: 1rem;
+}
