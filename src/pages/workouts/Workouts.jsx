@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
 // Components
-
 import { Button } from "../../components/button/Button.jsx";
 import { SelectField } from "../../components/selectField/SelectField.jsx";
 import { InputField } from "../../components/inputField/InputField.jsx";
@@ -18,7 +17,6 @@ import { WORKOUTS } from "../../data/workoutData.js";
 import { WORKOUT_FILTER_OPTIONS } from "../../data/workoutFilterOptions.js";
 
 // Icons
-
 import {
   faMagnifyingGlass,
   faPenToSquare,
@@ -27,10 +25,28 @@ import {
 import { CustomCheckbox } from "../../components/customCheckbox/CustomCheckbox.jsx";
 
 export function Workouts() {
-  const [isSelected, setIsSelected] = useState(false);
+  const [selectedWorkouts, setSelectedWorkouts] = useState([]);
 
-  function handleClick() {
-    setIsSelected(!isSelected);
+  function removeItem(arr, value) {
+    setSelectedWorkouts(
+      arr.filter((item) => {
+        console.log("deleted item:", value);
+        return item !== value;
+      }),
+    );
+  }
+
+  function handleClick(workoutId) {
+    const value = selectedWorkouts.find((id) => {
+      return id === workoutId;
+    });
+
+    if (value) {
+      removeItem(selectedWorkouts, value);
+    } else {
+      console.log("added item:", workoutId);
+      setSelectedWorkouts([...selectedWorkouts, workoutId]);
+    }
   }
 
   return (
@@ -46,13 +62,21 @@ export function Workouts() {
       </div>
       <section className={styles["workouts__controls"]}>
         <div className={styles["workouts__controls-search"]}>
-          <InputField
-            type="text"
-            name="search-client"
-            label="Add workouts to client"
-            id="search-client"
-            placeholder="Client name"
-            icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
+          <div className={styles["workouts__search-input"]}>
+            <InputField
+              type="text"
+              name="search-client"
+              id="search-client"
+              placeholder="Search client"
+              icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
+            />
+          </div>
+
+          <Button
+            buttonType="transparant"
+            label="Add"
+            type="button"
+            buttonSize="medium"
           />
         </div>
         <div className={styles["workouts__filter-controls"]}>
@@ -68,12 +92,17 @@ export function Workouts() {
         {WORKOUTS.map((workout) => {
           return (
             <Card key={workout.id} variant="horizontal" size="medium">
+              {/* Werkt nog niet, bugfix nodig ivm selecteren van alle cards tegelijk met 1 klik */}
               <CustomCheckbox
                 className={styles["workouts__card-select"]}
                 type="button"
                 name="select-workout"
-                onClick={handleClick}
-                selected={isSelected}
+                onClick={() => {
+                  handleClick(workout.id);
+                }}
+                selected={selectedWorkouts.find((id) => {
+                  return id === workout.id;
+                })}
               />
               <CardHeader>
                 <h4>{workout.title}</h4>

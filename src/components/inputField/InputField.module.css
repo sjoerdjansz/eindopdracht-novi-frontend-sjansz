@@ -23,8 +23,8 @@
 .input-field-icon {
   position: absolute;
   color: var(--color-black);
-  bottom: 0.3rem;
-  font-size: 1.2rem;
+  bottom: 0.4rem;
+  font-size: 1rem;
   right: 1rem;
   cursor: pointer;
   border: none;

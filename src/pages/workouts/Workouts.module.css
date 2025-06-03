@@ -19,12 +19,18 @@
 
 .workouts__controls-search {
   display: flex;
-  flex-basis: 250px;
+  flex: 0 0 300px;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.workouts__search-input {
+  flex-grow: 1;
 }
 
 .workouts__filter-controls {
   display: flex;
-  flex-basis: 250px;
+  flex-basis: 200px;
 }
 
 .workouts__list {

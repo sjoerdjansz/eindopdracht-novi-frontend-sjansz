@@ -1,7 +1,7 @@
 .button {
   border: none;
   border-radius: 0.3rem;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: capitalize;
 }
 
@@ -28,6 +28,20 @@
 .tertiary {
   background-color: transparent;
   border: 2px solid var(--color-primary);
+}
+
+.transparant {
+  border: none;
+  background-color: transparent;
+  color: var(--color-black);
+}
+
+.transparant:hover {
+  color: var(--color-accent);
+}
+
+.tertiary:hover {
+  background-color: var(--color-primary-light);
 }
 
 /*Danger en succes nog maken alsook de hover states*/
