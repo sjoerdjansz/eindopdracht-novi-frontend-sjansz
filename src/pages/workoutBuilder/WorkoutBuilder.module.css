@@ -70,12 +70,15 @@
 }
 
 .drag-icon {
-  cursor: pointer;
-  font-size: 1rem;
+  cursor: grab;
+}
+
+.drag-icon:active {
+  cursor: grabbing;
 }
 
 .draggable:hover {
-  background-color: var(--color-gray-light);
+  background-color: var(--color-gray-mediumlight);
 }
 
 /* Table controls */
@@ -102,5 +105,9 @@
 
 .table-controls__delete {
   color: var(--color-warning);
-  font-size: 1rem;
+}
+
+.table-icon-wrapper {
+  min-width: 40px;
+  min-height: auto;
 }
