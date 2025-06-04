@@ -9,6 +9,7 @@
   margin-top: 1rem;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 2rem;
 }
 
 .workout-builder__controls-search {
@@ -43,9 +44,8 @@
   border-spacing: 0;
 }
 
-.workout-table thead {
-  background-color: var(--color-primary-dark);
-  color: red;
+.workout__table thead {
+  background-color: var(--color-gray-light);
 }
 
 .workout__table td {

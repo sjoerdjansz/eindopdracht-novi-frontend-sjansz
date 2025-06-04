@@ -31,7 +31,7 @@ export function WorkoutBuilder() {
 
           <Button
             buttonType="secondary"
-            label="Find"
+            label="Add"
             type="button"
             buttonSize="small"
           />

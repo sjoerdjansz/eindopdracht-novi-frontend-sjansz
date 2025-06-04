@@ -44,4 +44,6 @@ export const SELECTED_EXERCISES = [
   { id: "ex-004", name: "Overhead Press", sets: 3, reps: 8, rest: 75 },
   { id: "ex-005", name: "Barbell Row", sets: 4, reps: 10, rest: 90 },
   { id: "ex-006", name: "Pull-up", sets: 3, reps: 10, rest: 60 },
+  { id: "ex-017", name: "Face Pulls", sets: 3, reps: 15, rest: 45 },
+  { id: "ex-018", name: "Lat Pulldown", sets: 3, reps: 12, rest: 60 },
 ];
