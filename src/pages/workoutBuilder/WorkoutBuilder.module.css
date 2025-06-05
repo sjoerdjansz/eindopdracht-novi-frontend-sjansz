@@ -12,18 +12,10 @@
   margin-bottom: 2rem;
 }
 
-.workout-builder__controls-search {
-  display: flex;
-  flex-grow: 1;
-  flex-shrink: 1;
-  gap: 0.5rem;
-}
-
 .workout-builder__controls-input-wrapper {
   display: flex;
-  flex-basis: 250px;
-  flex-grow: 0;
-  flex-shrink: 1;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 .workout-builder__exercise-list {
@@ -59,55 +51,4 @@
 
 .workout__table th {
   font-weight: 600;
-}
-
-.table-align-left {
-  text-align: left;
-}
-
-.table-align-center {
-  text-align: center;
-}
-
-.drag-icon {
-  cursor: grab;
-}
-
-.drag-icon:active {
-  cursor: grabbing;
-}
-
-.draggable:hover {
-  background-color: var(--color-gray-mediumlight);
-}
-
-/* Table controls */
-
-.table-controls {
-  display: flex;
-  justify-content: space-evenly;
-  height: 100%;
-}
-
-.table-controls > span {
-  font-weight: 600;
-  cursor: pointer;
-  margin-right: 1.5rem;
-}
-
-.table-controls__edit {
-  color: var(--color-gray-dark);
-}
-
-.table-controls__superset {
-  color: var(--color-gray-dark);
-}
-
-.table-controls__delete {
-  color: var(--color-warning);
-}
-
-.table-icon-wrapper {
-  min-width: 40px;
-  min-height: auto;
 }

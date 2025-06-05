@@ -4,9 +4,8 @@ import { Button } from "../../components/button/Button.jsx";
 
 import { useState } from "react";
 
-// Icons
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBan, faGripVertical } from "@fortawesome/free-solid-svg-icons";
+// Components
+import { TableRow } from "../../components/tableRow/TableRow.jsx";
 
 // Data
 import { SELECTED_EXERCISES } from "../../data/exerciseData.js";
@@ -15,8 +14,8 @@ export function WorkoutBuilder() {
   const [exercises, setExercises] = useState(SELECTED_EXERCISES);
 
   // de start van de drag - item wordt opgepakt
-  function handleDragStart(e, order) {
-    e.dataTransfer.setData("text/plain", order);
+  function handleDragStart(e, exerciseId) {
+    e.dataTransfer.setData("text/plain", exerciseId);
     e.dataTransfer.effectAllowed = "move";
 
     //pakt met de closest property het dichtsbijzinde html element
@@ -87,15 +86,13 @@ export function WorkoutBuilder() {
       {/* Hier werkt de CSS styling van de search controls goed. Input beweegt mee obv de CSS,
       in workouts pagina doet die dit niet goed dus nog aanpassen */}
       <section className={styles["workout-builder__controls"]}>
-        <div className={styles["workout-builder__controls-search"]}>
-          <div className={styles["workout-builder__controls-input-wrapper"]}>
-            <InputField
-              type="text"
-              name="exercise"
-              id="exercise"
-              placeholder="Search exercise"
-            />
-          </div>
+        <div className={styles["workout-builder__controls-input-wrapper"]}>
+          <InputField
+            type="text"
+            name="exercise"
+            id="exercise"
+            placeholder="Search exercise"
+          />
 
           <Button
             buttonType="secondary"
@@ -104,12 +101,19 @@ export function WorkoutBuilder() {
             buttonSize="small"
           />
         </div>
+
         <div className={styles["workout-builder__controls-input-wrapper"]}>
           <InputField
             type="text"
             name="name"
             id="name"
             placeholder="Workout name"
+          />
+          <Button
+            buttonType="primary"
+            buttonSize="small"
+            type="button"
+            label="Save workout"
           />
         </div>
       </section>
@@ -126,51 +130,16 @@ export function WorkoutBuilder() {
             </tr>
           </thead>
           <tbody>
+            {/*Onderstaande inline manier is niet de meest performance efficiente blijkbaar*/}
             {exercises.map((exercise) => {
               return (
-                <tr
+                <TableRow
                   key={exercise.id}
-                  className={styles["draggable"]}
-                  onDragOver={handleDragOver}
+                  exercise={exercise}
+                  handleDragOver={handleDragOver}
+                  onDragStart={(e) => handleDragStart(e, exercise.id)}
                   onDrop={(e) => handleDrop(e, exercise.id)}
-                >
-                  <td
-                    draggable={true}
-                    onDragStart={(e) => handleDragStart(e, exercise.id)}
-                    className={`${styles["table-align-center"]} ${styles["drag-icon"]}`}
-                  >
-                    <div className={styles["table-icon-wrapper"]}>
-                      <FontAwesomeIcon icon={faGripVertical} />
-                    </div>
-                  </td>
-                  <td className={styles["table-align-left"]}>
-                    {exercise.name}
-                  </td>
-                  <td className={styles["table-align-center"]}>
-                    {exercise.sets}
-                  </td>
-                  <td className={styles["table-align-center"]}>
-                    {exercise.reps}
-                  </td>
-                  <td className={styles["table-align-center"]}>
-                    {exercise.rest}
-                  </td>
-                  <td className={styles["table-align-center"]}>
-                    <div className={styles["table-controls"]}>
-                      <span className={styles["table-controls__edit"]}>
-                        Edit
-                      </span>
-                      <span className={styles["table-controls__superset"]}>
-                        Superset
-                      </span>
-                      <div className={styles["table-controls__delete"]}>
-                        <div className={styles["table-icon-wrapper"]}>
-                          <FontAwesomeIcon icon={faBan} />
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
+                />
               );
             })}
           </tbody>
