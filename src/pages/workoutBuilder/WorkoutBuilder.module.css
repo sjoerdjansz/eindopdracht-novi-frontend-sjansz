@@ -52,3 +52,8 @@
 .workout__table th {
   font-weight: 600;
 }
+
+.exercise-not-found-error {
+  color: var(--color-warning);
+  font-weight: 500;
+}
