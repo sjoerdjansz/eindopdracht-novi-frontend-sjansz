@@ -43,7 +43,7 @@ export const SELECTED_EXERCISES = [
   { id: "3", name: "Bench Press", sets: 4, reps: 10, rest: 90 },
   { id: "4", name: "Overhead Press", sets: 3, reps: 8, rest: 75 },
   { id: "5", name: "Barbell Row", sets: 4, reps: 10, rest: 90 },
-  { id: "6", name: "Pull-up", sets: 3, reps: 10, rest: 60 },
+  { id: "6", name: "Pull Up", sets: 3, reps: 10, rest: 60 },
   { id: "7", name: "Face Pulls", sets: 3, reps: 15, rest: 45 },
   { id: "8", name: "Lat Pulldown", sets: 3, reps: 12, rest: 60 },
 ];

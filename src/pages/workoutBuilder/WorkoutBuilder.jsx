@@ -8,10 +8,52 @@ import { useState } from "react";
 import { TableRow } from "../../components/tableRow/TableRow.jsx";
 
 // Data
-import { SELECTED_EXERCISES } from "../../data/exerciseData.js";
+import { EXERCISES } from "../../data/exerciseData.js";
 
 export function WorkoutBuilder() {
-  const [exercises, setExercises] = useState(SELECTED_EXERCISES);
+  const [exercises, setExercises] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+  const [notFoundError, setNotFoundError] = useState("");
+  const [workoutNameInput, setWorkoutNameInput] = useState("");
+  const [workoutName, setWorkoutName] = useState("");
+
+  function handleSearchChange(e) {
+    setSearchValue(e.target.value);
+  }
+
+  function handleWorkoutNameChange(e) {
+    setWorkoutNameInput(e.target.value);
+  }
+
+  function handleWorkoutSave() {
+    setWorkoutName(workoutNameInput);
+    setWorkoutNameInput("");
+  }
+
+  function handleExerciseSearch(data) {
+    const searchQuery = searchValue.toLowerCase().trim();
+    setNotFoundError("");
+    const result = data.find((exercise) => {
+      return exercise.name.toLowerCase() === searchQuery;
+    });
+
+    if (result) {
+      setExercises((previous) => [
+        ...previous,
+        {
+          id: result.id,
+          name: result.name,
+          sets: result.sets,
+          reps: result.reps,
+          rest: result.rest,
+        },
+      ]);
+    } else {
+      console.log("Exercise not found");
+      setNotFoundError("Exercise not found");
+      setSearchValue("");
+    }
+  }
 
   // de start van de drag - item wordt opgepakt
   function handleDragStart(e, exerciseId) {
@@ -82,6 +124,7 @@ export function WorkoutBuilder() {
   return (
     <div className={styles["workout-builder"]}>
       <h1>Build Workout</h1>
+      {workoutName && <p>Name: ${workoutName}</p>}
 
       {/* Hier werkt de CSS styling van de search controls goed. Input beweegt mee obv de CSS,
       in workouts pagina doet die dit niet goed dus nog aanpassen */}
@@ -92,6 +135,8 @@ export function WorkoutBuilder() {
             name="exercise"
             id="exercise"
             placeholder="Search exercise"
+            handleChange={handleSearchChange}
+            value={searchValue}
           />
 
           <Button
@@ -99,8 +144,14 @@ export function WorkoutBuilder() {
             label="Add"
             type="button"
             buttonSize="small"
+            handleClick={() => {
+              handleExerciseSearch(EXERCISES);
+            }}
           />
         </div>
+        <span className={styles["exercise-not-found-error"]}>
+          {notFoundError}
+        </span>
 
         <div className={styles["workout-builder__controls-input-wrapper"]}>
           <InputField
@@ -108,42 +159,47 @@ export function WorkoutBuilder() {
             name="name"
             id="name"
             placeholder="Workout name"
+            handleChange={handleWorkoutNameChange}
+            value={workoutNameInput}
           />
           <Button
             buttonType="primary"
             buttonSize="small"
             type="button"
             label="Save workout"
+            handleClick={handleWorkoutSave}
           />
         </div>
       </section>
       <section className={styles["workout-builder__exercise-list"]}>
-        <table className={styles["workout__table"]}>
-          <thead>
-            <tr>
-              <th className={styles["table-align-left"]}></th>
-              <th className={styles["table-align-left"]}>Exercise</th>
-              <th className={styles["table-align-center"]}>Sets</th>
-              <th className={styles["table-align-center"]}>Reps</th>
-              <th className={styles["table-align-center"]}>Rest</th>
-              <th className={styles["table-align-center"]}></th>
-            </tr>
-          </thead>
-          <tbody>
-            {/*Onderstaande inline manier is niet de meest performance efficiente blijkbaar*/}
-            {exercises.map((exercise) => {
-              return (
-                <TableRow
-                  key={exercise.id}
-                  exercise={exercise}
-                  handleDragOver={handleDragOver}
-                  onDragStart={(e) => handleDragStart(e, exercise.id)}
-                  onDrop={(e) => handleDrop(e, exercise.id)}
-                />
-              );
-            })}
-          </tbody>
-        </table>
+        {exercises && (
+          <table className={styles["workout__table"]}>
+            <thead>
+              <tr>
+                <th className={styles["table-align-left"]}></th>
+                <th className={styles["table-align-left"]}>Exercise</th>
+                <th className={styles["table-align-center"]}>Sets</th>
+                <th className={styles["table-align-center"]}>Reps</th>
+                <th className={styles["table-align-center"]}>Rest</th>
+                <th className={styles["table-align-center"]}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {/*Onderstaande inline manier is niet de meest performance efficiente blijkbaar*/}
+              {exercises.map((exercise) => {
+                return (
+                  <TableRow
+                    key={exercise.id}
+                    exercise={exercise}
+                    handleDragOver={handleDragOver}
+                    onDragStart={(e) => handleDragStart(e, exercise.id)}
+                    onDrop={(e) => handleDrop(e, exercise.id)}
+                  />
+                );
+              })}
+            </tbody>
+          </table>
+        )}
       </section>
     </div>
   );
