@@ -14,9 +14,20 @@ export function WorkoutBuilder() {
   const [exercises, setExercises] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [notFoundError, setNotFoundError] = useState("");
+  const [workoutNameInput, setWorkoutNameInput] = useState("");
+  const [workoutName, setWorkoutName] = useState("");
 
-  function handleChange(e) {
+  function handleSearchChange(e) {
     setSearchValue(e.target.value);
+  }
+
+  function handleWorkoutNameChange(e) {
+    setWorkoutNameInput(e.target.value);
+  }
+
+  function handleWorkoutSave() {
+    setWorkoutName(workoutNameInput);
+    setWorkoutNameInput("");
   }
 
   function handleExerciseSearch(data) {
@@ -113,6 +124,8 @@ export function WorkoutBuilder() {
   return (
     <div className={styles["workout-builder"]}>
       <h1>Build Workout</h1>
+      {workoutName && <p>Name: ${workoutName}</p>}
+
       {/* Hier werkt de CSS styling van de search controls goed. Input beweegt mee obv de CSS,
       in workouts pagina doet die dit niet goed dus nog aanpassen */}
       <section className={styles["workout-builder__controls"]}>
@@ -122,7 +135,7 @@ export function WorkoutBuilder() {
             name="exercise"
             id="exercise"
             placeholder="Search exercise"
-            handleChange={handleChange}
+            handleChange={handleSearchChange}
             value={searchValue}
           />
 
@@ -146,12 +159,15 @@ export function WorkoutBuilder() {
             name="name"
             id="name"
             placeholder="Workout name"
+            handleChange={handleWorkoutNameChange}
+            value={workoutNameInput}
           />
           <Button
             buttonType="primary"
             buttonSize="small"
             type="button"
             label="Save workout"
+            handleClick={handleWorkoutSave}
           />
         </div>
       </section>
