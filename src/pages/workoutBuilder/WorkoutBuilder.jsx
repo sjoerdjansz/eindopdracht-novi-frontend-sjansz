@@ -124,7 +124,7 @@ export function WorkoutBuilder() {
   return (
     <div className={styles["workout-builder"]}>
       <h1>Build Workout</h1>
-      {workoutName && <p>Name: ${workoutName}</p>}
+      {workoutName && <p>Name: {workoutName}</p>}
 
       {/* Hier werkt de CSS styling van de search controls goed. Input beweegt mee obv de CSS,
       in workouts pagina doet die dit niet goed dus nog aanpassen */}

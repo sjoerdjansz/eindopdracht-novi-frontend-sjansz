@@ -13,6 +13,7 @@ import { WorkoutBuilder } from "./pages/workoutBuilder/WorkoutBuilder.jsx";
 
 // Layout Component
 import { Layout } from "./layouts/Layout.jsx";
+import { ExerciseList } from "./pages/exerciseList/ExerciseList.jsx";
 
 function App() {
   return (
@@ -22,7 +23,8 @@ function App() {
         {/*<Dashboard />*/}
         {/*<Clients />*/}
         {/*<Workouts />*/}
-        <WorkoutBuilder />
+        {/*<WorkoutBuilder />*/}
+        <ExerciseList />
       </Layout>
     </>
   );
