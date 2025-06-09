@@ -52,7 +52,7 @@ export function Workouts() {
   return (
     <div className={styles.workouts}>
       <div className={styles["workouts__title-container"]}>
-        <h1>Workouts page</h1>
+        <h1>Workouts</h1>
         <Button
           buttonType="primary"
           buttonSize="medium"

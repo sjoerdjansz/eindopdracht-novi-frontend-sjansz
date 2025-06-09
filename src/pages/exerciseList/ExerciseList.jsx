@@ -6,7 +6,7 @@ import { EXERCISES } from "../../data/exerciseData.js";
 export function ExerciseList() {
   return (
     <div className={styles["exercise-list"]}>
-      <h1>Exercise List page</h1>
+      <h1>Exercise List</h1>
       <section className={styles["exercise-list__controls"]}>
         <div className={styles["exercise-list__controls-input-wrapper"]}>
           <Button
@@ -47,7 +47,7 @@ export function ExerciseList() {
           <tbody>
             {EXERCISES.map((exercise) => {
               return (
-                <tr className={styles["exercise-list__row"]}>
+                <tr key={exercise.id} className={styles["exercise-list__row"]}>
                   <td>{exercise.name}</td>
                   <td>{exercise.bodyPart}</td>
                   <td>{exercise.movement}</td>
