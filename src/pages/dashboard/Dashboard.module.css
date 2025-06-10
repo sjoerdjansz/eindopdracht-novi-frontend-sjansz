@@ -1,7 +1,7 @@
 .dashboard-container {
   display: grid;
   grid-template-columns: repeat(9, auto);
-  grid-template-rows: min-content auto auto;
+  grid-template-rows: min-content auto;
   grid-template-areas:
     "one one two two three three side side side"
     "main main main main main main side side side"
@@ -12,17 +12,17 @@
 
 .card-one {
   grid-area: one;
-  background-color: red;
+  display: flex;
 }
 
 .card-two {
   grid-area: two;
-  background-color: blue;
+  display: flex;
 }
 
 .card-three {
   grid-area: three;
-  background-color: green;
+  display: flex;
 }
 
 .main-content {
@@ -35,30 +35,7 @@
   background-color: lightcoral;
 }
 
-/* Dashboard card styling */
-
-.dashboard-card {
-  background-color: var(--color-gray-light);
-  display: flex;
-  flex-direction: column;
-  border-radius: 0.3rem;
-  padding: 0.5rem;
-  height: 100%;
-}
-
-.dashboard-card h3 {
-  margin-bottom: 0.5rem;
-}
-
-.dashboard-card__content-container {
-  display: flex;
-  gap: 1rem;
-  justify-content: space-between;
-}
-
-.direction-column {
-  flex-direction: column;
-}
+/* Styling for the children of the card in the parent component since we declare it here */
 
 .compliance-info {
   padding: 0.5rem;
@@ -76,16 +53,6 @@
 
 .compliance-info > p {
   font-size: var(--font-xs);
-}
-
-/* Hover effect voor cards */
-
-.dashboard-card {
-  transition: box-shadow 0.2s ease;
-}
-
-.dashboard-card:hover {
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* Media Queries */
