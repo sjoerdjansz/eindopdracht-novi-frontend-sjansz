@@ -1,12 +1,15 @@
 import styles from "./SideNav.module.css";
 import appLogo from "../../../assets/sweat-daddy-app-logo.svg";
 
+import { NavLink } from "react-router-dom";
+
 import {
   faTableColumns,
   faBook,
   faDumbbell,
   faUser,
   faCalendarDay,
+  faPuzzlePiece,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -19,49 +22,57 @@ export function SideNav() {
           <p>Sweat Daddy</p>
         </div>
         <ul className={styles["side-nav__nav-links"]}>
-          <a href="/">
+          <NavLink to="/dashboard">
             <li className={styles["side-nav__link"]}>
               <span>
                 <FontAwesomeIcon icon={faTableColumns} />
               </span>
               Dashboard
             </li>
-          </a>
-          <a href="/">
+          </NavLink>
+          <NavLink to="/exercise-library">
             <li className={styles["side-nav__link"]}>
               <span>
                 <FontAwesomeIcon icon={faBook} />
               </span>
               Exercise Library
             </li>
-          </a>
-          <a href="/">
+          </NavLink>
+          <NavLink to="/workouts">
             <li className={styles["side-nav__link"]}>
               <span>
                 <FontAwesomeIcon icon={faDumbbell} />
               </span>
               Workouts
             </li>
-          </a>
-          <a href="/">
+          </NavLink>
+          <NavLink to="/workout-builder">
+            <li className={styles["side-nav__link"]}>
+              <span>
+                <FontAwesomeIcon icon={faPuzzlePiece} />
+              </span>
+              Build Workout
+            </li>
+          </NavLink>
+          <NavLink to="/clients">
             <li className={styles["side-nav__link"]}>
               <span>
                 <FontAwesomeIcon icon={faUser} />
               </span>
               Clients
             </li>
-          </a>
-          <a href="/">
+          </NavLink>
+          <NavLink to="/agenda">
             <li className={styles["side-nav__link"]}>
               <span>
                 <FontAwesomeIcon icon={faCalendarDay} />
               </span>
               Agenda
             </li>
-          </a>
+          </NavLink>
         </ul>
       </div>
-      <a href="/">Sign Out</a>
+      <NavLink to="/signup">Sign Out</NavLink>
     </nav>
   );
 }

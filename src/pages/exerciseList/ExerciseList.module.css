@@ -1,0 +1,40 @@
+.exercise-list {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.exercise-list__controls {
+  display: flex;
+  flex-direction: row;
+  margin-top: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.exercise-list__controls-input-wrapper {
+  display: flex;
+  gap: 2rem;
+}
+
+/* Exercise list and table styling */
+
+.exercise-list__exercises {
+  display: flex;
+  flex-direction: column;
+}
+
+.exercise-list__header {
+  text-align: left;
+  background-color: var(--color-gray-light);
+}
+
+.exercise-list__row {
+  text-align: left;
+}
+
+td,
+th {
+  padding: var(--space-md);
+}

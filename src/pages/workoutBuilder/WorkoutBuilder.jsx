@@ -124,7 +124,8 @@ export function WorkoutBuilder() {
   return (
     <div className={styles["workout-builder"]}>
       <h1>Build Workout</h1>
-      {workoutName && <p>Name: ${workoutName}</p>}
+
+      {workoutName && <p>Name: {workoutName}</p>}
 
       {/* Hier werkt de CSS styling van de search controls goed. Input beweegt mee obv de CSS,
       in workouts pagina doet die dit niet goed dus nog aanpassen */}
@@ -148,11 +149,12 @@ export function WorkoutBuilder() {
               handleExerciseSearch(EXERCISES);
             }}
           />
+          {notFoundError && (
+            <span className={styles["exercise-not-found-error"]}>
+              {notFoundError}
+            </span>
+          )}
         </div>
-        <span className={styles["exercise-not-found-error"]}>
-          {notFoundError}
-        </span>
-
         <div className={styles["workout-builder__controls-input-wrapper"]}>
           <InputField
             type="text"
