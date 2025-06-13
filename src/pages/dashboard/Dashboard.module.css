@@ -1,28 +1,31 @@
+/* To do - grid fixen */
+
 .dashboard-container {
   display: grid;
-  grid-template-columns: repeat(9, auto);
-  grid-template-rows: min-content auto;
+  grid-template-columns:
+    repeat(6, 1fr)
+    minmax(300px, auto)
+    auto;
+  grid-template-rows: minmax(150px, auto) auto;
+
   grid-template-areas:
     "one one two two three three side side side"
     "main main main main main main side side side"
     "main main main main main main side side side";
-  gap: 2rem;
+  gap: 1rem;
   width: 100%;
 }
 
 .card-one {
   grid-area: one;
-  display: flex;
 }
 
 .card-two {
   grid-area: two;
-  display: flex;
 }
 
 .card-three {
   grid-area: three;
-  display: flex;
 }
 
 .main-content {
@@ -32,28 +35,10 @@
 
 .side-content {
   grid-area: side;
-  background-color: lightcoral;
 }
 
 /* Styling for the children of the card in the parent component since we declare it here */
-
-.compliance-info {
-  padding: 0.5rem;
-  background-color: #ffffff;
-  border-radius: 0.3rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.compliance-info > span {
-  font-size: var(--font-xl);
-  font-weight: 600;
-}
-
-.compliance-info > p {
-  font-size: var(--font-xs);
-}
+/* evt hier */
 
 /* Media Queries */
 
@@ -67,4 +52,25 @@
       "main"
       "side";
   }
+}
+
+/* Client information container */
+
+.side-content__information-container {
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+.side-content__information-container hr {
+  border: 0.5px solid var(--color-gray-medium);
+}
+
+.information-container__client-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 1rem;
 }

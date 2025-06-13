@@ -1,7 +1,6 @@
 .top-nav {
   grid-area: topnav;
   background-color: var(--color-gray-light);
-
   height: auto;
   padding: 0.5rem 1rem;
   display: flex;
@@ -31,6 +30,7 @@
   height: 50px;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .top-nav__controls svg {
