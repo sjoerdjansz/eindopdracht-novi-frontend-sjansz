@@ -8,6 +8,7 @@ import {
   faChartLine,
   faHandshake,
   faHeart,
+  faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -17,6 +18,7 @@ import { useState } from "react";
 import { ClientWorkoutStatusCard } from "../../components/clientWorkoutStatusCard/ClientWorkoutStatusCard.jsx";
 import { Link } from "react-router-dom";
 import { SmallCardDashContent } from "../../components/smallCardDashContent/SmallCardDashContent.jsx";
+import { CLIENT_MILESTONES } from "../../data/clientData.js";
 
 export function Dashboard() {
   const [toggleCaretWorkout, setToggleCaretWorkout] = useState(true);
@@ -82,6 +84,32 @@ export function Dashboard() {
       </div>
 
       <div className={styles["main-content"]}>main content</div>
+      <div className={styles["milestones-content"]}>
+        <DashboardCard title="Milestones" flexDirection="direction-column">
+          <hr />
+
+          <ul className={styles["milestones__container"]}>
+            {CLIENT_MILESTONES.map((client) => {
+              return (
+                <li key={client.id} className={styles["container__list-item"]}>
+                  <div className={styles["list-item__top-content"]}>
+                    <p>{client.date}</p>
+                    <FontAwesomeIcon icon={faEnvelope} />
+                  </div>
+                  <div className={styles["list-item__bottom-content"]}>
+                    <p>{client.name}</p>
+                    <>
+                      <p className={styles["bottom-content__milestone"]}>
+                        {client.milestone}
+                      </p>
+                    </>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </DashboardCard>
+      </div>
       <div className={styles["side-content"]}>
         <DashboardCard
           title="Client information"

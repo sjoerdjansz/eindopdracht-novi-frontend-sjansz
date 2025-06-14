@@ -70,3 +70,36 @@ export const CLIENTS = [
     currentPlan: "fat loss hybrid",
   },
 ];
+
+export const CLIENT_MILESTONES = [
+  {
+    id: "c101",
+    name: "Hank the Tank",
+    milestone: "100 Workouts Completed",
+    date: "2025-06-12",
+  },
+  {
+    id: "c102",
+    name: "Benching Brenda",
+    milestone: "Weight Goal Reached",
+    date: "2025-06-09",
+  },
+  {
+    id: "c103",
+    name: "Deadlift Dave",
+    milestone: "1 Year Anniversary",
+    date: "2025-06-03",
+  },
+  {
+    id: "c104",
+    name: "Kettlebell Karen",
+    milestone: "Birthday",
+    date: "2025-06-14",
+  },
+  {
+    id: "c105",
+    name: "Squatzilla Sam",
+    milestone: "25 Workouts Completed",
+    date: "2025-06-11",
+  },
+];

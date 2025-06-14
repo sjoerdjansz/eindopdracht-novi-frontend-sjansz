@@ -6,7 +6,7 @@
   width: 100%;
   grid-template-areas:
     "one two three side"
-    "main main main side";
+    "main main milestones side";
 }
 
 .card-one {
@@ -24,6 +24,10 @@
 .main-content {
   grid-area: main;
   background-color: lightgrey;
+}
+
+.milestones-content {
+  grid-area: milestones;
 }
 
 .side-content {
@@ -44,6 +48,7 @@
       "two"
       "three"
       "main"
+      "milestones"
       "side";
   }
 }
@@ -55,7 +60,7 @@
   flex-shrink: 0;
 }
 
-.side-content__information-container hr {
+hr {
   border: 0.5px solid var(--color-gray-medium);
 }
 
@@ -67,4 +72,51 @@
   padding: 0;
   margin: 0;
   gap: 1rem;
+}
+
+/* Milestones section */
+
+.milestones__container {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+  gap: 1rem;
+}
+
+.container__list-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.list-item__top-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--color-white);
+  padding: 0.2rem;
+  border-radius: 0.3rem;
+}
+
+.list-item__top-content :first-child {
+  font-size: var(--font-xs);
+}
+
+.list-item__top-content :nth-child(2) {
+  color: var(--color-gray-dark);
+  cursor: pointer;
+}
+
+.list-item__bottom-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.list-item__bottom-content :first-child {
+  font-weight: 600;
 }
