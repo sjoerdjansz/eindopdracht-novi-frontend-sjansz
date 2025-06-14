@@ -1,0 +1,47 @@
+/* Dashboard card styling */
+
+.dashboard-card {
+  background-color: var(--color-gray-light);
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.3rem;
+  padding: 1rem;
+  height: 100%;
+  border: 1px solid var(--color-gray-mediumlight);
+}
+
+.dashboard-card__title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title-container__icon {
+  color: var(--color-gray-dark);
+  padding: 0.5rem;
+  border: 1px solid var(--color-gray-mediumlight);
+  border-radius: 0.3rem;
+}
+
+.dashboard-card__content-container {
+  display: flex;
+  flex-grow: 1;
+}
+
+.direction-column {
+  flex-direction: column;
+}
+
+.direction-row {
+  flex-direction: row;
+}
+
+/* Hover effect voor cards */
+
+.dashboard-card {
+  transition: box-shadow 0.2s ease;
+}
+
+.dashboard-card:hover {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}

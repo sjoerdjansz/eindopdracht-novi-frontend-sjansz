@@ -1,0 +1,37 @@
+.small-card__top-content {
+  display: flex;
+  padding: 0.5rem 0;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.top-content__info {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 200px;
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+.top-content__info div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-content__info div p {
+  padding-right: 0.5rem;
+}
+
+.top-content__info > div span {
+  font-weight: 600;
+}
+
+.small-card__bottom-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 500;
+  color: var(--color-primary);
+}

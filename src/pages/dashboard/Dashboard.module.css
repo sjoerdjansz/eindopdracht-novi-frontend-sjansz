@@ -1,3 +1,70 @@
-.dashboard-content {
+.dashboard-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 150px 1fr;
+  gap: 1rem;
+  width: 100%;
+  grid-template-areas:
+    "one two three side"
+    "main main main side";
+}
+
+.card-one {
+  grid-area: one;
+}
+
+.card-two {
+  grid-area: two;
+}
+
+.card-three {
+  grid-area: three;
+}
+
+.main-content {
   grid-area: main;
+  background-color: lightgrey;
+}
+
+.side-content {
+  grid-area: side;
+}
+
+/* Styling for the children of the card in the parent component since we declare it here */
+/* evt hier */
+
+/* Media Queries */
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    grid-template-areas:
+      "one"
+      "two"
+      "three"
+      "main"
+      "side";
+  }
+}
+
+/* Client information container */
+
+.side-content__information-container {
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+.side-content__information-container hr {
+  border: 0.5px solid var(--color-gray-medium);
+}
+
+.information-container__client-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 1rem;
 }
