@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import styles from "./SmallCardDashContent.module.css";
 
 export function SmallCardDashContent({
-  icon,
   labelOne,
   labelTwo,
   labelOneNumber,
@@ -16,19 +15,18 @@ export function SmallCardDashContent({
     <>
       <div className={styles["small-card__top-content"]}>
         <div className={styles["top-content__info"]}>
-          <FontAwesomeIcon icon={icon} className={styles["info__icon"]} />
           <div>
             <p>
               {labelOne} <span>{labelOneNumber}</span>
             </p>
+            <p>{labelOnePercent}</p>
+          </div>
+          <div>
             <p>
               {labelTwo} <span>{labelTwoNumber}</span>
             </p>
+            <p>{labelTwoPercent}</p>
           </div>
-        </div>
-        <div>
-          <p>{labelOnePercent}</p>
-          <p>{labelTwoPercent}</p>
         </div>
       </div>
       <div className={styles["small-card__bottom-content"]}>

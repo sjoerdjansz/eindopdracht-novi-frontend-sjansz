@@ -1,19 +1,12 @@
-/* To do - grid fixen */
-
 .dashboard-container {
   display: grid;
-  grid-template-columns:
-    repeat(6, 1fr)
-    minmax(300px, auto)
-    auto;
-  grid-template-rows: minmax(150px, auto) auto;
-
-  grid-template-areas:
-    "one one two two three three side side side"
-    "main main main main main main side side side"
-    "main main main main main main side side side";
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 150px 1fr;
   gap: 1rem;
   width: 100%;
+  grid-template-areas:
+    "one two three side"
+    "main main main side";
 }
 
 .card-one {
@@ -45,6 +38,7 @@
 @media (max-width: 768px) {
   .dashboard-container {
     grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
     grid-template-areas:
       "one"
       "two"

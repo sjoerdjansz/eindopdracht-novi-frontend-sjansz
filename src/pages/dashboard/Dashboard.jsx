@@ -32,42 +32,51 @@ export function Dashboard() {
   return (
     <div className={styles["dashboard-container"]}>
       <div className={styles["card-one"]}>
-        <DashboardCard title="Workouts" flexDirection="direction-column">
+        <DashboardCard
+          title="Workouts"
+          flexDirection="direction-column"
+          icon={faChartLine}
+        >
           <SmallCardDashContent
-            icon={faChartLine}
-            labelOne="Workouts last week: "
+            labelOne="Last week: "
             labelOneNumber={8}
-            labelOnePercent="+ 25%"
-            labelTwo="Workouts this year: "
+            labelOnePercent="+25%"
+            labelTwo="This year: "
             labelTwoNumber={256}
-            labelTwoPercent={"+ 15%"}
+            labelTwoPercent={"+15%"}
           />
         </DashboardCard>
       </div>
 
       <div className={styles["card-two"]}>
-        <DashboardCard title="Adherence" flexDirection="direction-column">
+        <DashboardCard
+          title="Adherence"
+          flexDirection="direction-column"
+          icon={faHandshake}
+        >
           <SmallCardDashContent
-            icon={faHandshake}
             labelOne="Last 30 days: "
             labelOneNumber={78}
-            labelOnePercent="+ 4%"
-            labelTwo="Total adherence score: "
+            labelOnePercent="+4%"
+            labelTwo="Average score: "
             labelTwoNumber={62}
             labelTwoPercent={""}
           />
         </DashboardCard>
       </div>
       <div className={styles["card-three"]}>
-        <DashboardCard title="Wellbeing" flexDirection="direction-column">
+        <DashboardCard
+          title="Wellbeing"
+          flexDirection="direction-column"
+          icon={faHeart}
+        >
           <SmallCardDashContent
-            icon={faHeart}
-            labelOne="Check-ins last 30 days: "
+            labelOne="Last 30 days: "
             labelOneNumber={15}
-            labelOnePercent="+4%"
-            labelTwo="Wellbeing score last 30 days: "
-            labelTwoNumber={"72"}
-            labelTwoPercent={"+ 6%"}
+            labelOnePercent="+5%"
+            labelTwo="Average score: "
+            labelTwoNumber={"74"}
+            labelTwoPercent={""}
           />
         </DashboardCard>
       </div>
