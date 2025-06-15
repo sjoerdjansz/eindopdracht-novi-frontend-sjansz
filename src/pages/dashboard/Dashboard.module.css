@@ -4,6 +4,8 @@
   grid-template-rows: 150px 1fr;
   gap: 1rem;
   width: 100%;
+  flex: 1;
+  overflow: scroll;
   grid-template-areas:
     "one two three side"
     "main main milestones side";
@@ -23,7 +25,6 @@
 
 .main-content {
   grid-area: main;
-  background-color: lightgrey;
 }
 
 .milestones-content {
@@ -34,8 +35,12 @@
   grid-area: side;
 }
 
-/* Styling for the children of the card in the parent component since we declare it here */
-/* evt hier */
+.milestones-content,
+.main-content,
+.side-content {
+  overflow: auto;
+  min-height: 0;
+}
 
 /* Media Queries */
 

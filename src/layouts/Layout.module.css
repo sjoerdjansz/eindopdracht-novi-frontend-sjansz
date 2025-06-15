@@ -19,5 +19,13 @@ In de main komt een component die zelf nog een grid (bijv 12 stuks) of flexbox h
   justify-content: center;
   padding: 2rem;
   background-color: var(--color-white);
-  overflow-y: scroll;
+  overflow-y: auto;
+}
+
+/* Media Queries */
+
+@media (max-width: 768px) {
+  .layout {
+    height: 100%;
+  }
 }
