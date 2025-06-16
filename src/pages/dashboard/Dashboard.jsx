@@ -113,47 +113,48 @@ export function Dashboard() {
       </div>
 
       <div className={styles["main-content"]}>
-        <div className={styles["upcoming-sessions-content"]}>
-          <DashboardCard
-            title="Upcoming Sessions"
-            flexDirection="direction-column"
-          >
-            <hr />
-            {/* Object entries geeft een array terug van de key value pairs (de datum string en een array met sessions).
+        <DashboardCard
+          title="Upcoming Sessions"
+          flexDirection="direction-column"
+        >
+          <hr />
+          {/* Object entries geeft een array terug van de key value pairs (de datum string en een array met sessions).
             Hier kunnen we met .map overheen loopen. We maken middels destructuring variabelen van de array
             items date en sessions. Had ook zo gekund: const date = entry[0], const sessions = entry[1]
             Omdat sessions in dit geval ook een array is kunnen we daar weer over loopen om te renderen.
              */}
-            {Object.entries(reduceSessionsData(UPCOMING_SESSIONS)).map(
-              ([date, sessions]) => {
-                return (
-                  <div key={date}>
-                    <p>{date}</p>
+          {Object.entries(reduceSessionsData(UPCOMING_SESSIONS)).map(
+            ([date, sessions]) => {
+              return (
+                <div key={date} className={styles["main-content__container"]}>
+                  <p className={styles["container__date"]}>{date}</p>
 
-                    <ul>
-                      {sessions.map((session) => {
-                        const date = getDateTime(
-                          session.startTime,
-                          session.endTime,
-                        );
-                        return (
-                          <li key={session.id}>
-                            <p>
-                              {session.name} - {session.sessionType} -
-                            </p>
-                            <p>
-                              {date.start} - {date.end}
-                            </p>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                );
-              },
-            )}
-          </DashboardCard>
-        </div>
+                  <ul className={styles["container__list"]}>
+                    {sessions.map((session) => {
+                      const date = getDateTime(
+                        session.startTime,
+                        session.endTime,
+                      );
+                      return (
+                        <li
+                          key={session.id}
+                          className={styles["list__list-item"]}
+                        >
+                          <p className={styles["list-item__client"]}>
+                            <span>{session.name}</span> – {session.sessionType}
+                          </p>
+                          <p className={styles["list-item__time"]}>
+                            <time>{date.start}</time> – <time>{date.end}</time>
+                          </p>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              );
+            },
+          )}
+        </DashboardCard>
       </div>
       <div className={styles["milestones-content"]}>
         <DashboardCard title="Milestones" flexDirection="direction-column">
