@@ -8,6 +8,7 @@ import {
   faChartLine,
   faHandshake,
   faHeart,
+  faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -17,10 +18,40 @@ import { useState } from "react";
 import { ClientWorkoutStatusCard } from "../../components/clientWorkoutStatusCard/ClientWorkoutStatusCard.jsx";
 import { Link } from "react-router-dom";
 import { SmallCardDashContent } from "../../components/smallCardDashContent/SmallCardDashContent.jsx";
+import { CLIENT_MILESTONES, UPCOMING_SESSIONS } from "../../data/clientData.js";
+import { getDateTime, getDay } from "../../utils/getDateTime.js";
 
 export function Dashboard() {
   const [toggleCaretWorkout, setToggleCaretWorkout] = useState(true);
   const [toggleCaretAdherence, setToggleCaretAdherence] = useState(true);
+
+  // Deze functie geeft een object terug waarvan de keys de datums zijn en de values de sessions
+  // die bij die datum horen
+  function reduceSessionsData(sessions) {
+    // De acc (accumulator) is een object die wordt gevuld met zelf gekozen waardes.
+    // In dit geval beginnen we op 0.
+    return sessions.reduce((acc, session) => {
+      // we maken een key aan voor het object, in dit geval een datum. Deze maken we met de helper getDay functie
+      const dateObjectKey = getDay(session.startTime);
+
+      // Check of er wel een truthy/true value in de startTime zit
+      if (session.startTime) {
+        // Als er nog geen dateObjectKey is gemaakt op die specifieke accumulator waarde, maak dan een lege array
+        if (!acc[dateObjectKey]) {
+          acc[dateObjectKey] = [];
+        }
+        // Push vervolgens de session (currentValue) in die array.
+        acc[dateObjectKey].push(session);
+      } else {
+        // toon een console warning als er een false of falsey waarde uit de parent if statement komt
+        console.warn("Wrong startTime");
+      }
+
+      // Geef de aangepaste versie van het acc object terug zodat die de volgende iteratie van de reduce
+      // weer aangepast kan worden. Is voor het tussenresultaat.
+      return acc;
+    }, {});
+  }
 
   function handleCaretClick(title) {
     if (title.toLowerCase().includes("attention")) {
@@ -81,10 +112,79 @@ export function Dashboard() {
         </DashboardCard>
       </div>
 
-      <div className={styles["main-content"]}>main content</div>
+      <div className={styles["main-content"]}>
+        <DashboardCard
+          title="Upcoming Sessions"
+          flexDirection="direction-column"
+        >
+          <hr />
+          {/* Object entries geeft een array terug van de key value pairs (de datum string en een array met sessions).
+            Hier kunnen we met .map overheen loopen. We maken middels destructuring variabelen van de array
+            items date en sessions. Had ook zo gekund: const date = entry[0], const sessions = entry[1]
+            Omdat sessions in dit geval ook een array is kunnen we daar weer over loopen om te renderen.
+             */}
+          {Object.entries(reduceSessionsData(UPCOMING_SESSIONS)).map(
+            ([date, sessions]) => {
+              return (
+                <div key={date} className={styles["main-content__container"]}>
+                  <p className={styles["container__date"]}>{date}</p>
+
+                  <ul className={styles["container__list"]}>
+                    {sessions.map((session) => {
+                      const date = getDateTime(
+                        session.startTime,
+                        session.endTime,
+                      );
+                      return (
+                        <li
+                          key={session.id}
+                          className={styles["list__list-item"]}
+                        >
+                          <p className={styles["list-item__client"]}>
+                            <span>{session.name}</span> – {session.sessionType}
+                          </p>
+                          <p className={styles["list-item__time"]}>
+                            <time>{date.start}</time> – <time>{date.end}</time>
+                          </p>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              );
+            },
+          )}
+        </DashboardCard>
+      </div>
+      <div className={styles["milestones-content"]}>
+        <DashboardCard title="Milestones" flexDirection="direction-column">
+          <hr />
+
+          <ul className={styles["milestones__container"]}>
+            {CLIENT_MILESTONES.map((client) => {
+              return (
+                <li key={client.id} className={styles["container__list-item"]}>
+                  <div className={styles["list-item__top-content"]}>
+                    <p>{client.date}</p>
+                    <FontAwesomeIcon icon={faEnvelope} />
+                  </div>
+                  <div className={styles["list-item__bottom-content"]}>
+                    <p>{client.name}</p>
+                    <>
+                      <p className={styles["bottom-content__milestone"]}>
+                        {client.milestone}
+                      </p>
+                    </>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </DashboardCard>
+      </div>
       <div className={styles["side-content"]}>
         <DashboardCard
-          title="Client information"
+          title="Client Information"
           flexDirection="direction-column"
         >
           <div className={styles["side-content__information-container"]}>

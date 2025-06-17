@@ -1,8 +1,8 @@
 export function formatDate() {
   const options = {
-    weekday: "long",
+    weekday: "short",
     month: "long",
     day: "numeric",
   };
-  return new Date().toLocaleDateString("nl-NL", options);
+  return new Date().toLocaleDateString("default", options);
 }
