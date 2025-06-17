@@ -2,8 +2,14 @@ import styles from "./ExerciseList.module.css";
 import { Button } from "../../components/button/Button.jsx";
 import { InputField } from "../../components/inputField/InputField.jsx";
 import { EXERCISES } from "../../data/exerciseData.js";
+import { useNavigate } from "react-router-dom";
 
 export function ExerciseList() {
+  const navigate = useNavigate();
+
+  const handleCreateExerciseClick = () => {
+    navigate("/exercise-library/create");
+  };
   return (
     <div className={styles["exercise-list"]}>
       <h1>Exercise List</h1>
@@ -14,6 +20,7 @@ export function ExerciseList() {
             type="button"
             buttonSize="medium"
             label="create exercise"
+            handleClick={handleCreateExerciseClick}
           />
         </div>
         <div className={styles["exercise-list__controls-input-wrapper"]}>
