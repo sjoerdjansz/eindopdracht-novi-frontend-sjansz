@@ -1,9 +1,9 @@
 .input-wrapper {
   display: flex;
-  flex: 1;
   position: relative;
   gap: 0.5rem;
   justify-content: center;
+  /*  twijfel of hier flex: 1 nodig is, nog uitzoeken */
 }
 
 .column {

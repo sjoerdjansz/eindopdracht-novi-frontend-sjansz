@@ -24,15 +24,6 @@
   gap: 0.5rem;
 }
 
-.workouts__search-input {
-  flex-grow: 1;
-}
-
-.workouts__filter-controls {
-  display: flex;
-  flex-basis: 200px;
-}
-
 .workouts__list {
   display: flex;
   gap: 1rem;

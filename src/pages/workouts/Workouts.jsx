@@ -23,6 +23,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { CustomCheckbox } from "../../components/customCheckbox/CustomCheckbox.jsx";
+import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 
 export function Workouts() {
   const [selectedWorkouts, setSelectedWorkouts] = useState([]);
@@ -62,7 +63,7 @@ export function Workouts() {
       </div>
       <section className={styles["workouts__controls"]}>
         <div className={styles["workouts__controls-search"]}>
-          <div className={styles["workouts__search-input"]}>
+          <InputWrapper>
             <InputField
               type="text"
               name="search-client"
@@ -70,30 +71,25 @@ export function Workouts() {
               placeholder="Search client"
               icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
             />
-          </div>
-
+          </InputWrapper>
           <Button
-            buttonType="transparant"
+            buttonType="secondary"
             label="Add"
             type="button"
-            buttonSize="medium"
+            buttonSize="small"
           />
         </div>
-        <div className={styles["workouts__filter-controls"]}>
-          <SelectField
-            id="workout-filter"
-            label=""
-            name="workout-filter"
-            options={WORKOUT_FILTER_OPTIONS}
-            title="Filter workouts"
-          />
-        </div>
+        <SelectField
+          id="workout-filter"
+          name="workout-filter"
+          options={WORKOUT_FILTER_OPTIONS}
+          title="Filter workouts"
+        />
       </section>
       <section className={styles["workouts__list"]}>
         {WORKOUTS.map((workout) => {
           return (
             <Card key={workout.id} variant="horizontal" size="medium">
-              {/* Werkt nog niet, bugfix nodig ivm selecteren van alle cards tegelijk met 1 klik */}
               <CustomCheckbox
                 className={styles["workouts__card-select"]}
                 type="button"
