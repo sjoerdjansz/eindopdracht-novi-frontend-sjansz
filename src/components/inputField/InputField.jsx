@@ -11,10 +11,16 @@ export function InputField({
   icon = null,
   toggleHandler,
   style,
+  required,
 }) {
   return (
-    <div className={styles["input-container"]}>
-      {label && <label htmlFor={id}>{label}</label>}
+    <>
+      {label && (
+        <label htmlFor={id}>
+          {label}
+          {required && <span className={styles["required"]}>*</span>}
+        </label>
+      )}
       <input
         className={`${styles["input-field"]} ${styles[style]}`}
         type={type}
@@ -33,6 +39,6 @@ export function InputField({
           {icon}
         </button>
       )}
-    </div>
+    </>
   );
 }

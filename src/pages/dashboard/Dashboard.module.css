@@ -5,7 +5,7 @@
   gap: 1rem;
   width: 100%;
   flex: 1;
-  overflow: scroll;
+  overflow: auto;
   grid-template-areas:
     "one two three side"
     "main main milestones side";

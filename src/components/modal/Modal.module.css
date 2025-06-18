@@ -1,13 +1,14 @@
 .modal {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   padding: 1rem;
-  max-width: 760px;
+  width: 100%;
+  flex: 1;
   background-color: var(--color-gray-light);
   border: 1px solid var(--color-gray-mediumlight);
   box-shadow: var(--element-shadow-subtle);
   border-radius: 0.5rem;
+  overflow: auto;
 }
 
 .modal__header {

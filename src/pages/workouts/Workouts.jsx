@@ -85,6 +85,7 @@ export function Workouts() {
             label=""
             name="workout-filter"
             options={WORKOUT_FILTER_OPTIONS}
+            title="Filter workouts"
           />
         </div>
       </section>

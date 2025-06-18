@@ -4,6 +4,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
 export function Modal({ title, children, footerContent }) {
+  //   TODO: optimize component
   return (
     <div className={styles["modal"]}>
       <div className={styles["modal__header"]}>

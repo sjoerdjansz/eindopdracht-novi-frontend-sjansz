@@ -4,7 +4,7 @@ In de main komt een component die zelf nog een grid (bijv 12 stuks) of flexbox h
 */
 .layout {
   display: grid;
-  min-height: 100vh;
+  height: 100vh;
   grid-template-columns: auto 1fr;
   grid-template-rows: auto 1fr;
   grid-template-areas:
@@ -19,7 +19,7 @@ In de main komt een component die zelf nog een grid (bijv 12 stuks) of flexbox h
   justify-content: center;
   padding: 2rem;
   background-color: var(--color-white);
-  overflow-y: scroll;
+  overflow: auto;
 }
 
 /* Media Queries */

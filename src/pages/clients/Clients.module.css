@@ -10,13 +10,12 @@
   align-items: center;
 }
 
-.filter-controls {
+.controls__container {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  flex-basis: 300px;
-  flex-shrink: 1;
-  flex-grow: 0;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
   margin: 1rem 0;
 }
 

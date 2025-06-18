@@ -12,6 +12,7 @@ import { CLIENTS } from "../../data/clientData.js";
 
 // Helpers
 import { colorCodeText } from "../../utils/colorCodeText.js";
+import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 
 export function Clients() {
   return (
@@ -19,20 +20,22 @@ export function Clients() {
       <h1>Clients</h1>
 
       <section className={styles["clients__controls"]}>
-        <Button
-          buttonType="primary"
-          buttonSize="medium"
-          type="button"
-          label="add client"
-        />
-
-        <div className={styles["filter-controls"]}>
-          <SelectField
-            id="client-filter"
-            label=""
-            name="client-filter"
-            options={CLIENT_FILTER_OPTIONS}
+        <div className={styles["controls__container"]}>
+          <Button
+            buttonType="primary"
+            buttonSize="medium"
+            type="button"
+            label="add client"
           />
+          <InputWrapper width="small">
+            <SelectField
+              id="client-filter"
+              label=""
+              name="client-filter"
+              options={CLIENT_FILTER_OPTIONS}
+              title="Filter clients"
+            />
+          </InputWrapper>
         </div>
       </section>
       <section className={styles["clients__list"]}>
