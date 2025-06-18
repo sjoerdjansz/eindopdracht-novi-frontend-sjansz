@@ -3,6 +3,7 @@ import { Button } from "../../components/button/Button.jsx";
 import { InputField } from "../../components/inputField/InputField.jsx";
 import { EXERCISES } from "../../data/exerciseData.js";
 import { useNavigate } from "react-router-dom";
+import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 
 export function ExerciseList() {
   const navigate = useNavigate();
@@ -14,30 +15,32 @@ export function ExerciseList() {
     <div className={styles["exercise-list"]}>
       <h1>Exercise List</h1>
       <section className={styles["exercise-list__controls"]}>
+        <Button
+          buttonType="primary"
+          type="button"
+          buttonSize="medium"
+          label="create exercise"
+          handleClick={handleCreateExerciseClick}
+        />
         <div className={styles["exercise-list__controls-input-wrapper"]}>
-          <Button
-            buttonType="primary"
-            type="button"
-            buttonSize="medium"
-            label="create exercise"
-            handleClick={handleCreateExerciseClick}
-          />
-        </div>
-        <div className={styles["exercise-list__controls-input-wrapper"]}>
-          <InputField
-            type="text"
-            name="filter-bodypart"
-            id="filter-bodypart"
-            placeholder="Filter bodypart"
-            style="primary"
-          />
-          <InputField
-            type="text"
-            name="find-exercise"
-            id="find-exercise"
-            placeholder="Find exercise"
-            style="primary"
-          />
+          <InputWrapper>
+            <InputField
+              type="text"
+              name="filter-bodypart"
+              id="filter-bodypart"
+              placeholder="Filter bodypart"
+              style="primary"
+            />
+          </InputWrapper>
+          <InputWrapper>
+            <InputField
+              type="text"
+              name="find-exercise"
+              id="find-exercise"
+              placeholder="Find exercise"
+              style="primary"
+            />
+          </InputWrapper>
         </div>
       </section>
       <section className={styles["exercise-list__exercises"]}>

@@ -9,6 +9,7 @@ import { TableRow } from "../../components/tableRow/TableRow.jsx";
 
 // Data
 import { EXERCISES } from "../../data/exerciseData.js";
+import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 
 export function WorkoutBuilder() {
   const [exercises, setExercises] = useState([]);
@@ -127,19 +128,18 @@ export function WorkoutBuilder() {
 
       {workoutName && <p>Name: {workoutName}</p>}
 
-      {/* Hier werkt de CSS styling van de search controls goed. Input beweegt mee obv de CSS,
-      in workouts pagina doet die dit niet goed dus nog aanpassen */}
       <section className={styles["workout-builder__controls"]}>
         <div className={styles["workout-builder__controls-input-wrapper"]}>
-          <InputField
-            type="text"
-            name="exercise"
-            id="exercise"
-            placeholder="Search exercise"
-            handleChange={handleSearchChange}
-            value={searchValue}
-          />
-
+          <InputWrapper>
+            <InputField
+              type="text"
+              name="exercise"
+              id="exercise"
+              placeholder="Search exercise"
+              handleChange={handleSearchChange}
+              value={searchValue}
+            />
+          </InputWrapper>
           <Button
             buttonType="secondary"
             label="Add"
@@ -156,14 +156,16 @@ export function WorkoutBuilder() {
           )}
         </div>
         <div className={styles["workout-builder__controls-input-wrapper"]}>
-          <InputField
-            type="text"
-            name="name"
-            id="name"
-            placeholder="Workout name"
-            handleChange={handleWorkoutNameChange}
-            value={workoutNameInput}
-          />
+          <InputWrapper>
+            <InputField
+              type="text"
+              name="name"
+              id="name"
+              placeholder="Workout name"
+              handleChange={handleWorkoutNameChange}
+              value={workoutNameInput}
+            />
+          </InputWrapper>
           <Button
             buttonType="primary"
             buttonSize="small"

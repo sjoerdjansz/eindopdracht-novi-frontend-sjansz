@@ -1,0 +1,57 @@
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  gap: 1rem;
+}
+
+.client-cards-container {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  gap: 2rem;
+}
+
+.client-cards-container :nth-child(1) {
+  flex: 1 1 auto;
+}
+
+.client-cards-container :nth-child(2) {
+  flex: 8 1 auto;
+}
+
+/* Inner cards container and styling */
+
+.inner-cards-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile__footer-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+}
+
+.profile-avatar-wrapper {
+  flex-basis: 300px;
+  flex-shrink: 1;
+  flex-grow: 0;
+}
+
+.profile-avatar {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Media Queries */
+
+@media (max-width: 768px) {
+  .client-cards-container {
+    flex-direction: column;
+  }
+}

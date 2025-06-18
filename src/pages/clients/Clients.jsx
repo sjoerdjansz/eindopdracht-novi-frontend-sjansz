@@ -48,12 +48,14 @@ export function Clients() {
             >
               <CardHeader>
                 <div className={styles["card__client-info"]}>
-                  <img
-                    className={styles["card__avatar"]}
-                    src={client.avatar}
-                    alt={client.name}
-                  />
-                  <div>
+                  <div className={styles["card__avatar-wrapper"]}>
+                    <img
+                      className={styles["card__avatar"]}
+                      src={client.avatar}
+                      alt={client.name}
+                    />
+                  </div>
+                  <div className={styles["client-info__details"]}>
                     <p>{client.name}</p>
                     <p>{client.lastActive}</p>
                     <p>{client.clientSince}</p>

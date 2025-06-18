@@ -7,6 +7,7 @@ import { Workouts } from "../pages/workouts/Workouts.jsx";
 import { WorkoutBuilder } from "../pages/workoutBuilder/WorkoutBuilder.jsx";
 import { ExerciseList } from "../pages/exerciseList/ExerciseList.jsx";
 import { CreateExercisePage } from "../pages/createExercisePage/CreateExercisePage.jsx";
+import { ClientProfile } from "../pages/clientProfile/ClientProfile.jsx";
 
 export function AppRoutes() {
   return (
@@ -22,6 +23,7 @@ export function AppRoutes() {
           path="/exercise-library/create"
           element={<CreateExercisePage />}
         />
+        <Route path="/clients/profile/:id" element={<ClientProfile />} />
       </Route>
     </Routes>
   );

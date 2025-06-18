@@ -12,6 +12,10 @@
   box-shadow: 0 0 0 2px hsla(342, 100%, 62%, 0.3);
 }
 
+.input-field-container {
+  position: relative;
+}
+
 .input-field-icon {
   position: absolute;
   color: var(--color-black);

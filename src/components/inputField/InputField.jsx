@@ -21,24 +21,27 @@ export function InputField({
           {required && <span className={styles["required"]}>*</span>}
         </label>
       )}
-      <input
-        className={`${styles["input-field"]} ${styles[style]}`}
-        type={type}
-        name={name}
-        id={id}
-        value={value}
-        onChange={handleChange}
-        placeholder={placeholder}
-      />
-      {icon && (
-        <button
-          onClick={toggleHandler}
-          type="button"
-          className={styles["input-field-icon"]}
-        >
-          {icon}
-        </button>
-      )}
+      <div className={styles["input-field-container"]}>
+        <input
+          className={`${styles["input-field"]} ${styles[style]}`}
+          type={type}
+          name={name}
+          id={id}
+          value={value}
+          onChange={handleChange}
+          placeholder={placeholder}
+        />
+
+        {icon && (
+          <button
+            onClick={toggleHandler}
+            type="button"
+            className={styles["input-field-icon"]}
+          >
+            {icon}
+          </button>
+        )}
+      </div>
     </>
   );
 }
