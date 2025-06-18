@@ -33,13 +33,15 @@ export function SelectField({
           <option value="" disabled>
             {title}
           </option>
-          {options.map((option) => {
-            return (
-              <option key={option.value} value={option.label}>
-                {option.label}
-              </option>
-            );
-          })}
+          {options
+            .sort((a, b) => a.label.localeCompare(b.label))
+            .map((option) => {
+              return (
+                <option key={option.value} value={option.label}>
+                  {option.label}
+                </option>
+              );
+            })}
         </select>
         {button && (
           <Button
