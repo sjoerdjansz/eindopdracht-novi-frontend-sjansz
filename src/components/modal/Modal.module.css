@@ -19,6 +19,12 @@
   margin-bottom: 1rem;
 }
 
+.header__title-wrapper {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
 .modal__header > span {
   display: flex;
   justify-content: center;
@@ -38,4 +44,10 @@
 .modal__content--left {
   display: flex;
   flex-direction: column;
+}
+
+.success-message {
+  padding: 0.3rem;
+  background-color: var(--color-success);
+  border-radius: 0.3rem;
 }

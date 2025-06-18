@@ -21,7 +21,7 @@ export function CreateExercisePage() {
     instructions: "",
     videoUrl: "",
   });
-
+  const [success, setSuccess] = useState(false);
   const [selectedMuscle, setSelectedMuscle] = useState("");
 
   function getEmbedUrl(youtubeUrl) {
@@ -61,12 +61,20 @@ export function CreateExercisePage() {
 
   function handleSubmit(e) {
     e.preventDefault();
+    setSuccess(true);
     console.log(formData);
+    removeSuccessMessage();
+  }
+
+  function removeSuccessMessage() {
+    setTimeout(() => {
+      setSuccess(false);
+    }, 3000);
   }
 
   return (
     <div className={styles["create-exercise__container"]}>
-      <Modal title="Create Exercise">
+      <Modal title="Create Exercise" success={success}>
         <div className={styles["container__layout"]}>
           <form className={styles["create-exercise-form"]}>
             <InputWrapper direction="column">
@@ -141,15 +149,13 @@ export function CreateExercisePage() {
                 handleChange={handleChange}
               />
             </InputWrapper>
-            <InputWrapper width="medium">
-              <Button
-                buttonType="primary"
-                buttonSize="medium"
-                label="Save exercise"
-                type="submit"
-                handleClick={handleSubmit}
-              />
-            </InputWrapper>
+            <Button
+              buttonType="primary"
+              buttonSize="medium"
+              label="Save exercise"
+              type="submit"
+              handleClick={handleSubmit}
+            />
           </form>
           <div className={styles["container__selected-items"]}>
             <p>Selected Muscles</p>

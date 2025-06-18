@@ -3,6 +3,7 @@
   flex: 1;
   position: relative;
   gap: 0.5rem;
+  justify-content: center;
 }
 
 .column {
