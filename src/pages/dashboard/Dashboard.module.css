@@ -4,7 +4,7 @@
   grid-template-rows: 150px 1fr;
   gap: 1rem;
   width: 100%;
-  flex: 1;
+  flex: 1 1 auto;
   overflow: auto;
   grid-template-areas:
     "one two three side"
@@ -40,6 +40,7 @@
 .side-content {
   overflow: auto;
   min-height: 0;
+  max-height: 100%;
 }
 
 /* Media Queries */

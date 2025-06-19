@@ -1,83 +1,72 @@
-.clients {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.clients__controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.controls__container {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  justify-content: space-between;
+.clients-page {
   width: 100%;
-  margin: 1rem 0;
 }
 
-.clients__list {
+.clients-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  padding: 1rem 0;
+  gap: 1rem;
+}
+
+.clients-page__list {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
 }
 
-.card__client-info {
+.clients-page__card-header {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   gap: 1rem;
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
-.card__avatar-wrapper {
+.clients-page__avatar-wrapper {
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   overflow: hidden;
-  margin: 0.5rem;
   flex-basis: 75px;
   flex-grow: 0;
   flex-shrink: 0;
 }
 
-.card__avatar {
+.clients-page__avatar-wrapper > img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.client-info__details {
-  flex-basis: 150px;
-  flex-grow: 1;
-  flex-shrink: 1;
-}
-
-.card__client-info * p {
-  text-transform: capitalize;
+.clients-page__card-details {
   font-size: 0.8rem;
+  text-transform: capitalize;
+  flex: 1 1 auto;
 }
 
-.card__client-info p:first-child {
+.clients-page__card-details p:first-child {
   font-weight: 600;
 }
 
-.card__training-info {
+.clients-page__card-training-info {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
   font-size: 0.8rem;
 }
 
-.card__training-info > p {
-  margin-right: 1rem;
-}
-
-.card__training-info span {
+.clients-page__card-training-info span {
   font-weight: 600;
   text-transform: capitalize;
+}
+
+.clients-page-footer {
+  align-content: center;
 }
 
 .high {
@@ -97,8 +86,16 @@
 
 /* Media Queries */
 
-/*@media (max-width: 768px) {*/
-/*  .card__avatar {*/
-/*    display: none;*/
-/*  }*/
-/*}*/
+@media (max-width: 768px) {
+  .clients-page__list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .clients-page__card-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+  }
+}
