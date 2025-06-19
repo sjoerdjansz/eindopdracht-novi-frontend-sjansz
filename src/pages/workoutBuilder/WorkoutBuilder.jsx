@@ -34,11 +34,20 @@ export function WorkoutBuilder() {
   function handleExerciseSearch(data) {
     const searchQuery = searchValue.toLowerCase().trim();
     setNotFoundError("");
+
     const result = data.find((exercise) => {
       return exercise.name.toLowerCase() === searchQuery;
     });
 
     if (result) {
+      if (exercises.some((exercise) => exercise.id === result.id)) {
+        console.log(
+          `Exercise --[${result.name}]-- is already in schedule. No duplicates allowed.`,
+        );
+        return; // Stop hier, voeg niets toe
+      }
+
+      // Voeg toe als het GEEN duplicaat is
       setExercises((previous) => [
         ...previous,
         {
@@ -123,13 +132,13 @@ export function WorkoutBuilder() {
   }
 
   return (
-    <div className={styles["workout-builder"]}>
+    <div className={styles["workout-page"]}>
       <h1>Build Workout</h1>
 
       {workoutName && <p>Name: {workoutName}</p>}
 
-      <section className={styles["workout-builder__controls"]}>
-        <div className={styles["workout-builder__controls-input-wrapper"]}>
+      <section className={styles["workout-page__header"]}>
+        <div>
           <InputWrapper>
             <InputField
               type="text"
@@ -149,13 +158,13 @@ export function WorkoutBuilder() {
               handleExerciseSearch(EXERCISES);
             }}
           />
-          {notFoundError && (
-            <span className={styles["exercise-not-found-error"]}>
-              {notFoundError}
-            </span>
-          )}
         </div>
-        <div className={styles["workout-builder__controls-input-wrapper"]}>
+        {notFoundError && (
+          <span className={styles["exercise-not-found-error"]}>
+            {notFoundError}
+          </span>
+        )}
+        <div>
           <InputWrapper>
             <InputField
               type="text"
@@ -175,12 +184,12 @@ export function WorkoutBuilder() {
           />
         </div>
       </section>
-      <section className={styles["workout-builder__exercise-list"]}>
+      <section className={styles["workout-page__exercise-list"]}>
         {exercises && (
-          <table className={styles["workout__table"]}>
+          <table className={styles["workout-page__table"]}>
             <thead>
               <tr>
-                <th className={styles["table-align-left"]}></th>
+                <th className={styles["table-align-center"]}></th>
                 <th className={styles["table-align-left"]}>Exercise</th>
                 <th className={styles["table-align-center"]}>Sets</th>
                 <th className={styles["table-align-center"]}>Reps</th>

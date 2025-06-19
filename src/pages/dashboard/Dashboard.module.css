@@ -4,8 +4,9 @@
   grid-template-rows: 150px 1fr;
   gap: 1rem;
   width: 100%;
-  flex: 1 1 auto;
-  overflow: auto;
+  min-height: 0;
+  height: auto;
+  overflow-y: visible;
   grid-template-areas:
     "one two three side"
     "main main milestones side";

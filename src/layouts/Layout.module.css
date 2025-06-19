@@ -17,14 +17,17 @@ In de main komt een component die zelf nog een grid (bijv 12 stuks) of flexbox h
   display: flex;
   flex-direction: row;
   justify-content: center;
-  padding: 2rem;
   background-color: var(--color-white);
   overflow: auto;
+  padding: 1.25rem;
 }
 
 /* Media Queries */
 @media (max-width: 768px) {
   .layout {
-    height: auto;
+    /*  Moet hier misschien nog wat qua styling voor hoogte/breedte*/
+  }
+  .page-content-container {
+    overflow: visible;
   }
 }
