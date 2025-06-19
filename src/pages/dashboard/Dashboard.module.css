@@ -106,7 +106,7 @@ hr {
   justify-content: space-between;
   background-color: var(--color-white);
   padding: 0.2rem;
-  border-radius: 0.3rem;
+  border-radius: 0.2rem;
 }
 
 .list-item__top-content :first-child {

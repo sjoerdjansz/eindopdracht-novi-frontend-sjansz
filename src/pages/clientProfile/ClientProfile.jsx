@@ -8,7 +8,6 @@ import { CLIENTS } from "../../data/clientData.js";
 import { InputField } from "../../components/inputField/InputField.jsx";
 
 export function ClientProfile() {
-  // const navigate = useNavigate();
   const { id } = useParams();
 
   const getUser = CLIENTS.find((client) => {
