@@ -31,6 +31,11 @@
   border: 2px solid var(--color-primary);
 }
 
+.success {
+  color: #ffffff;
+  background-color: var(--color-success);
+}
+
 .transparant {
   border: none;
   background-color: transparent;

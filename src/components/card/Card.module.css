@@ -1,5 +1,5 @@
 .card {
-  padding: 1rem 3rem;
+  padding: 1rem;
   background-color: var(--color-gray-light);
   flex-grow: 1;
   flex-shrink: 1;
