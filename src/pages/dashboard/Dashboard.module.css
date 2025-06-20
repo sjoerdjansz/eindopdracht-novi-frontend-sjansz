@@ -4,8 +4,9 @@
   grid-template-rows: 150px 1fr;
   gap: 1rem;
   width: 100%;
-  flex: 1;
-  overflow: scroll;
+  min-height: 0;
+  height: auto;
+  overflow-y: visible;
   grid-template-areas:
     "one two three side"
     "main main milestones side";
@@ -40,6 +41,7 @@
 .side-content {
   overflow: auto;
   min-height: 0;
+  max-height: 100%;
 }
 
 /* Media Queries */
@@ -104,7 +106,7 @@ hr {
   justify-content: space-between;
   background-color: var(--color-white);
   padding: 0.2rem;
-  border-radius: 0.3rem;
+  border-radius: 0.2rem;
 }
 
 .list-item__top-content :first-child {

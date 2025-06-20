@@ -7,10 +7,9 @@
 .exercise-list__controls {
   display: flex;
   flex-direction: row;
-  margin-top: 1rem;
+  margin: 1rem 0;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
+  align-items: flex-end;
 }
 
 .exercise-list__controls-input-wrapper {

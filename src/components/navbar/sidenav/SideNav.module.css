@@ -17,14 +17,14 @@
 .nav-toggle__wrapper {
   position: absolute;
   top: 75px;
-  right: -15px;
+  right: -12px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .nav-toggle {
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: var(--color-primary);
   cursor: pointer;
 }
@@ -45,7 +45,7 @@
 }
 
 .side-nav img {
-  height: 35px;
+  height: 30px;
   margin: 1rem;
   transform: rotateY(180deg);
 }

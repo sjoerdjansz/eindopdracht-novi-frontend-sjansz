@@ -11,28 +11,37 @@ export function InputField({
   icon = null,
   toggleHandler,
   style,
+  required,
 }) {
   return (
-    <div className={styles["input-container"]}>
-      {label && <label htmlFor={id}>{label}</label>}
-      <input
-        className={`${styles["input-field"]} ${styles[style]}`}
-        type={type}
-        name={name}
-        id={id}
-        value={value}
-        onChange={handleChange}
-        placeholder={placeholder}
-      />
-      {icon && (
-        <button
-          onClick={toggleHandler}
-          type="button"
-          className={styles["input-field-icon"]}
-        >
-          {icon}
-        </button>
+    <>
+      {label && (
+        <label htmlFor={id}>
+          {label}
+          {required && <span className={styles["required"]}>*</span>}
+        </label>
       )}
-    </div>
+      <div className={styles["input-field-container"]}>
+        <input
+          className={`${styles["input-field"]} ${styles[style]}`}
+          type={type}
+          name={name}
+          id={id}
+          value={value}
+          onChange={handleChange}
+          placeholder={placeholder}
+        />
+
+        {icon && (
+          <button
+            onClick={toggleHandler}
+            type="button"
+            className={styles["input-field-icon"]}
+          >
+            {icon}
+          </button>
+        )}
+      </div>
+    </>
   );
 }

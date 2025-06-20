@@ -1,6 +1,6 @@
 .button {
   border: none;
-  border-radius: 0.3rem;
+  border-radius: 0.2rem;
   font-weight: 500;
   text-transform: capitalize;
   white-space: nowrap;
@@ -10,7 +10,7 @@
 
 .primary {
   background-color: var(--color-primary);
-  color: var(--color-white);
+  color: #ffffff;
 }
 
 .primary:hover {
@@ -19,7 +19,7 @@
 
 .secondary {
   background-color: var(--color-black);
-  color: var(--color-white);
+  color: #ffffff;
 }
 
 .secondary:hover {
@@ -29,6 +29,11 @@
 .tertiary {
   background-color: transparent;
   border: 2px solid var(--color-primary);
+}
+
+.success {
+  color: #ffffff;
+  background-color: var(--color-success);
 }
 
 .transparant {

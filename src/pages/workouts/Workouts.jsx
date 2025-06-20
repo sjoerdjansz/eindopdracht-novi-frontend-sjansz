@@ -23,6 +23,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { CustomCheckbox } from "../../components/customCheckbox/CustomCheckbox.jsx";
+import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 
 export function Workouts() {
   const [selectedWorkouts, setSelectedWorkouts] = useState([]);
@@ -50,8 +51,8 @@ export function Workouts() {
   }
 
   return (
-    <div className={styles.workouts}>
-      <div className={styles["workouts__title-container"]}>
+    <div className={styles["workouts-page"]}>
+      <div className={styles["workouts-page__header"]}>
         <h1>Workouts</h1>
         <Button
           buttonType="primary"
@@ -60,67 +61,67 @@ export function Workouts() {
           label="Create workout"
         />
       </div>
-      <section className={styles["workouts__controls"]}>
-        <div className={styles["workouts__controls-search"]}>
-          <div className={styles["workouts__search-input"]}>
-            <InputField
-              type="text"
-              name="search-client"
-              id="search-client"
-              placeholder="Search client"
-              icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
-            />
-          </div>
-
+      <section className={styles["workouts-page__controls"]}>
+        <div className={styles["workouts-page__search-group"]}>
+          <InputField
+            type="text"
+            name="search-client"
+            id="search-client"
+            placeholder="Search client"
+            icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
+          />
           <Button
-            buttonType="transparant"
+            buttonType="secondary"
             label="Add"
             type="button"
-            buttonSize="medium"
+            buttonSize="small"
           />
         </div>
-        <div className={styles["workouts__filter-controls"]}>
+        <div>
           <SelectField
             id="workout-filter"
-            label=""
             name="workout-filter"
             options={WORKOUT_FILTER_OPTIONS}
+            title="Filter workouts"
           />
         </div>
       </section>
-      <section className={styles["workouts__list"]}>
+      <section className={styles["workout-page__list"]}>
         {WORKOUTS.map((workout) => {
           return (
             <Card key={workout.id} variant="horizontal" size="medium">
-              {/* Werkt nog niet, bugfix nodig ivm selecteren van alle cards tegelijk met 1 klik */}
-              <CustomCheckbox
-                className={styles["workouts__card-select"]}
-                type="button"
-                name="select-workout"
-                onClick={() => {
-                  handleClick(workout.id);
-                }}
-                selected={selectedWorkouts.find((id) => {
-                  return id === workout.id;
-                })}
-              />
-              <CardHeader>
-                <h4>{workout.title}</h4>
-                <p>Author: {workout.createdBy}</p>
-              </CardHeader>
-              <CardContent>
-                <div className={styles["workouts__details"]}>
-                  <p>Assigned: {workout.assignedClients}</p>
-                  <p>Completed: {workout.completedTimes}</p>
-                  <p>Exercises: {workout.exercises}</p>
+              <div className={styles["workout-page__card-container"]}>
+                <div className={styles["workouts-page__card-header"]}>
+                  <CustomCheckbox
+                    className={styles["workouts__card-select"]}
+                    type="button"
+                    name="select-workout"
+                    onClick={() => {
+                      handleClick(workout.id);
+                    }}
+                    selected={selectedWorkouts.find((id) => {
+                      return id === workout.id;
+                    })}
+                  />
+                  <CardHeader>
+                    <h4>{workout.title}</h4>
+                    <p>Author: {workout.createdBy}</p>
+                  </CardHeader>
                 </div>
-              </CardContent>
-              <CardFooter>
-                <div className={styles["workouts__icons-container"]}>
-                  <FontAwesomeIcon icon={faPenToSquare} />
-                  <FontAwesomeIcon icon={faTrash} />
-                </div>
-              </CardFooter>
+                <CardContent>
+                  <div className={styles["workouts-page__card-details"]}>
+                    <p>Assigned: {workout.assignedClients}</p>
+                    <p>Completed: {workout.completedTimes}</p>
+                    <p>Exercises: {workout.exercises}</p>
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <div className={styles["workouts__icons-container"]}>
+                    <FontAwesomeIcon icon={faPenToSquare} />
+                    <FontAwesomeIcon icon={faTrash} />
+                  </div>
+                </CardFooter>
+              </div>
             </Card>
           );
         })}

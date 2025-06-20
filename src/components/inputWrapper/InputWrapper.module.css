@@ -1,0 +1,30 @@
+.input-wrapper {
+  display: flex;
+  position: relative;
+  gap: 0.5rem;
+  justify-content: center;
+  min-width: 150px;
+  /*  twijfel of hier flex: 1 nodig is, nog uitzoeken */
+}
+
+.column {
+  flex-direction: column;
+}
+.row {
+  flex-direction: row;
+}
+
+.small {
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.medium {
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.large {
+  min-width: 400px;
+  max-width: 600px;
+}

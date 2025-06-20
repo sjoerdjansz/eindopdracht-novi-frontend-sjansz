@@ -53,6 +53,12 @@ svg {
   max-width: 100%;
 }
 
+input[type="radio"] {
+  accent-color: var(--color-primary);
+  margin: 0;
+  padding: 0;
+}
+
 /* 6. Remove built-in form typography styles */
 input,
 button,
@@ -66,6 +72,10 @@ a {
   color: var(--color-accent);
   cursor: pointer;
   text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-primary);
 }
 
 button {
@@ -145,7 +155,7 @@ h4 {
 
   /* 4. Other */
   --color-error: hsl(38 100 70);
-  --color-success: hsl(162 100 58);
+  --color-success: hsl(162 100 45);
   --color-warning: hsl(342 100 62);
   --color-accent: hsl(201 100 50);
 
@@ -156,4 +166,8 @@ h4 {
   --space-lg: 1.5rem; /* 24px */
   --space-xl: 2rem; /* 32px */
   --space-2xl: 3rem; /* 48px */
+
+  /* Shadows */
+  --element-shadow-subtle: 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --element-shadow-regular: 2px 4px 6px -1px rgba(0, 0, 0, 0.25);
 }
