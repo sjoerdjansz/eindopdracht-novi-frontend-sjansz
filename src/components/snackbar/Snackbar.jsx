@@ -24,7 +24,7 @@ export function Snackbar({ durationVisible, onClose, message, status, open }) {
     <>
       {open && (
         <div
-          className={`${styles["snackbar"]} ${styles[`snackbar--${status}`]}`}
+          className={`${styles["snackbar"]} ${styles[`snackbar--${status}`]} ${styles["snackbar--visible"]}`}
         >
           <div className={styles["snackbar__content"]}>
             <p className={styles["snackbar__title"]}>{message}</p>
