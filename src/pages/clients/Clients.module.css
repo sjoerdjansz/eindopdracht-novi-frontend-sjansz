@@ -14,8 +14,8 @@
 
 .clients-page__list {
   display: flex;
+  flex-direction: column;
   gap: 1rem;
-  flex-wrap: wrap;
 }
 
 .clients-page__card-header {
