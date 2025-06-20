@@ -11,6 +11,7 @@ import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 import { BODYPARTS } from "../../data/workoutFilterOptions.js";
 import { MOVEMENTS } from "../../data/workoutFilterOptions.js";
 import { MUSCLE_GROUPS } from "../../data/muscleGroups.js";
+import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
 
 export function CreateExercisePage() {
   const [formData, setFormData] = useState({
@@ -21,8 +22,8 @@ export function CreateExercisePage() {
     instructions: "",
     videoUrl: "",
   });
-  const [success, setSuccess] = useState(false);
   const [selectedMuscle, setSelectedMuscle] = useState("");
+  const [showSnackbar, setShowSnackbar] = useState(false);
 
   function getEmbedUrl(youtubeUrl) {
     const match = youtubeUrl.match(
@@ -61,20 +62,22 @@ export function CreateExercisePage() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    setSuccess(true);
+    setShowSnackbar(true);
     console.log(formData);
-    removeSuccessMessage();
-  }
-
-  function removeSuccessMessage() {
-    setTimeout(() => {
-      setSuccess(false);
-    }, 3000);
   }
 
   return (
     <div className={styles["create-exercise__container"]}>
-      <Modal title="Create Exercise" success={success}>
+      {showSnackbar && (
+        <Snackbar
+          message="Exercise already in exercise library"
+          open={showSnackbar}
+          status="warning"
+          durationVisible={3000}
+          onClose={() => setShowSnackbar(false)}
+        />
+      )}
+      <Modal title="Create Exercise">
         <div className={styles["container__layout"]}>
           <form className={styles["create-exercise-form"]}>
             <InputWrapper direction="column">

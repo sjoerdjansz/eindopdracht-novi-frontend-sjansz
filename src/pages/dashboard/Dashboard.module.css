@@ -1,4 +1,5 @@
 .dashboard-container {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: 150px 1fr;

@@ -23,10 +23,11 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { CustomCheckbox } from "../../components/customCheckbox/CustomCheckbox.jsx";
-import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
+import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
 
 export function Workouts() {
   const [selectedWorkouts, setSelectedWorkouts] = useState([]);
+  const [showSnackbar, setShowSnackbar] = useState(false);
 
   function removeItem(arr, value) {
     setSelectedWorkouts(
@@ -52,6 +53,15 @@ export function Workouts() {
 
   return (
     <div className={styles["workouts-page"]}>
+      {showSnackbar && (
+        <Snackbar
+          message="Exercise already in exercise library"
+          open={showSnackbar}
+          status="warning"
+          durationVisible={3000}
+          onClose={() => setShowSnackbar(false)}
+        />
+      )}
       <div className={styles["workouts-page__header"]}>
         <h1>Workouts</h1>
         <Button
