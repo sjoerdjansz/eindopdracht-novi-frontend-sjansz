@@ -1,0 +1,370 @@
+{
+  "collections": [
+    {
+      "name": "workoutTemplates",
+      "fields": [
+        {
+          "name": "id",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "min": 2,
+          "max": 100
+        },
+        {
+          "name": "createdAt",
+          "type": "date",
+          "required": false,
+          "default": "CurrentDate"
+        },
+        {
+          "name": "createdByProfileId",
+          "type": "reference:profiles",
+          "required": true
+        }
+      ],
+      "permissions": {
+        "GET": [
+          "anonymous"
+        ],
+        "POST": [
+          "anonymous"
+        ],
+        "PUT": [
+          "anonymous"
+        ],
+        "DELETE": [
+          "anonymous"
+        ]
+      }
+    },
+    {
+      "name": "exercises",
+      "fields": [
+        {
+          "name": "id",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "min": 2,
+          "max": 100
+        },
+        {
+          "name": "bodypart",
+          "type": "string",
+          "required": true,
+          "min": 2,
+          "max": 100
+        },
+        {
+          "name": "movement",
+          "type": "string",
+          "required": true,
+          "min": 2,
+          "max": 100
+        },
+        {
+          "name": "primaryMuscle",
+          "type": "string",
+          "required": true,
+          "min": 2,
+          "max": 100
+        },
+        {
+          "name": "secondaryMuscle",
+          "type": "string",
+          "required": true,
+          "min": 2,
+          "max": 100
+        }
+      ],
+      "permissions": {
+        "GET": [
+          "anonymous"
+        ],
+        "POST": [
+          "anonymous"
+        ],
+        "PUT": [
+          "anonymous"
+        ],
+        "DELETE": [
+          "anonymous"
+        ]
+      }
+    },
+    {
+      "name": "workoutExercises",
+      "fields": [
+        {
+          "name": "id",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "workoutTemplateId",
+          "type": "reference:workoutTemplates",
+          "required": true
+        },
+        {
+          "name": "exerciseId",
+          "type": "reference:exercises",
+          "required": true
+        },
+        {
+          "name": "sets",
+          "type": "number",
+          "required": false,
+          "default": 3
+        },
+        {
+          "name": "reps",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "rest",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "required": true
+        }
+      ],
+      "permissions": {
+        "GET": [
+          "anonymous"
+        ],
+        "POST": [
+          "anonymous"
+        ],
+        "PUT": [
+          "anonymous"
+        ],
+        "DELETE": [
+          "anonymous"
+        ]
+      }
+    },
+    {
+      "name": "profiles",
+      "fields": [
+        {
+          "name": "id",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "firstName",
+          "type": "string",
+          "required": true,
+          "min": 0,
+          "max": 99
+        },
+        {
+          "name": "lastName",
+          "type": "string",
+          "required": true,
+          "min": 0,
+          "max": 99
+        },
+        {
+          "name": "phone",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "gender",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "joinedAt",
+          "type": "date",
+          "default": "CurrentDate",
+          "required": false
+        },
+        {
+          "name": "avatar",
+          "type": "image",
+          "required": false
+        },
+        {
+          "name": "userId",
+          "type": "reference:users",
+          "required": true
+        }
+      ],
+      "permissions": {
+        "GET": [
+          "anonymous"
+        ],
+        "POST": [
+          "anonymous"
+        ],
+        "PUT": [
+          "anonymous"
+        ],
+        "DELETE": [
+          "anonymous"
+        ]
+      }
+    },
+    {
+      "name": "userWorkouts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "userProfileId",
+          "type": "reference:profiles",
+          "required": true
+        },
+        {
+          "name": "workoutTemplateId",
+          "type": "reference:workoutTemplates",
+          "required": true
+        }
+      ],
+      "permissions": {
+        "GET": [
+          "anonymous"
+        ],
+        "POST": [
+          "anonymous"
+        ],
+        "PUT": [
+          "anonymous"
+        ],
+        "DELETE": [
+          "anonymous"
+        ]
+      }
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "email": "hankhetank@voorbeeld.nl",
+      "password": "hank123",
+      "roles": [
+        "trainer"
+      ]
+    },
+    {
+      "id": 2,
+      "email": "sjoerd@voorbeeld.nl",
+      "password": "sjoerd123",
+      "roles": [
+        "client"
+      ]
+    }
+  ],
+  "data": {
+    "workoutTemplates": [
+      {
+        "id": 1,
+        "name": "Full Body Strength A",
+        "createdAt": "2025-06-21",
+        "createdByProfileId": 2
+      }
+    ],
+    "profiles": [
+      {
+        "id": 1,
+        "firstName": "Hank",
+        "lastName": "de Tank",
+        "phone": 612345678,
+        "gender": "male",
+        "joinedAt": "2025-06-01",
+        "avatar": null,
+        "userId": 1
+      },
+      {
+        "id": 2,
+        "firstName": "Sjoerd",
+        "lastName": "Jansen",
+        "phone": 612345679,
+        "gender": "male",
+        "joinedAt": "2025-06-01",
+        "avatar": null,
+        "userId": 2
+      }
+    ],
+    "exercises": [
+      {
+        "id": 1,
+        "name": "Barbell Back Squat",
+        "bodypart": "legs",
+        "movement": "squat",
+        "primaryMuscle": "quadriceps",
+        "secondaryMuscle": "glutes"
+      },
+      {
+        "id": 2,
+        "name": "Bench Press",
+        "bodypart": "chest",
+        "movement": "push",
+        "primaryMuscle": "pectoralis major",
+        "secondaryMuscle": "triceps"
+      },
+      {
+        "id": 3,
+        "name": "Pull-Up",
+        "bodypart": "back",
+        "movement": "pull",
+        "primaryMuscle": "latissimus dorsi",
+        "secondaryMuscle": "biceps"
+      }
+    ],
+    "workoutExercises": [
+      {
+        "id": 1,
+        "workoutTemplateId": 1,
+        "exerciseId": 1,
+        "sets": 4,
+        "reps": 6,
+        "rest": 120,
+        "index": 1
+      },
+      {
+        "id": 2,
+        "workoutTemplateId": 1,
+        "exerciseId": 2,
+        "sets": 3,
+        "reps": 8,
+        "rest": 90,
+        "index": 2
+      },
+      {
+        "id": 3,
+        "workoutTemplateId": 1,
+        "exerciseId": 3,
+        "sets": 3,
+        "reps": 10,
+        "rest": 90,
+        "index": 3
+      }
+    ],
+    "userWorkouts": [
+      {
+        "id": 1,
+        "userProfileId": 2,
+        "workoutTemplateId": 1
+      }
+    ]
+  }
+}
