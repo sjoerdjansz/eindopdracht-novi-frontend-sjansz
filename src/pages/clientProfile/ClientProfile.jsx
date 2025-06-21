@@ -6,8 +6,11 @@ import { Button } from "../../components/button/Button.jsx";
 
 import { CLIENTS } from "../../data/clientData.js";
 import { InputField } from "../../components/inputField/InputField.jsx";
+import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
+import { useState } from "react";
 
 export function ClientProfile() {
+  const [showSnackbar, setShowSnackbar] = useState(false);
   const { id } = useParams();
 
   const getUser = CLIENTS.find((client) => {
@@ -15,8 +18,21 @@ export function ClientProfile() {
     return name.includes(id.toLowerCase());
   });
 
+  function handleSaveChanges() {
+    setShowSnackbar(true);
+  }
+
   return (
     <div className={styles["profile-page"]}>
+      {showSnackbar && (
+        <Snackbar
+          message="Changes have been saved"
+          open={showSnackbar}
+          status="success"
+          durationVisible={3500}
+          onClose={() => setShowSnackbar(false)}
+        />
+      )}
       <h4>Profile</h4>
       <div className={styles["profile-page__container"]}>
         <Card>
@@ -143,6 +159,7 @@ export function ClientProfile() {
           buttonSize="large"
           type="button"
           label="Save Changes"
+          handleClick={handleSaveChanges}
         />
       </footer>
     </div>

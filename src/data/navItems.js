@@ -3,7 +3,6 @@ import {
   faBook,
   faDumbbell,
   faUser,
-  faCalendarDay,
   faPuzzlePiece,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -23,5 +22,4 @@ export const NAV_ITEMS = [
     icon: faPuzzlePiece,
   },
   { id: 5, label: "clients", to: "/clients", icon: faUser },
-  { id: 6, label: "agenda", to: "/agenda", icon: faCalendarDay },
 ];

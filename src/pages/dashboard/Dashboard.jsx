@@ -16,7 +16,6 @@ import { DashboardCard } from "../../components/dashboardCard/DashboardCard.jsx"
 import { ListControls } from "../../components/listControls/ListControls.jsx";
 import { useState } from "react";
 import { ClientWorkoutStatusCard } from "../../components/clientWorkoutStatusCard/ClientWorkoutStatusCard.jsx";
-import { Link } from "react-router-dom";
 import { SmallCardDashContent } from "../../components/smallCardDashContent/SmallCardDashContent.jsx";
 import { CLIENT_MILESTONES, UPCOMING_SESSIONS } from "../../data/clientData.js";
 import { getDateTime, getDay } from "../../utils/getDateTime.js";
