@@ -24,10 +24,17 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { CustomCheckbox } from "../../components/customCheckbox/CustomCheckbox.jsx";
 import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
+import { useNavigate } from "react-router-dom";
 
 export function Workouts() {
   const [selectedWorkouts, setSelectedWorkouts] = useState([]);
   const [showSnackbar, setShowSnackbar] = useState(false);
+
+  const navigate = useNavigate();
+
+  function handleCreateWorkoutClick() {
+    navigate("/workout-builder");
+  }
 
   function removeItem(arr, value) {
     setSelectedWorkouts(
@@ -69,6 +76,7 @@ export function Workouts() {
           buttonSize="medium"
           type="button"
           label="Create workout"
+          handleClick={handleCreateWorkoutClick}
         />
       </div>
       <section className={styles["workouts-page__controls"]}>

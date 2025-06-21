@@ -13,8 +13,15 @@ import { CLIENTS } from "../../data/clientData.js";
 // Helpers
 import { colorCodeText } from "../../utils/colorCodeText.js";
 import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
+import { useNavigate } from "react-router-dom";
 
 export function Clients() {
+  const navigate = useNavigate();
+
+  const handleCreateClientClick = () => {
+    navigate("/clients/create");
+  };
+
   return (
     <div className={styles["clients-page"]}>
       <h1>Clients</h1>
@@ -25,6 +32,7 @@ export function Clients() {
           buttonSize="medium"
           type="button"
           label="add client"
+          handleClick={handleCreateClientClick}
         />
         <InputWrapper width="small">
           <SelectField

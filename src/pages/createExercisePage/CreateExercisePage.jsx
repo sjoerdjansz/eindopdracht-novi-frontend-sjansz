@@ -1,6 +1,5 @@
 import styles from "./CreateExercisePage.module.css";
 import { Modal } from "../../components//modal/Modal.jsx";
-import { Link } from "react-router-dom";
 import { InputField } from "../../components/inputField/InputField.jsx";
 import { useState } from "react";
 import { Button } from "../../components/button/Button.jsx";
