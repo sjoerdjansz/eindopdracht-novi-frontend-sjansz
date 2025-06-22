@@ -23,31 +23,3 @@
   display: flex;
   gap: 1rem;
 }
-
-.workout-page__exercise-list {
-}
-
-/* workout table */
-
-.workout-page__table {
-  width: 100%;
-  overflow-x: auto;
-  border: none;
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-.workout-page__table thead {
-  text-align: left;
-  background-color: var(--color-black);
-  color: var(--color-white);
-}
-
-.exercise-not-found-error {
-  color: var(--color-warning);
-  font-weight: 500;
-  width: 175px;
-  text-align: center;
-  border-radius: 0.3rem;
-  text-wrap: nowrap;
-}
