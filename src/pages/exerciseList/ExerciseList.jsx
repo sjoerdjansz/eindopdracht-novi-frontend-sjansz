@@ -10,18 +10,43 @@ import axios from "axios";
 import { SWAGGER_UI, API_ENDPOINTS } from "../../api/api.js";
 import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
 import { LoadingSpinner } from "../../components/loadingSpinner/LoadingSpinner.jsx";
+import { SelectField } from "../../components/selectField/SelectField.jsx";
+import { BODYPART_FILTER_OPTIONS } from "../../data/clientFilterOptions.js";
 
 export function ExerciseList() {
   const navigate = useNavigate();
   const [exerciseSearchQuery, setExerciseSearchQuery] = useState("");
-  const [exercises, setExercises] = useState([]);
+  const [originalExercises, setOriginalExercises] = useState([]);
+  const [findExercises, setFindExercises] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [showSnackbar, setShowSnackbar] = useState(false);
+  const [bodyPartFilter, setBodyPartFilter] = useState("");
 
   useEffect(() => {
     getExercises();
   }, []);
+
+  useEffect(() => {
+    let filteredExercises = originalExercises;
+
+    if (exerciseSearchQuery) {
+      filteredExercises = filteredExercises.filter((exercise) => {
+        return exercise.name.toLowerCase().includes(exerciseSearchQuery);
+      });
+    }
+
+    if (bodyPartFilter) {
+      filteredExercises = filteredExercises.filter((exercise) => {
+        return (
+          exercise.bodypart.toLowerCase().replaceAll(" ", "") ===
+          bodyPartFilter.toLowerCase().trim()
+        );
+      });
+    }
+
+    setFindExercises(filteredExercises);
+  }, [bodyPartFilter, exerciseSearchQuery, originalExercises]);
 
   // Get exercises api call
   async function getExercises() {
@@ -30,7 +55,8 @@ export function ExerciseList() {
       const response = await axios.get(API_ENDPOINTS.exercises, {
         headers: { "novi-education-project-id": SWAGGER_UI },
       });
-      setExercises(response.data);
+      setOriginalExercises(response.data);
+      setFindExercises(response.data);
     } catch (e) {
       setErrorMessage(
         `${e.response.status}: ${e.code}. Failed to load exercises.`,
@@ -41,14 +67,22 @@ export function ExerciseList() {
       setIsLoading(false);
     }
   }
+
   const handleCreateExerciseClick = () => {
     navigate("/exercise-library/create");
   };
 
-  // TODO make find and filter exercises functions
   function findExerciseChangeHandler(e) {
-    console.log(e.target.value);
-    setExerciseSearchQuery(e.target.value);
+    setExerciseSearchQuery(e.target.value.toLowerCase());
+  }
+
+  function filterBodypartChangeHandler(e) {
+    setBodyPartFilter(e.target.value.toLowerCase().trim().replaceAll(" ", ""));
+  }
+
+  function resetAllFilters() {
+    setBodyPartFilter("");
+    setExerciseSearchQuery("");
   }
 
   return (
@@ -77,12 +111,16 @@ export function ExerciseList() {
         {isLoading && <LoadingSpinner />}
         <div className={styles["exercise-list__inputs"]}>
           <InputWrapper>
-            <InputField
-              type="text"
-              name="filter-bodypart"
-              id="filter-bodypart"
-              placeholder="Filter bodypart"
-              style="primary"
+            <SelectField
+              id="bodypart"
+              name="bodypart"
+              options={BODYPART_FILTER_OPTIONS}
+              value={bodyPartFilter}
+              title="Bodypart"
+              handleChange={filterBodypartChangeHandler}
+              onButtonClick={resetAllFilters}
+              button={true}
+              buttonLabel="reset"
             />
           </InputWrapper>
           <InputWrapper>
@@ -109,7 +147,7 @@ export function ExerciseList() {
           </tr>
         </thead>
         <tbody>
-          {exercises.map((exercise) => {
+          {findExercises.map((exercise) => {
             return (
               <tr key={exercise.id} className={styles["exercise-list__row"]}>
                 <td className={styles["exercise-name--td"]}>{exercise.name}</td>

@@ -37,7 +37,11 @@ export function CreateExercisePage() {
   // TODO: De select field en bijbehorende functies beter leren begrijpen. Is complex.
   //  En uitvogelen of de multi select niet handiger is.
   function onAddMuscleClick() {
-    if (selectedMuscle && !formData.muscles.includes(selectedMuscle)) {
+    if (
+      typeof selectedMuscle === "string" &&
+      selectedMuscle.trim() !== "" &&
+      !formData.muscles.includes(selectedMuscle)
+    ) {
       setFormData((prev) => ({
         ...prev,
         muscles: [...prev.muscles, selectedMuscle],
@@ -123,7 +127,7 @@ export function CreateExercisePage() {
                 title="Select primary muscles"
                 required={true}
                 button={true}
-                onAddMuscleClick={onAddMuscleClick}
+                onButtonClick={onAddMuscleClick}
                 buttonLabel="Add"
                 value={selectedMuscle}
                 handleChange={(e) => setSelectedMuscle(e.target.value)}

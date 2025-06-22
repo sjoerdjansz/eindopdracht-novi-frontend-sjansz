@@ -12,7 +12,7 @@ export function SelectField({
   buttonLabel,
   value,
   handleChange,
-  onAddMuscleClick,
+  onButtonClick,
 }) {
   return (
     <>
@@ -37,7 +37,7 @@ export function SelectField({
             .sort((a, b) => a.label.localeCompare(b.label))
             .map((option) => {
               return (
-                <option key={option.value} value={option.label}>
+                <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               );
@@ -49,7 +49,7 @@ export function SelectField({
             label={buttonLabel}
             buttonSize="small"
             buttonType="primary"
-            handleClick={onAddMuscleClick}
+            handleClick={onButtonClick}
           />
         )}
       </div>
