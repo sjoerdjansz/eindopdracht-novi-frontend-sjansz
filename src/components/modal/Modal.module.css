@@ -30,15 +30,12 @@
   justify-content: center;
   align-items: center;
   border: 2px solid var(--color-accent);
+  color: var(--color-accent);
   height: 2rem;
   width: 2rem;
   font-size: 1rem;
   border-radius: 50%;
   cursor: pointer;
-}
-
-.modal__header > span:hover {
-  color: var(--color-white);
 }
 
 .modal__content--left {

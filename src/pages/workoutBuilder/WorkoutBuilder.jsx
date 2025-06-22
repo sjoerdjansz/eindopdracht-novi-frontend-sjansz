@@ -10,13 +10,15 @@ import { TableRow } from "../../components/tableRow/TableRow.jsx";
 // Data
 import { EXERCISES } from "../../data/exerciseData.js";
 import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
+import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
 
 export function WorkoutBuilder() {
   const [exercises, setExercises] = useState([]);
   const [searchValue, setSearchValue] = useState("");
-  const [notFoundError, setNotFoundError] = useState("");
   const [workoutNameInput, setWorkoutNameInput] = useState("");
   const [workoutName, setWorkoutName] = useState("");
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   function handleSearchChange(e) {
     setSearchValue(e.target.value);
@@ -33,7 +35,7 @@ export function WorkoutBuilder() {
 
   function handleExerciseSearch(data) {
     const searchQuery = searchValue.toLowerCase().trim();
-    setNotFoundError("");
+    setShowSnackbar(false);
 
     const result = data.find((exercise) => {
       return exercise.name.toLowerCase() === searchQuery;
@@ -44,6 +46,8 @@ export function WorkoutBuilder() {
         console.log(
           `Exercise --[${result.name}]-- is already in schedule. No duplicates allowed.`,
         );
+        setSnackbarMessage("Exercise is already in workout");
+        setShowSnackbar(true);
         return; // Stop hier, voeg niets toe
       }
 
@@ -58,9 +62,11 @@ export function WorkoutBuilder() {
           rest: result.rest,
         },
       ]);
+      setSearchValue("");
     } else {
       console.log("Exercise not found");
-      setNotFoundError("Exercise not found");
+      setSnackbarMessage("Exercise not found");
+      setShowSnackbar(true);
       setSearchValue("");
     }
   }
@@ -133,6 +139,15 @@ export function WorkoutBuilder() {
 
   return (
     <div className={styles["workout-page"]}>
+      {showSnackbar && (
+        <Snackbar
+          message={snackbarMessage}
+          open={showSnackbar}
+          status="warning"
+          durationVisible={3000}
+          onClose={() => setShowSnackbar(false)}
+        />
+      )}
       <h1>Build Workout</h1>
 
       {workoutName && <p>Name: {workoutName}</p>}
@@ -159,11 +174,7 @@ export function WorkoutBuilder() {
             }}
           />
         </div>
-        {notFoundError && (
-          <span className={styles["exercise-not-found-error"]}>
-            {notFoundError}
-          </span>
-        )}
+
         <div>
           <InputWrapper>
             <InputField

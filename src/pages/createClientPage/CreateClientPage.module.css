@@ -1,0 +1,44 @@
+.create-client {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  min-width: 0;
+  max-width: 1000px;
+}
+.create-client__modal {
+  display: flex;
+}
+
+.create-client__form {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  border-radius: 0.3rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  flex: 1 1 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Radio button styling */
+
+.gender-radio-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.gender-option {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
