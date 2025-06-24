@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { SWAGGER_UI, API_ENDPOINTS } from "../../api/api.js";
+import { API_ENDPOINTS } from "../../api/api.js";
 import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
 import { LoadingSpinner } from "../../components/loadingSpinner/LoadingSpinner.jsx";
 import { SelectField } from "../../components/selectField/SelectField.jsx";
@@ -53,7 +53,7 @@ export function ExerciseList() {
     try {
       setIsLoading(true);
       const response = await axios.get(API_ENDPOINTS.exercises, {
-        headers: { "novi-education-project-id": SWAGGER_UI },
+        headers: { "novi-education-project-id": import.meta.env.VITE_API_KEY },
       });
       setOriginalExercises(response.data);
       setFindExercises(response.data);
@@ -147,28 +147,31 @@ export function ExerciseList() {
           </tr>
         </thead>
         <tbody>
-          {findExercises.map((exercise) => {
-            return (
-              <tr key={exercise.id} className={styles["exercise-list__row"]}>
-                <td className={styles["exercise-name--td"]}>{exercise.name}</td>
-                <td className={styles["exercise-bodypart--td"]}>
-                  {exercise.bodypart}
-                </td>
-                <td className={styles["exercise-movement--td"]}>
-                  {exercise.movement}
-                </td>
-                <td className={styles["exercise-muscle--td"]}>
-                  {exercise.primaryMuscle}
-                </td>
-                <td className={styles["exercise-list__icons"]}>
-                  <span>
-                    <FontAwesomeIcon icon={faPenToSquare} />
-                    <FontAwesomeIcon icon={faTrash} />
-                  </span>
-                </td>
-              </tr>
-            );
-          })}
+          {originalExercises &&
+            findExercises.map((exercise) => {
+              return (
+                <tr key={exercise.id} className={styles["exercise-list__row"]}>
+                  <td className={styles["exercise-name--td"]}>
+                    {exercise.name}
+                  </td>
+                  <td className={styles["exercise-bodypart--td"]}>
+                    {exercise.bodypart}
+                  </td>
+                  <td className={styles["exercise-movement--td"]}>
+                    {exercise.movement}
+                  </td>
+                  <td className={styles["exercise-muscle--td"]}>
+                    {exercise.primaryMuscle}
+                  </td>
+                  <td className={styles["exercise-list__icons"]}>
+                    <span>
+                      <FontAwesomeIcon icon={faPenToSquare} />
+                      <FontAwesomeIcon icon={faTrash} />
+                    </span>
+                  </td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
     </div>

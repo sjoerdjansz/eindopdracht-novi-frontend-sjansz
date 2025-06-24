@@ -1,5 +1,4 @@
-export const SWAGGER_UI = "6528bba2-b1b4-4ab4-beb8-01354a92c74e";
-export const BASE_URL = "https://novi-backend-api-wgsgz.ondigitalocean.app/api";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export const API_ENDPOINTS = {
   //   To login existing user
