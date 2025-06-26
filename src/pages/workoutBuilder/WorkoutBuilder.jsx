@@ -1,8 +1,9 @@
 import styles from "./WorkoutBuilder.module.css";
+import axios from "axios";
 import { InputField } from "../../components/inputField/InputField.jsx";
 import { Button } from "../../components/button/Button.jsx";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Components
 import { TableRow } from "../../components/tableRow/TableRow.jsx";
@@ -11,26 +12,73 @@ import { TableRow } from "../../components/tableRow/TableRow.jsx";
 import { EXERCISES } from "../../data/exerciseData.js";
 import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
+import { API_ENDPOINTS } from "../../api/api.js";
 
 export function WorkoutBuilder() {
   const [exercises, setExercises] = useState([]);
+  const [exercisesFromApi, setExercisesFromApi] = useState([]);
   const [searchValue, setSearchValue] = useState("");
-  const [workoutNameInput, setWorkoutNameInput] = useState("");
-  const [workoutName, setWorkoutName] = useState("");
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [workoutTemplate, setWorkoutTemplate] = useState({
+    id: "",
+    workoutName: "",
+    createdAt: "",
+    createdBy: "",
+  });
+  const [workoutExercise, setWorkoutExercise] = useState([]);
 
+  // 1. Onderstaande workoutExercises object moet toegevoegd worden aan de workoutExercises array bij
+  // elke nieuw toegevoegde oefening in de workout.
+  // 2. Vervolgens functie maken om de workout array te vullen met de exercises, denk aan spread operator
+  // 3. Een aparte edit functie maken om de sets, reps en rest per oefening aan te kunnen passen
+  // 4. Het hele schema opslaan in de backend door eerst de template op te slaan en daarna de exercises.
+  // (5.) nog ff checken of de handleworkout name change niet overkill is
+
+  // id: "",
+  // workoutTemplateId: "",
+  // exerciseId: "",
+  // sets: "",
+  // reps: "",
+  // rest: "",
+  // index: "",
+
+  useEffect(() => {
+    getAllExercises();
+  }, []);
+
+  async function getAllExercises() {
+    try {
+      const { data } = await axios.get(API_ENDPOINTS.exercises, {
+        headers: {
+          "novi-education-project-id": import.meta.env.VITE_API_KEY,
+        },
+      });
+      console.log(data);
+      setExercisesFromApi(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  function handleExerciseParameterChange(e) {
+    const { name, value } = e.target;
+    console.log(value);
+    console.log(name);
+  }
   function handleSearchChange(e) {
     setSearchValue(e.target.value);
   }
 
   function handleWorkoutNameChange(e) {
-    setWorkoutNameInput(e.target.value);
+    setWorkoutTemplate({
+      ...workoutTemplate,
+      workoutName: e.target.value,
+    });
   }
 
   function handleWorkoutSave() {
-    setWorkoutName(workoutNameInput);
-    setWorkoutNameInput("");
+    console.log(workoutTemplate);
   }
 
   function handleExerciseSearch(data) {
@@ -150,8 +198,6 @@ export function WorkoutBuilder() {
       )}
       <h1>Build Workout</h1>
 
-      {workoutName && <p>Name: {workoutName}</p>}
-
       <section className={styles["workout-page__header"]}>
         <div>
           <InputWrapper>
@@ -170,7 +216,7 @@ export function WorkoutBuilder() {
             type="button"
             buttonSize="small"
             handleClick={() => {
-              handleExerciseSearch(EXERCISES);
+              handleExerciseSearch(exercisesFromApi);
             }}
           />
         </div>
@@ -183,7 +229,7 @@ export function WorkoutBuilder() {
               id="name"
               placeholder="Workout name"
               handleChange={handleWorkoutNameChange}
-              value={workoutNameInput}
+              value={workoutTemplate.name}
             />
           </InputWrapper>
           <Button
@@ -218,6 +264,7 @@ export function WorkoutBuilder() {
                     handleDragOver={handleDragOver}
                     onDragStart={(e) => handleDragStart(e, exercise.id)}
                     onDrop={(e) => handleDrop(e, exercise.id)}
+                    handleChange={handleExerciseParameterChange}
                   />
                 );
               })}
