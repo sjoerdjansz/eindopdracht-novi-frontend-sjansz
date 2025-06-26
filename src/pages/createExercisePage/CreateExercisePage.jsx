@@ -5,8 +5,7 @@ import { useEffect, useState } from "react";
 import { Button } from "../../components/button/Button.jsx";
 import { SelectField } from "../../components/selectField/SelectField.jsx";
 import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
-import { BODYPARTS } from "../../data/workoutFilterOptions.js";
-import { MOVEMENTS } from "../../data/workoutFilterOptions.js";
+import { BODYPARTS, MOVEMENTS } from "../../data/workoutFilterOptions.js";
 import { MUSCLE_GROUPS } from "../../data/muscleGroups.js";
 import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
 import { useParams } from "react-router-dom";
@@ -94,7 +93,7 @@ export function CreateExercisePage() {
       setShowSnackbar({
         open: true,
         message: "Failed to edit exercise.",
-        status: "error",
+        status: "warning",
       });
     }
   }
@@ -138,8 +137,26 @@ export function CreateExercisePage() {
       setShowSnackbar({
         open: true,
         message: "Failed to add exercise",
-        status: "error",
+        status: "warning",
       });
+    }
+  }
+
+  async function checkIfDuplicate(exerciseName) {
+    try {
+      const { data } = await axios.get(API_ENDPOINTS.exercises, {
+        headers: { "novi-education-project-id": import.meta.env.VITE_API_KEY },
+      });
+
+      return data.some((exercise) => {
+        return (
+          exerciseName.toLowerCase().trim() ===
+          exercise.name.toLowerCase().trim()
+        );
+      });
+    } catch (error) {
+      console.error("Error in catch from getAllExercises");
+      console.log(error);
     }
   }
 
@@ -152,13 +169,21 @@ export function CreateExercisePage() {
     });
   }
 
-  async function handleSubmit(e, id) {
+  async function handleSubmit(e, id, exerciseName) {
     e.preventDefault();
 
     if (id) {
       await editExercise(id);
     } else {
-      await addExercise();
+      if (await checkIfDuplicate(exerciseName)) {
+        setShowSnackbar({
+          open: true,
+          message: "Exercise already exists",
+          status: "error",
+        });
+      } else {
+        await addExercise();
+      }
     }
   }
 
@@ -254,7 +279,7 @@ export function CreateExercisePage() {
               buttonSize="medium"
               label={id ? "Save changes" : "Create exercise"}
               type="submit"
-              handleClick={(e) => handleSubmit(e, id)}
+              handleClick={(e) => handleSubmit(e, id, formData.exerciseName)}
             />
           </form>
         </div>
