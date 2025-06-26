@@ -22,8 +22,8 @@
           "default": "CurrentDate"
         },
         {
-          "name": "createdByProfileId",
-          "type": "reference:profiles",
+          "name": "createdByUsersId",
+          "type": "reference:users",
           "required": true
         }
       ],
@@ -79,11 +79,18 @@
           "max": 100
         },
         {
-          "name": "secondaryMuscle",
+          "name": "instructions",
           "type": "string",
           "required": true,
           "min": 2,
-          "max": 100
+          "max": 999
+        },
+        {
+          "name": "videoURL",
+          "type": "string",
+          "required": false,
+          "min": 2,
+          "max": 300
         }
       ],
       "permissions": {
@@ -258,7 +265,7 @@
   "users": [
     {
       "id": 1,
-      "email": "hankhetank@voorbeeld.nl",
+      "email": "hank@tankfitness.com",
       "password": "hank123",
       "roles": [
         "trainer"
@@ -266,8 +273,8 @@
     },
     {
       "id": 2,
-      "email": "sjoerd@voorbeeld.nl",
-      "password": "sjoerd123",
+      "email": "swolemolly@client.com",
+      "password": "molly123",
       "roles": [
         "client"
       ]
@@ -279,7 +286,31 @@
         "id": 1,
         "name": "Full Body Strength A",
         "createdAt": "2025-06-21",
-        "createdByProfileId": 2
+        "createdByUsersId": 1
+      },
+      {
+        "id": 2,
+        "name": "Upper Body Hypertrophy",
+        "createdAt": "2025-06-20",
+        "createdByUsersId": 2
+      },
+      {
+        "id": 3,
+        "name": "Lower Body Power",
+        "createdAt": "2025-06-20",
+        "createdByUsersId": 2
+      },
+      {
+        "id": 4,
+        "name": "Push Pull Legs",
+        "createdAt": "2025-06-20",
+        "createdByUsersId": 1
+      },
+      {
+        "id": 5,
+        "name": "Core Stability Routine",
+        "createdAt": "2025-06-20",
+        "createdByUsersId": 1
       }
     ],
     "profiles": [
@@ -295,39 +326,92 @@
       },
       {
         "id": 2,
-        "firstName": "Sjoerd",
-        "lastName": "Jansen",
+        "firstName": "Swole",
+        "lastName": "Molly",
         "phone": 612345679,
-        "gender": "male",
+        "gender": "female",
         "joinedAt": "2025-06-01",
         "avatar": null,
         "userId": 2
+      },
+      {
+        "id": 3,
+        "firstName": "Lisa",
+        "lastName": "Vermeer",
+        "phone": 612345683,
+        "gender": "female",
+        "joinedAt": "2025-06-15",
+        "avatar": null,
+        "userId": 1
+      },
+      {
+        "id": 4,
+        "firstName": "Mark",
+        "lastName": "de Groot",
+        "phone": 612345684,
+        "gender": "male",
+        "joinedAt": "2025-06-15",
+        "avatar": null,
+        "userId": 1
+      },
+      {
+        "id": 5,
+        "firstName": "Eva",
+        "lastName": "Vos",
+        "phone": 612345685,
+        "gender": "female",
+        "joinedAt": "2025-06-15",
+        "avatar": null,
+        "userId": 1
+      },
+      {
+        "id": 6,
+        "firstName": "Tom",
+        "lastName": "Pieters",
+        "phone": 612345686,
+        "gender": "male",
+        "joinedAt": "2025-06-15",
+        "avatar": null,
+        "userId": 1
+      },
+      {
+        "id": 7,
+        "firstName": "Sanne",
+        "lastName": "Klaassen",
+        "phone": 612345687,
+        "gender": "female",
+        "joinedAt": "2025-06-15",
+        "avatar": null,
+        "userId": 1
       }
     ],
     "exercises": [
       {
         "id": 1,
-        "name": "Barbell Back Squat",
+        "name": "Barbell Squat",
         "bodypart": "legs",
-        "movement": "squat",
+        "movement": "squatting",
         "primaryMuscle": "quadriceps",
-        "secondaryMuscle": "glutes"
+        "instructions": "Place the bar on your upper back, brace your core and squat down until your thighs are parallel to the floor. Drive through your heels to return to standing.",
+        "videoURL": "https://example.com/barbell-squat"
       },
       {
         "id": 2,
-        "name": "Bench Press",
-        "bodypart": "chest",
-        "movement": "push",
-        "primaryMuscle": "pectoralis major",
-        "secondaryMuscle": "triceps"
+        "name": "Hip Thrust",
+        "bodypart": "glutes",
+        "movement": "hipHinge",
+        "primaryMuscle": "gluteusMaximus",
+        "instructions": "Stand with feet hip-width apart, grip the barbell, keep your back straight and lift the weight by extending your hips and knees.",
+        "videoURL": "https://example.com/deadlift"
       },
       {
         "id": 3,
-        "name": "Pull-Up",
-        "bodypart": "back",
-        "movement": "pull",
-        "primaryMuscle": "latissimus dorsi",
-        "secondaryMuscle": "biceps"
+        "name": "Bench Press",
+        "bodypart": "chest",
+        "movement": "horizontalPush",
+        "primaryMuscle": "pectoralisMajor",
+        "instructions": "Lie flat on a bench, lower the barbell to your chest with control and press it back up to arm's length.",
+        "videoURL": "https://example.com/bench-press"
       }
     ],
     "workoutExercises": [
@@ -357,6 +441,60 @@
         "reps": 10,
         "rest": 90,
         "index": 3
+      },
+      {
+        "id": 4,
+        "workoutTemplateId": 1,
+        "exerciseId": 4,
+        "sets": 4,
+        "reps": 12,
+        "rest": 120,
+        "index": 4
+      },
+      {
+        "id": 5,
+        "workoutTemplateId": 2,
+        "exerciseId": 2,
+        "sets": 3,
+        "reps": 10,
+        "rest": 120,
+        "index": 2
+      },
+      {
+        "id": 6,
+        "workoutTemplateId": 2,
+        "exerciseId": 3,
+        "sets": 4,
+        "reps": 8,
+        "rest": 60,
+        "index": 3
+      },
+      {
+        "id": 7,
+        "workoutTemplateId": 2,
+        "exerciseId": 4,
+        "sets": 3,
+        "reps": 12,
+        "rest": 90,
+        "index": 4
+      },
+      {
+        "id": 8,
+        "workoutTemplateId": 2,
+        "exerciseId": 5,
+        "sets": 3,
+        "reps": 10,
+        "rest": 60,
+        "index": 5
+      },
+      {
+        "id": 9,
+        "workoutTemplateId": 2,
+        "exerciseId": 6,
+        "sets": 3,
+        "reps": 10,
+        "rest": 60,
+        "index": 6
       }
     ],
     "userWorkouts": [
@@ -364,6 +502,11 @@
         "id": 1,
         "userProfileId": 2,
         "workoutTemplateId": 1
+      },
+      {
+        "id": 2,
+        "userProfileId": 2,
+        "workoutTemplateId": 2
       }
     ]
   }

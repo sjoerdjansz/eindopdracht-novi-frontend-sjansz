@@ -1,0 +1,54 @@
+.delete-confirmation {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  min-width: fit-content;
+  max-width: 400px;
+  padding: 1rem;
+  background-color: var(--color-primary-light);
+  border: 2px solid var(--color-primary);
+  border-radius: 0.2rem;
+  left: 50%;
+  transform: translate(-50%);
+  top: 200px;
+  z-index: 9999;
+  gap: 1rem;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.content-container > :nth-child(2) {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.button-container > button {
+  font-weight: 600;
+  border-radius: 0.2rem;
+  width: 100%;
+}
+
+.button-container > :nth-child(1) {
+  border: 2px solid var(--color-primary);
+  background-color: var(--color-white);
+  color: var(--color-primary);
+}
+
+.button-container > :nth-child(2) {
+  border: 2px solid var(--color-black);
+  background-color: var(--color-white);
+  color: var(--color-black);
+}

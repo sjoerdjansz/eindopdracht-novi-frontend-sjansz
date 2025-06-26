@@ -25,17 +25,22 @@
   align-items: center;
 }
 
-.modal__header > span {
+.close-modal {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 2px solid var(--color-accent);
-  color: var(--color-accent);
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
   height: 2rem;
   width: 2rem;
   font-size: 1rem;
   border-radius: 50%;
   cursor: pointer;
+}
+
+.close-modal:hover {
+  background-color: var(--color-primary);
+  color: #ffffff;
 }
 
 .modal__content--left {

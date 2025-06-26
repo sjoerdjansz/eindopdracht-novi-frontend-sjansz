@@ -124,6 +124,35 @@ h4 {
   font-size: var(--font-lg);
 }
 
+/* ----------------- TABLES ----------------- */
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  overflow-x: auto;
+  box-shadow: var(--element-shadow-subtle);
+  border: 1px solid var(--color-gray-mediumlight);
+  border-spacing: 0;
+}
+
+thead {
+  text-align: left;
+  background-color: var(--color-black);
+  color: #ffffff;
+}
+
+td,
+th,
+tr {
+  padding: var(--space-md);
+  text-transform: capitalize;
+  white-space: wrap;
+}
+
+tr:nth-of-type(2n) {
+  background-color: var(--color-gray-light);
+}
+
 /* ----------------- CSS VARIABLES ----------------- */
 
 :root {
@@ -169,5 +198,6 @@ h4 {
 
   /* Shadows */
   --element-shadow-subtle: 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  --element-shadow-regular: 2px 4px 6px -1px rgba(0, 0, 0, 0.25);
+  --element-shadow-regular: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  --element-shadow-darker: 2px 4px 6px -1px rgba(0, 0, 0, 0.25);
 }

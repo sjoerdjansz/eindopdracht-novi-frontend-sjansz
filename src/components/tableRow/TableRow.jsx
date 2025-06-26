@@ -1,6 +1,10 @@
 import styles from "./TableRow.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBan, faGripVertical } from "@fortawesome/free-solid-svg-icons";
+import {
+  faGripVertical,
+  faPenToSquare,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 
 export function TableRow({ handleDragOver, onDrop, onDragStart, exercise }) {
   return (
@@ -14,7 +18,9 @@ export function TableRow({ handleDragOver, onDrop, onDragStart, exercise }) {
         onDragStart={onDragStart}
         className={`${styles["table-align-center"]} ${styles["drag-icon"]}`}
       >
-        <FontAwesomeIcon icon={faGripVertical} />
+        <span>
+          <FontAwesomeIcon icon={faGripVertical} />
+        </span>
       </td>
       <td className={styles["td-name"]}>{exercise.name}</td>
       <td className={styles["td-sets"]}>{exercise.sets}</td>
@@ -22,9 +28,11 @@ export function TableRow({ handleDragOver, onDrop, onDragStart, exercise }) {
       <td className={styles["td-rest"]}>{exercise.rest}</td>
       <td className={styles["td-controls"]}>
         <div>
-          <span className={styles["td-controls__edit"]}>Edit</span>
-          <div className={styles["td-controls__delete"]}>
-            <FontAwesomeIcon icon={faBan} />
+          <div className={styles["table-row__icons"]}>
+            <span>
+              <FontAwesomeIcon icon={faPenToSquare} />
+              <FontAwesomeIcon icon={faTrash} />
+            </span>
           </div>
         </div>
       </td>
