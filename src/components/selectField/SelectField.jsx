@@ -37,10 +37,7 @@ export function SelectField({
             .sort((a, b) => a.value.localeCompare(b.value))
             .map((option) => {
               return (
-                <option
-                  key={option.value}
-                  value={option.value.toLowerCase().trim()}
-                >
+                <option key={option.value} value={option.value.trim()}>
                   {option.label}
                 </option>
               );

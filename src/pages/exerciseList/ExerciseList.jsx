@@ -13,6 +13,8 @@ import { LoadingSpinner } from "../../components/loadingSpinner/LoadingSpinner.j
 import { SelectField } from "../../components/selectField/SelectField.jsx";
 import { BODYPART_FILTER_OPTIONS } from "../../data/clientFilterOptions.js";
 import { DeleteConfirmation } from "../../components/deleteConfirmation/DeleteConfirmation.jsx";
+import { MOVEMENTS } from "../../data/workoutFilterOptions.js";
+import { MUSCLE_GROUPS } from "../../data/muscleGroups.js";
 
 export function ExerciseList() {
   const navigate = useNavigate();
@@ -61,10 +63,27 @@ export function ExerciseList() {
       const response = await axios.get(API_ENDPOINTS.exercises, {
         headers: { "novi-education-project-id": import.meta.env.VITE_API_KEY },
       });
-      setOriginalExercises(response.data);
-      setFindExercises(response.data);
 
-      console.log(response.data);
+      function valueToLabel(data, arr, type) {
+        return data.map((item) => {
+          const matched = arr.find((val) => {
+            return val.value === item[type];
+          });
+          return {
+            ...item,
+            [`${type}Label`]: matched ? matched.label : "",
+          };
+        });
+      }
+
+      let newData = valueToLabel(response.data, MOVEMENTS, "movement");
+      newData = valueToLabel(newData, MUSCLE_GROUPS, "primaryMuscle");
+
+      console.log(newData);
+      setOriginalExercises(newData);
+      setFindExercises(newData);
+
+      // console.log(data);
     } catch (e) {
       setErrorMessage(
         `${e.response.status}: ${e.code}. Failed to load exercises.`,
@@ -202,10 +221,10 @@ export function ExerciseList() {
                     {exercise.bodypart}
                   </td>
                   <td className={styles["exercise-movement--td"]}>
-                    {exercise.movement}
+                    {exercise.movementLabel}
                   </td>
                   <td className={styles["exercise-muscle--td"]}>
-                    {exercise.primaryMuscle}
+                    {exercise.primaryMuscleLabel}
                   </td>
                   <td className={styles["exercise-list__icons"]}>
                     <span>

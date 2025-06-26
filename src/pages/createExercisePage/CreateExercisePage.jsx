@@ -14,7 +14,6 @@ import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { API_ENDPOINTS } from "../../api/api.js";
-import { getLabelForUi } from "../../utils/getLabelForUi.js";
 
 export function CreateExercisePage() {
   const { id } = useParams();
