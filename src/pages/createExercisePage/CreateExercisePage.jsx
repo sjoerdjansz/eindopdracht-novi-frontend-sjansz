@@ -1,7 +1,7 @@
 import styles from "./CreateExercisePage.module.css";
 import { Modal } from "../../components//modal/Modal.jsx";
 import { InputField } from "../../components/inputField/InputField.jsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../../components/button/Button.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -11,18 +11,27 @@ import { BODYPARTS } from "../../data/workoutFilterOptions.js";
 import { MOVEMENTS } from "../../data/workoutFilterOptions.js";
 import { MUSCLE_GROUPS } from "../../data/muscleGroups.js";
 import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { API_ENDPOINTS } from "../../api/api.js";
+import { getLabelForUi } from "../../utils/getLabelForUi.js";
 
 export function CreateExercisePage() {
+  const { id } = useParams();
   const [formData, setFormData] = useState({
     exerciseName: "",
     bodypart: "",
     movement: "",
-    muscles: [],
+    primaryMuscle: "",
     instructions: "",
     videoUrl: "",
   });
-  const [selectedMuscle, setSelectedMuscle] = useState("");
+
   const [showSnackbar, setShowSnackbar] = useState(false);
+
+  useEffect(() => {
+    id && getSingleExercise(id);
+  }, []);
 
   function getEmbedUrl(youtubeUrl) {
     const match = youtubeUrl.match(
@@ -34,19 +43,78 @@ export function CreateExercisePage() {
     return null;
   }
 
-  // TODO: De select field en bijbehorende functies beter leren begrijpen. Is complex.
-  //  En uitvogelen of de multi select niet handiger is.
-  function onAddMuscleClick() {
-    if (
-      typeof selectedMuscle === "string" &&
-      selectedMuscle.trim() !== "" &&
-      !formData.muscles.includes(selectedMuscle)
-    ) {
-      setFormData((prev) => ({
-        ...prev,
-        muscles: [...prev.muscles, selectedMuscle],
-      }));
-      setSelectedMuscle([]);
+  async function getSingleExercise(id) {
+    try {
+      const { data } = await axios.get(`${API_ENDPOINTS.exercises}/${id}`, {
+        headers: { "novi-education-project-id": import.meta.env.VITE_API_KEY },
+      });
+
+      console.log(data.movement.toLowerCase().trim());
+
+      setFormData({
+        exerciseName: data.name,
+        bodypart: data.bodypart.toLowerCase().trim(),
+        movement: data.movement.toLowerCase().trim(),
+        videoUrl: data.videoURL.toLowerCase().trim(),
+        primaryMuscle: data.primaryMuscle,
+        instructions: data.instructions,
+      });
+    } catch (error) {
+      console.error(`Error in get single exercise catch: ${error}`);
+    }
+  }
+
+  async function editExercise(id) {
+    try {
+      const response = await axios.put(
+        `${API_ENDPOINTS.exercises}/${id}`,
+        {
+          id: id,
+          name: formData.exerciseName,
+          bodypart: formData.bodypart,
+          movement: formData.movement,
+          primaryMuscle: formData.primaryMuscle,
+          instructions: formData.instructions,
+          videoURL: formData.videoUrl,
+        },
+        {
+          headers: {
+            "novi-education-project-id": import.meta.env.VITE_API_KEY,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      console.log("log from EDIT exercise:");
+      console.log(response.data);
+    } catch (error) {
+      console.error(`Error in edit exercise catch: ${error}`);
+    }
+  }
+
+  async function addExercise() {
+    try {
+      const response = await axios.post(
+        `${API_ENDPOINTS.exercises}`,
+        {
+          name: formData.exerciseName,
+          bodypart: formData.bodypart,
+          movement: formData.movement,
+          primaryMuscle: formData.primaryMuscle,
+          instructions: formData.instructions,
+          videoURL: formData.videoUrl,
+        },
+        {
+          headers: {
+            "novi-education-project-id": import.meta.env.VITE_API_KEY,
+          },
+        },
+      );
+
+      console.log("log from ADD exercise:");
+      console.log(response.data);
+    } catch (error) {
+      console.log("Add exercise error message");
+      console.log(error);
     }
   }
 
@@ -54,19 +122,23 @@ export function CreateExercisePage() {
     let value = e.target.value;
     let name = e.target.name;
 
-    if (name === "muscles") {
-      setSelectedMuscle(value);
-    } else {
-      setFormData((previous) => {
-        return { ...previous, [name]: value };
-      });
-    }
+    console.log(value);
+
+    setFormData((previous) => {
+      return { ...previous, [name]: value };
+    });
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e, id) {
     e.preventDefault();
     setShowSnackbar(true);
-    console.log(formData);
+
+    if (id) {
+      await editExercise(id);
+    } else {
+      await addExercise();
+    }
+    setShowSnackbar(true);
   }
 
   return (
@@ -120,23 +192,24 @@ export function CreateExercisePage() {
             </InputWrapper>
             <InputWrapper direction="column">
               <SelectField
-                id="muscles"
-                name="muscles"
-                label="Primary muscles"
+                id="primaryMuscle"
+                name="primaryMuscle"
+                label="Primary muscle"
                 options={MUSCLE_GROUPS}
-                title="Select primary muscles"
+                title="Select primary muscle"
                 required={true}
-                button={true}
-                onButtonClick={onAddMuscleClick}
+                // button={true}
+                // onButtonClick={onAddMuscleClick}
                 buttonLabel="Add"
-                value={selectedMuscle}
-                handleChange={(e) => setSelectedMuscle(e.target.value)}
+                value={formData.primaryMuscle}
+                handleChange={handleChange}
               />
             </InputWrapper>
             <InputWrapper direction="column">
               <textarea
                 name="instructions"
                 id="instructions"
+                placeholder="Exercise instructions"
                 cols="20"
                 rows="4"
                 value={formData.instructions}
@@ -163,31 +236,32 @@ export function CreateExercisePage() {
               handleClick={handleSubmit}
             />
           </form>
-          <div className={styles["container__selected-items"]}>
-            <p>Selected Muscles</p>
-            <ul className={styles["selected-muscles__list"]}>
-              {formData.muscles.map((muscle) => {
-                return (
-                  <li key={muscle}>
-                    <FontAwesomeIcon icon={faXmark} />
-                    {muscle}
-                  </li>
-                );
-              })}
-            </ul>
-            {formData.videoUrl && (
-              <>
-                <p>Video Preview</p>
-                <iframe
-                  className={styles["create-exercise__iframe"]}
-                  src={getEmbedUrl(formData.videoUrl)}
-                  title="Exercise demo video"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                />
-              </>
-            )}
-          </div>
+          {/*<div className={styles["container__selected-items"]}>*/}
+          {/*  <p>Selected Muscles</p>*/}
+          {/*  <ul className={styles["selected-muscles__list"]}>*/}
+          {/*    {formData.primaryMuscle.map((muscle) => {*/}
+          {/*      console.log();*/}
+          {/*      return (*/}
+          {/*        <li key={muscle}>*/}
+          {/*          <FontAwesomeIcon icon={faXmark} />*/}
+          {/*          {muscle}*/}
+          {/*        </li>*/}
+          {/*      );*/}
+          {/*    })}*/}
+          {/*  </ul>*/}
+          {/*  {formData.videoUrl && (*/}
+          {/*    <>*/}
+          {/*      <p>Video Preview</p>*/}
+          {/*      <iframe*/}
+          {/*        className={styles["create-exercise__iframe"]}*/}
+          {/*        src={getEmbedUrl(formData.videoUrl)}*/}
+          {/*        title="Exercise demo video"*/}
+          {/*        frameBorder="0"*/}
+          {/*        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"*/}
+          {/*      />*/}
+          {/*    </>*/}
+          {/*  )}*/}
+          {/*</div>*/}
         </div>
       </Modal>
     </div>

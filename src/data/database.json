@@ -22,8 +22,8 @@
           "default": "CurrentDate"
         },
         {
-          "name": "createdByProfileId",
-          "type": "reference:profiles",
+          "name": "createdByUsersId",
+          "type": "reference:users",
           "required": true
         }
       ],
@@ -79,11 +79,18 @@
           "max": 100
         },
         {
-          "name": "secondaryMuscle",
+          "name": "instructions",
           "type": "string",
           "required": true,
           "min": 2,
           "max": 100
+        },
+        {
+          "name": "videoURL",
+          "type": "string",
+          "required": false,
+          "min": 2,
+          "max": 200
         }
       ],
       "permissions": {
@@ -279,31 +286,31 @@
         "id": 1,
         "name": "Full Body Strength A",
         "createdAt": "2025-06-21",
-        "createdByProfileId": 2
+        "createdByUsersId": 1
       },
       {
         "id": 2,
         "name": "Upper Body Hypertrophy",
         "createdAt": "2025-06-20",
-        "createdByProfileId": 2
+        "createdByUsersId": 2
       },
       {
         "id": 3,
         "name": "Lower Body Power",
         "createdAt": "2025-06-20",
-        "createdByProfileId": 2
+        "createdByUsersId": 2
       },
       {
         "id": 4,
         "name": "Push Pull Legs",
         "createdAt": "2025-06-20",
-        "createdByProfileId": 2
+        "createdByUsersId": 1
       },
       {
         "id": 5,
         "name": "Core Stability Routine",
         "createdAt": "2025-06-20",
-        "createdByProfileId": 2
+        "createdByUsersId": 1
       }
     ],
     "profiles": [
@@ -381,227 +388,30 @@
     "exercises": [
       {
         "id": 1,
-        "name": "Barbell Back Squat",
+        "name": "Barbell Squat",
         "bodypart": "legs",
-        "movement": "squat",
+        "movement": "squatting",
         "primaryMuscle": "quadriceps",
-        "secondaryMuscle": "glutes"
+        "instructions": "Place the bar on your upper back, brace your core and squat down until your thighs are parallel to the floor. Drive through your heels to return to standing.",
+        "videoURL": "https://example.com/barbell-squat"
       },
       {
         "id": 2,
-        "name": "Bench Press",
-        "bodypart": "chest",
-        "movement": "push",
-        "primaryMuscle": "pectoralis major",
-        "secondaryMuscle": "triceps"
+        "name": "Hip Thrust",
+        "bodypart": "glutes",
+        "movement": "hipHinge",
+        "primaryMuscle": "gluteusMaximus",
+        "instructions": "Stand with feet hip-width apart, grip the barbell, keep your back straight and lift the weight by extending your hips and knees.",
+        "videoURL": "https://example.com/deadlift"
       },
       {
         "id": 3,
-        "name": "Pull-Up",
-        "bodypart": "back",
-        "movement": "pull",
-        "primaryMuscle": "latissimus dorsi",
-        "secondaryMuscle": "biceps"
-      },
-      {
-        "id": 4,
-        "name": "Deadlift",
-        "bodypart": "legs",
-        "movement": "hinge",
-        "primaryMuscle": "hamstrings",
-        "secondaryMuscle": "glutes"
-      },
-      {
-        "id": 5,
-        "name": "Overhead Press",
-        "bodypart": "shoulders",
-        "movement": "push",
-        "primaryMuscle": "deltoids",
-        "secondaryMuscle": "triceps"
-      },
-      {
-        "id": 6,
-        "name": "Barbell Row",
-        "bodypart": "back",
-        "movement": "pull",
-        "primaryMuscle": "rhomboids",
-        "secondaryMuscle": "biceps"
-      },
-      {
-        "id": 7,
-        "name": "Leg Press",
-        "bodypart": "legs",
-        "movement": "press",
-        "primaryMuscle": "quadriceps",
-        "secondaryMuscle": "glutes"
-      },
-      {
-        "id": 8,
-        "name": "Dumbbell Bench Press",
+        "name": "Bench Press",
         "bodypart": "chest",
-        "movement": "push",
-        "primaryMuscle": "pectoralis major",
-        "secondaryMuscle": "triceps"
-      },
-      {
-        "id": 9,
-        "name": "Lunges",
-        "bodypart": "legs",
-        "movement": "lunge",
-        "primaryMuscle": "glutes",
-        "secondaryMuscle": "quadriceps"
-      },
-      {
-        "id": 10,
-        "name": "Lat Pulldown",
-        "bodypart": "back",
-        "movement": "pull",
-        "primaryMuscle": "latissimus dorsi",
-        "secondaryMuscle": "biceps"
-      },
-      {
-        "id": 11,
-        "name": "Cable Crossover",
-        "bodypart": "chest",
-        "movement": "fly",
-        "primaryMuscle": "pectoralis major",
-        "secondaryMuscle": "deltoids"
-      },
-      {
-        "id": 12,
-        "name": "Tricep Pushdown",
-        "bodypart": "arms",
-        "movement": "push",
-        "primaryMuscle": "triceps",
-        "secondaryMuscle": "none"
-      },
-      {
-        "id": 13,
-        "name": "Bicep Curl",
-        "bodypart": "arms",
-        "movement": "curl",
-        "primaryMuscle": "biceps",
-        "secondaryMuscle": "brachialis"
-      },
-      {
-        "id": 14,
-        "name": "Romanian Deadlift",
-        "bodypart": "legs",
-        "movement": "hinge",
-        "primaryMuscle": "hamstrings",
-        "secondaryMuscle": "glutes"
-      },
-      {
-        "id": 15,
-        "name": "Hip Thrust",
-        "bodypart": "glutes",
-        "movement": "bridge",
-        "primaryMuscle": "gluteus maximus",
-        "secondaryMuscle": "hamstrings"
-      },
-      {
-        "id": 16,
-        "name": "Seated Row",
-        "bodypart": "back",
-        "movement": "pull",
-        "primaryMuscle": "rhomboids",
-        "secondaryMuscle": "biceps"
-      },
-      {
-        "id": 17,
-        "name": "Chest Fly",
-        "bodypart": "chest",
-        "movement": "fly",
-        "primaryMuscle": "pectoralis major",
-        "secondaryMuscle": "none"
-      },
-      {
-        "id": 18,
-        "name": "Arnold Press",
-        "bodypart": "shoulders",
-        "movement": "push",
-        "primaryMuscle": "deltoids",
-        "secondaryMuscle": "triceps"
-      },
-      {
-        "id": 19,
-        "name": "Leg Curl",
-        "bodypart": "legs",
-        "movement": "curl",
-        "primaryMuscle": "hamstrings",
-        "secondaryMuscle": "none"
-      },
-      {
-        "id": 20,
-        "name": "Leg Extension",
-        "bodypart": "legs",
-        "movement": "extension",
-        "primaryMuscle": "quadriceps",
-        "secondaryMuscle": "none"
-      },
-      {
-        "id": 21,
-        "name": "Calf Raise",
-        "bodypart": "legs",
-        "movement": "raise",
-        "primaryMuscle": "gastrocnemius",
-        "secondaryMuscle": "soleus"
-      },
-      {
-        "id": 22,
-        "name": "Incline Bench Press",
-        "bodypart": "chest",
-        "movement": "push",
-        "primaryMuscle": "upper pectoralis",
-        "secondaryMuscle": "triceps"
-      },
-      {
-        "id": 23,
-        "name": "Face Pull",
-        "bodypart": "shoulders",
-        "movement": "pull",
-        "primaryMuscle": "rear delts",
-        "secondaryMuscle": "trapezius"
-      },
-      {
-        "id": 24,
-        "name": "Farmer's Walk",
-        "bodypart": "full body",
-        "movement": "carry",
-        "primaryMuscle": "forearms",
-        "secondaryMuscle": "trapezius"
-      },
-      {
-        "id": 25,
-        "name": "Russian Twist",
-        "bodypart": "core",
-        "movement": "twist",
-        "primaryMuscle": "obliques",
-        "secondaryMuscle": "abdominals"
-      },
-      {
-        "id": 26,
-        "name": "Plank",
-        "bodypart": "core",
-        "movement": "hold",
-        "primaryMuscle": "abdominals",
-        "secondaryMuscle": "transversus abdominis"
-      },
-      {
-        "id": 27,
-        "name": "Mountain Climbers",
-        "bodypart": "core",
-        "movement": "dynamic",
-        "primaryMuscle": "abdominals",
-        "secondaryMuscle": "hip flexors"
-      },
-      {
-        "id": 28,
-        "name": "Burpees",
-        "bodypart": "full body",
-        "movement": "complex",
-        "primaryMuscle": "cardiovascular system",
-        "secondaryMuscle": "all muscles"
+        "movement": "horizontalPush",
+        "primaryMuscle": "pectoralisMajor",
+        "instructions": "Lie flat on a bench, lower the barbell to your chest with control and press it back up to arm's length.",
+        "videoURL": "https://example.com/bench-press"
       }
     ],
     "workoutExercises": [
@@ -635,16 +445,16 @@
       {
         "id": 4,
         "workoutTemplateId": 1,
-        "exerciseId": 28,
+        "exerciseId": 4,
         "sets": 4,
         "reps": 12,
         "rest": 120,
-        "index": 1
+        "index": 4
       },
       {
         "id": 5,
-        "workoutTemplateId": 1,
-        "exerciseId": 20,
+        "workoutTemplateId": 2,
+        "exerciseId": 2,
         "sets": 3,
         "reps": 10,
         "rest": 120,
@@ -652,7 +462,7 @@
       },
       {
         "id": 6,
-        "workoutTemplateId": 1,
+        "workoutTemplateId": 2,
         "exerciseId": 3,
         "sets": 4,
         "reps": 8,
@@ -661,8 +471,8 @@
       },
       {
         "id": 7,
-        "workoutTemplateId": 1,
-        "exerciseId": 24,
+        "workoutTemplateId": 2,
+        "exerciseId": 4,
         "sets": 3,
         "reps": 12,
         "rest": 90,
@@ -670,8 +480,8 @@
       },
       {
         "id": 8,
-        "workoutTemplateId": 1,
-        "exerciseId": 17,
+        "workoutTemplateId": 2,
+        "exerciseId": 5,
         "sets": 3,
         "reps": 10,
         "rest": 60,
@@ -680,182 +490,11 @@
       {
         "id": 9,
         "workoutTemplateId": 2,
-        "exerciseId": 3,
-        "sets": 3,
-        "reps": 12,
-        "rest": 120,
-        "index": 1
-      },
-      {
-        "id": 10,
-        "workoutTemplateId": 2,
-        "exerciseId": 12,
-        "sets": 3,
-        "reps": 12,
-        "rest": 60,
-        "index": 2
-      },
-      {
-        "id": 11,
-        "workoutTemplateId": 2,
-        "exerciseId": 13,
-        "sets": 4,
-        "reps": 8,
-        "rest": 120,
-        "index": 3
-      },
-      {
-        "id": 12,
-        "workoutTemplateId": 2,
-        "exerciseId": 6,
-        "sets": 4,
-        "reps": 12,
-        "rest": 120,
-        "index": 4
-      },
-      {
-        "id": 13,
-        "workoutTemplateId": 2,
-        "exerciseId": 28,
-        "sets": 4,
-        "reps": 10,
-        "rest": 90,
-        "index": 5
-      },
-      {
-        "id": 14,
-        "workoutTemplateId": 3,
-        "exerciseId": 25,
-        "sets": 4,
-        "reps": 8,
-        "rest": 90,
-        "index": 1
-      },
-      {
-        "id": 15,
-        "workoutTemplateId": 3,
-        "exerciseId": 23,
-        "sets": 4,
-        "reps": 10,
-        "rest": 60,
-        "index": 2
-      },
-      {
-        "id": 16,
-        "workoutTemplateId": 3,
-        "exerciseId": 3,
-        "sets": 3,
-        "reps": 8,
-        "rest": 90,
-        "index": 3
-      },
-      {
-        "id": 17,
-        "workoutTemplateId": 3,
-        "exerciseId": 8,
-        "sets": 3,
-        "reps": 8,
-        "rest": 120,
-        "index": 4
-      },
-      {
-        "id": 18,
-        "workoutTemplateId": 3,
-        "exerciseId": 1,
-        "sets": 4,
-        "reps": 12,
-        "rest": 60,
-        "index": 5
-      },
-      {
-        "id": 19,
-        "workoutTemplateId": 4,
-        "exerciseId": 5,
-        "sets": 3,
-        "reps": 12,
-        "rest": 120,
-        "index": 1
-      },
-      {
-        "id": 20,
-        "workoutTemplateId": 4,
-        "exerciseId": 9,
-        "sets": 3,
-        "reps": 10,
-        "rest": 120,
-        "index": 2
-      },
-      {
-        "id": 21,
-        "workoutTemplateId": 4,
         "exerciseId": 6,
         "sets": 3,
         "reps": 10,
-        "rest": 120,
-        "index": 3
-      },
-      {
-        "id": 22,
-        "workoutTemplateId": 4,
-        "exerciseId": 13,
-        "sets": 4,
-        "reps": 8,
-        "rest": 90,
-        "index": 4
-      },
-      {
-        "id": 23,
-        "workoutTemplateId": 4,
-        "exerciseId": 14,
-        "sets": 3,
-        "reps": 10,
-        "rest": 90,
-        "index": 5
-      },
-      {
-        "id": 24,
-        "workoutTemplateId": 5,
-        "exerciseId": 28,
-        "sets": 4,
-        "reps": 8,
-        "rest": 120,
-        "index": 1
-      },
-      {
-        "id": 25,
-        "workoutTemplateId": 5,
-        "exerciseId": 10,
-        "sets": 4,
-        "reps": 12,
         "rest": 60,
-        "index": 2
-      },
-      {
-        "id": 26,
-        "workoutTemplateId": 5,
-        "exerciseId": 22,
-        "sets": 3,
-        "reps": 8,
-        "rest": 90,
-        "index": 3
-      },
-      {
-        "id": 27,
-        "workoutTemplateId": 5,
-        "exerciseId": 17,
-        "sets": 4,
-        "reps": 12,
-        "rest": 90,
-        "index": 4
-      },
-      {
-        "id": 28,
-        "workoutTemplateId": 5,
-        "exerciseId": 23,
-        "sets": 4,
-        "reps": 10,
-        "rest": 90,
-        "index": 5
+        "index": 6
       }
     ],
     "userWorkouts": [
@@ -866,53 +505,8 @@
       },
       {
         "id": 2,
-        "userProfileId": 5,
-        "workoutTemplateId": 5
-      },
-      {
-        "id": 3,
-        "userProfileId": 3,
-        "workoutTemplateId": 4
-      },
-      {
-        "id": 4,
-        "userProfileId": 3,
+        "userProfileId": 2,
         "workoutTemplateId": 2
-      },
-      {
-        "id": 5,
-        "userProfileId": 6,
-        "workoutTemplateId": 4
-      },
-      {
-        "id": 6,
-        "userProfileId": 7,
-        "workoutTemplateId": 3
-      },
-      {
-        "id": 7,
-        "userProfileId": 6,
-        "workoutTemplateId": 4
-      },
-      {
-        "id": 8,
-        "userProfileId": 1,
-        "workoutTemplateId": 4
-      },
-      {
-        "id": 9,
-        "userProfileId": 7,
-        "workoutTemplateId": 3
-      },
-      {
-        "id": 10,
-        "userProfileId": 6,
-        "workoutTemplateId": 5
-      },
-      {
-        "id": 11,
-        "userProfileId": 6,
-        "workoutTemplateId": 3
       }
     ]
   }

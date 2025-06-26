@@ -1,7 +1,7 @@
 import styles from "./ExerciseList.module.css";
 import { Button } from "../../components/button/Button.jsx";
 import { InputField } from "../../components/inputField/InputField.jsx";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -12,6 +12,7 @@ import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
 import { LoadingSpinner } from "../../components/loadingSpinner/LoadingSpinner.jsx";
 import { SelectField } from "../../components/selectField/SelectField.jsx";
 import { BODYPART_FILTER_OPTIONS } from "../../data/clientFilterOptions.js";
+import { DeleteConfirmation } from "../../components/deleteConfirmation/DeleteConfirmation.jsx";
 
 export function ExerciseList() {
   const navigate = useNavigate();
@@ -22,6 +23,11 @@ export function ExerciseList() {
   const [errorMessage, setErrorMessage] = useState("");
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [bodyPartFilter, setBodyPartFilter] = useState("");
+  const [deleteItem, setDeleteItem] = useState(false);
+  const [exerciseToBeDeleted, setExerciseToBeDeleted] = useState({
+    id: "",
+    name: "",
+  });
 
   useEffect(() => {
     getExercises();
@@ -57,6 +63,8 @@ export function ExerciseList() {
       });
       setOriginalExercises(response.data);
       setFindExercises(response.data);
+
+      console.log(response.data);
     } catch (e) {
       setErrorMessage(
         `${e.response.status}: ${e.code}. Failed to load exercises.`,
@@ -85,9 +93,45 @@ export function ExerciseList() {
     setExerciseSearchQuery("");
   }
 
+  function deleteExerciseButtonClick(e, id, name) {
+    setExerciseToBeDeleted({ id: id, name: name });
+    setDeleteItem(true);
+  }
+
+  function handleCancelDelete() {
+    setDeleteItem(false);
+  }
+
+  async function handleDeleteExercise() {
+    try {
+      const response = await axios.delete(
+        `${API_ENDPOINTS.exercises}/${exerciseToBeDeleted.id}`,
+        {
+          headers: {
+            "novi-education-project-id": import.meta.env.VITE_API_KEY,
+          },
+        },
+      );
+      setDeleteItem(false);
+      console.log("Exercise successfully deleted");
+      await getExercises();
+      console.log(response.data);
+    } catch (error) {
+      console.error(`Error in handle delete exercise catch: ${error}`);
+    }
+  }
+
   return (
     <div className={styles["exercise-list"]}>
       <h1>Exercise List</h1>
+      {deleteItem && (
+        <DeleteConfirmation
+          title="Are you sure you want to delete"
+          item={exerciseToBeDeleted.name}
+          onCancel={handleCancelDelete}
+          onDelete={handleDeleteExercise}
+        />
+      )}
 
       {showSnackbar && (
         <Snackbar
@@ -165,8 +209,21 @@ export function ExerciseList() {
                   </td>
                   <td className={styles["exercise-list__icons"]}>
                     <span>
-                      <FontAwesomeIcon icon={faPenToSquare} />
-                      <FontAwesomeIcon icon={faTrash} />
+                      <Link to={`/exercise-library/create/${exercise.id}`}>
+                        <FontAwesomeIcon icon={faPenToSquare} />
+                      </Link>
+                      <Link to={""}>
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          onClick={(e) =>
+                            deleteExerciseButtonClick(
+                              e,
+                              exercise.id,
+                              exercise.name,
+                            )
+                          }
+                        />
+                      </Link>
                     </span>
                   </td>
                 </tr>

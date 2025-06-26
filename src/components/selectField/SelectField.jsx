@@ -34,10 +34,13 @@ export function SelectField({
             {title}
           </option>
           {options
-            .sort((a, b) => a.label.localeCompare(b.label))
+            .sort((a, b) => a.value.localeCompare(b.value))
             .map((option) => {
               return (
-                <option key={option.value} value={option.value}>
+                <option
+                  key={option.value}
+                  value={option.value.toLowerCase().trim()}
+                >
                   {option.label}
                 </option>
               );
