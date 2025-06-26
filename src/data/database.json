@@ -83,14 +83,14 @@
           "type": "string",
           "required": true,
           "min": 2,
-          "max": 100
+          "max": 999
         },
         {
           "name": "videoURL",
           "type": "string",
           "required": false,
           "min": 2,
-          "max": 200
+          "max": 300
         }
       ],
       "permissions": {

@@ -56,6 +56,19 @@ export function ExerciseList() {
     setFindExercises(filteredExercises);
   }, [bodyPartFilter, exerciseSearchQuery, originalExercises]);
 
+  // Adds label values to the data object for correct ui view
+  function valueToLabel(data, arr, type) {
+    return data.map((item) => {
+      const matched = arr.find((val) => {
+        return val.value === item[type];
+      });
+      return {
+        ...item,
+        [`${type}Label`]: matched ? matched.label : "",
+      };
+    });
+  }
+
   // Get exercises api call
   async function getExercises() {
     try {
@@ -64,26 +77,11 @@ export function ExerciseList() {
         headers: { "novi-education-project-id": import.meta.env.VITE_API_KEY },
       });
 
-      function valueToLabel(data, arr, type) {
-        return data.map((item) => {
-          const matched = arr.find((val) => {
-            return val.value === item[type];
-          });
-          return {
-            ...item,
-            [`${type}Label`]: matched ? matched.label : "",
-          };
-        });
-      }
-
       let newData = valueToLabel(response.data, MOVEMENTS, "movement");
       newData = valueToLabel(newData, MUSCLE_GROUPS, "primaryMuscle");
 
-      console.log(newData);
       setOriginalExercises(newData);
       setFindExercises(newData);
-
-      // console.log(data);
     } catch (e) {
       setErrorMessage(
         `${e.response.status}: ${e.code}. Failed to load exercises.`,

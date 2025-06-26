@@ -3,8 +3,6 @@ import { Modal } from "../../components//modal/Modal.jsx";
 import { InputField } from "../../components/inputField/InputField.jsx";
 import { useEffect, useState } from "react";
 import { Button } from "../../components/button/Button.jsx";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { SelectField } from "../../components/selectField/SelectField.jsx";
 import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 import { BODYPARTS } from "../../data/workoutFilterOptions.js";
@@ -26,21 +24,25 @@ export function CreateExercisePage() {
     videoUrl: "",
   });
 
-  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState({
+    open: false,
+    message: "",
+    status: "",
+  });
 
   useEffect(() => {
     id && getSingleExercise(id);
   }, []);
 
-  function getEmbedUrl(youtubeUrl) {
-    const match = youtubeUrl.match(
-      /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/,
-    );
-    if (match && match[1]) {
-      return `https://www.youtube.com/embed/${match[1]}`;
-    }
-    return null;
-  }
+  // function getEmbedUrl(youtubeUrl) {
+  //   const match = youtubeUrl.match(
+  //     /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/,
+  //   );
+  //   if (match && match[1]) {
+  //     return `https://www.youtube.com/embed/${match[1]}`;
+  //   }
+  //   return null;
+  // }
 
   async function getSingleExercise(id) {
     try {
@@ -48,13 +50,11 @@ export function CreateExercisePage() {
         headers: { "novi-education-project-id": import.meta.env.VITE_API_KEY },
       });
 
-      console.log(data.movement.toLowerCase().trim());
-
       setFormData({
         exerciseName: data.name,
-        bodypart: data.bodypart.toLowerCase().trim(),
-        movement: data.movement.toLowerCase().trim(),
-        videoUrl: data.videoURL.toLowerCase().trim(),
+        bodypart: data.bodypart,
+        movement: data.movement,
+        videoUrl: data.videoURL,
         primaryMuscle: data.primaryMuscle,
         instructions: data.instructions,
       });
@@ -83,10 +83,19 @@ export function CreateExercisePage() {
           },
         },
       );
-      console.log("log from EDIT exercise:");
       console.log(response.data);
+      setShowSnackbar({
+        open: true,
+        message: `Exercise ${formData.exerciseName} has been edited`,
+        status: "success",
+      });
     } catch (error) {
       console.error(`Error in edit exercise catch: ${error}`);
+      setShowSnackbar({
+        open: true,
+        message: "Failed to edit exercise.",
+        status: "error",
+      });
     }
   }
 
@@ -109,19 +118,34 @@ export function CreateExercisePage() {
         },
       );
 
-      console.log("log from ADD exercise:");
       console.log(response.data);
+      setShowSnackbar({
+        open: true,
+        message: `Exercise ${formData.exerciseName} has been added`,
+        status: "success",
+      });
+
+      setFormData({
+        exerciseName: "",
+        bodypart: "",
+        movement: "",
+        primaryMuscle: "",
+        instructions: "",
+        videoUrl: "",
+      });
     } catch (error) {
-      console.log("Add exercise error message");
       console.log(error);
+      setShowSnackbar({
+        open: true,
+        message: "Failed to add exercise",
+        status: "error",
+      });
     }
   }
 
   function handleChange(e) {
     let value = e.target.value;
     let name = e.target.name;
-
-    console.log(value);
 
     setFormData((previous) => {
       return { ...previous, [name]: value };
@@ -130,28 +154,26 @@ export function CreateExercisePage() {
 
   async function handleSubmit(e, id) {
     e.preventDefault();
-    setShowSnackbar(true);
 
     if (id) {
       await editExercise(id);
     } else {
       await addExercise();
     }
-    setShowSnackbar(true);
   }
 
   return (
     <div className={styles["create-exercise__container"]}>
-      {showSnackbar && (
+      {showSnackbar.open && (
         <Snackbar
-          message="Exercise already in exercise library"
-          open={showSnackbar}
-          status="warning"
+          message={showSnackbar.message}
+          open={showSnackbar.open}
+          status={showSnackbar.status}
           durationVisible={3000}
           onClose={() => setShowSnackbar(false)}
         />
       )}
-      <Modal title="Create Exercise">
+      <Modal title={id ? "Update Exercise" : "Create New Exercise"}>
         <div className={styles["container__layout"]}>
           <form className={styles["create-exercise-form"]}>
             <InputWrapper direction="column">
@@ -228,39 +250,13 @@ export function CreateExercisePage() {
               />
             </InputWrapper>
             <Button
-              buttonType="primary"
+              buttonType={id ? "secondary" : "primary"}
               buttonSize="medium"
-              label="Save exercise"
+              label={id ? "Save changes" : "Create exercise"}
               type="submit"
-              handleClick={handleSubmit}
+              handleClick={(e) => handleSubmit(e, id)}
             />
           </form>
-          {/*<div className={styles["container__selected-items"]}>*/}
-          {/*  <p>Selected Muscles</p>*/}
-          {/*  <ul className={styles["selected-muscles__list"]}>*/}
-          {/*    {formData.primaryMuscle.map((muscle) => {*/}
-          {/*      console.log();*/}
-          {/*      return (*/}
-          {/*        <li key={muscle}>*/}
-          {/*          <FontAwesomeIcon icon={faXmark} />*/}
-          {/*          {muscle}*/}
-          {/*        </li>*/}
-          {/*      );*/}
-          {/*    })}*/}
-          {/*  </ul>*/}
-          {/*  {formData.videoUrl && (*/}
-          {/*    <>*/}
-          {/*      <p>Video Preview</p>*/}
-          {/*      <iframe*/}
-          {/*        className={styles["create-exercise__iframe"]}*/}
-          {/*        src={getEmbedUrl(formData.videoUrl)}*/}
-          {/*        title="Exercise demo video"*/}
-          {/*        frameBorder="0"*/}
-          {/*        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"*/}
-          {/*      />*/}
-          {/*    </>*/}
-          {/*  )}*/}
-          {/*</div>*/}
         </div>
       </Modal>
     </div>
