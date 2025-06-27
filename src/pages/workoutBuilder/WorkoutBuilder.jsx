@@ -1,32 +1,27 @@
 import styles from "./WorkoutBuilder.module.css";
 import axios from "axios";
-import { InputField } from "../../components/inputField/InputField.jsx";
-import { Button } from "../../components/button/Button.jsx";
-
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 // Components
 import { TableRow } from "../../components/tableRow/TableRow.jsx";
-
-// Data
-import { EXERCISES } from "../../data/exerciseData.js";
+import { InputField } from "../../components/inputField/InputField.jsx";
+import { Button } from "../../components/button/Button.jsx";
 import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
-import { API_ENDPOINTS } from "../../api/api.js";
 import { LoadingSpinner } from "../../components/loadingSpinner/LoadingSpinner.jsx";
 import { FilteredSearch } from "../../components/filteredSearch/FilteredSearch.jsx";
 
+// Api
+import { API_ENDPOINTS } from "../../api/api.js";
+
 export function WorkoutBuilder() {
+  // exercises state main purpose is UI, drag and drop and adding parameters
   const [exercises, setExercises] = useState([]);
+  // exercisesFromApi state is for http request to get all the exercises
   const [exercisesFromApi, setExercisesFromApi] = useState([]);
   const [searchValue, setSearchValue] = useState("");
-  const [workoutTemplate, setWorkoutTemplate] = useState({
-    id: "",
-    workoutName: "",
-    createdAt: "",
-    createdBy: "",
-  });
   const [workoutName, setWorkoutName] = useState("");
+  // utility states
   const [isLoading, setIsLoading] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState({
     open: false,
@@ -43,6 +38,7 @@ export function WorkoutBuilder() {
     setShowSearchFilter(true);
   }, [searchValue]);
 
+  // get all exercises from api and into state
   async function getAllExercises() {
     try {
       setIsLoading(true);
@@ -51,7 +47,6 @@ export function WorkoutBuilder() {
           "novi-education-project-id": import.meta.env.VITE_API_KEY,
         },
       });
-      // console.log(data);
       setExercisesFromApi(data);
     } catch (error) {
       console.error(error);
@@ -60,6 +55,7 @@ export function WorkoutBuilder() {
     }
   }
 
+  // function to get the current highest workout id from the workoutTemplates
   const getHightestWorkoutId = async () => {
     try {
       setIsLoading(true);
@@ -69,7 +65,8 @@ export function WorkoutBuilder() {
         },
       });
 
-      // map workout template id's to new array and sort it from high to low. Get highest num by [0]. Needed when saving the exercise.
+      // map workout template id's to new array and sort it from high to low. Get highest num by [0].
+      // Needed when saving the exercise
       let currentHighest = 0;
 
       if (data.length > 0) {
@@ -81,7 +78,7 @@ export function WorkoutBuilder() {
             return b - a;
           })[0];
       }
-
+      // add 1 to increment to the correct count
       return currentHighest + 1;
     } catch (error) {
       console.error(error);
@@ -90,17 +87,22 @@ export function WorkoutBuilder() {
     }
   };
 
+  // function to handle the changes to the (sets, reps, rest) parameters per exercise
   function handleExerciseParameterChange(e, exerciseId) {
     const { name, value } = e.target;
 
-    setExercises((previousExercise) => {
-      return previousExercise.map((exercise) => {
+    // takes an anonymous function with previousExercises as a param, which are exercises already in the state
+    setExercises((previousExercises) => {
+      return previousExercises.map((exercise) => {
+        // check if ids are the same
+        // return new object with updated sets reps and rest
         if (exercise.id === exerciseId) {
           return {
-            ...exercise,
-            [name]: value,
+            ...exercise, // spread existing obj properties
+            [name]: value, // dynamic update of changed property
           };
         } else {
+          // else return exercise unchanged
           return exercise;
         }
       });
@@ -119,7 +121,7 @@ export function WorkoutBuilder() {
     if (!id) {
       return;
     }
-
+    // temporary array copy that keeps all the exercises that don't have matching ids
     const updatedExerciseArray = exercises.filter((exercise) => {
       return exercise.id !== id;
     });
@@ -127,13 +129,13 @@ export function WorkoutBuilder() {
     setExercises(updatedExerciseArray);
   }
 
-  // functie to add the workout template to the database
+  // functie to add the workout template to database
   async function postWorkoutTemplate(template) {
     try {
       const response = await axios.post(
         API_ENDPOINTS.workoutTemplates,
 
-        template,
+        template, // workout template object as data
 
         {
           headers: {
@@ -150,6 +152,7 @@ export function WorkoutBuilder() {
 
   // function to handle the save workout logic: constructing and posting the template and adding the exercises afterwards
   async function handleWorkoutSave() {
+    // check if there are workouts added and if there's a name, if not: return
     if (!workoutName || exercises.length === 0) {
       setShowSnackbar({
         open: true,
@@ -158,6 +161,7 @@ export function WorkoutBuilder() {
       });
       return;
     }
+
     const templateId = await getHightestWorkoutId();
 
     try {
@@ -165,7 +169,7 @@ export function WorkoutBuilder() {
         id: templateId,
         name: workoutName,
         createdAt: new Date().toISOString(),
-        createdByUsersId: "1",
+        createdByUsersId: "1", // TODO: add user through useContext() hook
       };
 
       // push the template & exercises to db
@@ -186,22 +190,27 @@ export function WorkoutBuilder() {
       });
     }
   }
-
+  // function that adds the exercises to the database
+  // TODO: low prio - change to Promise.all
   async function handleExercisesSave(templateId, exercisesData) {
+    // reset snackbar
     try {
       setShowSnackbar({
         open: false,
         message: "",
         status: "",
       });
+
+      // loop over all exercises that are currently in de exercisesData array
       for (let i = 0; i < exercisesData.length; i++) {
+        // create a scoped data object to add to post request with each iteration
         const data = {
-          workoutTemplateId: templateId,
-          exerciseId: exercisesData[i].id,
-          sets: exercisesData[i].sets || 3,
+          workoutTemplateId: templateId, // parent workout template id
+          exerciseId: exercisesData[i].id, // exercise id (matches exercises from api)
+          sets: exercisesData[i].sets || 3, // paramaters with default if no value is given
           reps: exercisesData[i].reps || 12,
           rest: exercisesData[i].rest || 90,
-          index: i,
+          index: i, // use index of loop to set the exercise order (for when we have to get the workout later)
         };
 
         const response = await axios.post(
@@ -226,7 +235,9 @@ export function WorkoutBuilder() {
     }
   }
 
+  // function that handles the selection of an exercise from the search exercise filtering dropdown
   function handleFilterSelectExercise(exercise) {
+    // check if the exercise is already in the workout
     const duplicate = exercises.some((e) => {
       return e.id === exercise.id;
     });
@@ -240,6 +251,9 @@ export function WorkoutBuilder() {
       return;
     }
 
+    // add selected exercise to exercises state
+    // While keeping all the previous items in the array (functional state update, de nieuwe baseren op de vorige)
+    // Only set the id and name so the parameters can be filled in later.
     setExercises((previous) => [
       ...previous,
       { id: exercise.id, name: exercise.name, sets: "", reps: "", rest: "" },
@@ -252,17 +266,23 @@ export function WorkoutBuilder() {
     setSearchValue("");
   }
 
+  // regular exercise search
   function handleExerciseSearch(data) {
+    // cleanup the searchQuery (might need moving to where it's been set in state)
     const searchQuery = searchValue.toLowerCase().trim();
     setShowSnackbar({
       open: false,
       message: "",
       status: "",
     });
+
+    // data is just the exercises
+    // check for exercise in data
     const result = data.find((exercise) => {
       return exercise.name.toLowerCase() === searchQuery;
     });
 
+    // check if exercise is already in the workout
     if (result) {
       if (exercises.some((exercise) => exercise.id === result.id)) {
         setShowSnackbar({
@@ -271,10 +291,10 @@ export function WorkoutBuilder() {
           status: "error",
         });
 
-        return; // Stop hier en voeg niets toe
+        return; // Stop early and don't add
       }
 
-      // Voeg toe als het GEEN duplicaat is
+      // Add exercise if it's no duplicate, while making sure the previous state/exercises stay the same by spreading
       setExercises((previous) => [
         ...previous,
         {

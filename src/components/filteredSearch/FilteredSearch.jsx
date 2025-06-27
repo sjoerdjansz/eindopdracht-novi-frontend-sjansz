@@ -12,6 +12,7 @@ export function FilteredSearch({
 
   // filtering logic
   useEffect(() => {
+    // create copy of exercises so we can use it to search and add it to the state
     let filteredExercises = exercises;
     if (searchValue) {
       filteredExercises = filteredExercises.filter((exercise) => {
@@ -19,19 +20,21 @@ export function FilteredSearch({
       });
     }
     setSearchQuery(filteredExercises);
-  }, [exercises, searchValue]);
+  }, [exercises, searchValue]); // update on exercises or searchValue change
 
   // usEffect for click outside of component
   useEffect(() => {
     function handleClick(e) {
+      // TODO: understand refs better, copy paste code.
       if (
-        searchFilterRef.current &&
-        !searchFilterRef.current.contains(e.target)
+        searchFilterRef.current && // check if the reference is true (this is the DOM node of filtered search). .current is filled with the DOM node.
+        !searchFilterRef.current.contains(e.target) // and if the click didn't happen in the DOM node
       ) {
-        onClose();
+        onClose(); // then we call onClose - which closes the search filter
       }
     }
-    document.addEventListener("mousedown", handleClick);
+    document.addEventListener("mousedown", handleClick); // listen for mousedown event and call the handleClick function.
+
     // unmounting phase/return
     return () => document.removeEventListener("mousedown", handleClick);
   }, [onClose]);
