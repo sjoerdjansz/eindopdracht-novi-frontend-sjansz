@@ -3,7 +3,7 @@ import axios from "axios";
 import { InputField } from "../../components/inputField/InputField.jsx";
 import { Button } from "../../components/button/Button.jsx";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 // Components
 import { TableRow } from "../../components/tableRow/TableRow.jsx";
@@ -26,7 +26,8 @@ export function WorkoutBuilder() {
     createdAt: "",
     createdBy: "",
   });
-  const [workoutExercise, setWorkoutExercise] = useState([]);
+  const [workoutName, setWorkoutName] = useState("");
+  const [workoutExercises, setWorkoutExercises] = useState([]);
 
   // 1. Onderstaande workoutExercises object moet toegevoegd worden aan de workoutExercises array bij
   // elke nieuw toegevoegde oefening in de workout.
@@ -47,6 +48,22 @@ export function WorkoutBuilder() {
     getAllExercises();
   }, []);
 
+  // function addExerciseToTemplate(addedExercises, templateId) {
+  //   console.log(addedExercises);
+  //   setWorkoutExercises((prevState) => [
+  //     ...prevState,
+  //     {
+  //       id: addedExercises.id,
+  //       workoutTemplateId: templateId,
+  //       exerciseId: addedExercises.id,
+  //       sets: addedExercises.sets,
+  //       reps: addedExercises.reps,
+  //       rest: addedExercises.rest,
+  //       index: addedExercises.index,
+  //     },
+  //   ]);
+  // }
+
   async function getAllExercises() {
     try {
       const { data } = await axios.get(API_ENDPOINTS.exercises, {
@@ -54,31 +71,138 @@ export function WorkoutBuilder() {
           "novi-education-project-id": import.meta.env.VITE_API_KEY,
         },
       });
-      console.log(data);
+      // console.log(data);
       setExercisesFromApi(data);
     } catch (error) {
       console.error(error);
     }
   }
 
-  function handleExerciseParameterChange(e) {
+  const getHightestWorkoutId = async () => {
+    try {
+      const { data } = await axios.get(API_ENDPOINTS.workoutTemplates, {
+        headers: {
+          "novi-education-project-id": import.meta.env.VITE_API_KEY,
+        },
+      });
+
+      // map workout template id's to new array and sort it from high to low. Get highest num by [0]. Needed when saving the exercise.
+      let currentHighest = 0;
+
+      if (data.length > 0) {
+        currentHighest = data
+          .map((template) => {
+            return template.id;
+          })
+          .sort((a, b) => {
+            return b - a;
+          })[0];
+      }
+
+      return currentHighest + 1;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  function handleExerciseParameterChange(e, exerciseId) {
     const { name, value } = e.target;
-    console.log(value);
-    console.log(name);
+
+    setExercises((previousExercise) => {
+      return previousExercise.map((exercise) => {
+        if (exercise.id === exerciseId) {
+          return {
+            ...exercise,
+            [name]: value,
+          };
+        } else {
+          return exercise;
+        }
+      });
+    });
   }
+
   function handleSearchChange(e) {
     setSearchValue(e.target.value);
   }
 
   function handleWorkoutNameChange(e) {
-    setWorkoutTemplate({
-      ...workoutTemplate,
-      workoutName: e.target.value,
-    });
+    setWorkoutName(e.target.value);
   }
 
-  function handleWorkoutSave() {
-    console.log(workoutTemplate);
+  // functie to add the workout template to the database
+  async function postWorkoutTemplate(template) {
+    try {
+      const response = await axios.post(
+        API_ENDPOINTS.workoutTemplates,
+
+        template,
+
+        {
+          headers: {
+            "novi-education-project-id": import.meta.env.VITE_API_KEY,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // function to handle the save workout logic: constructing and posting the template and adding the exercises afterwards
+  async function handleWorkoutSave() {
+    const templateId = await getHightestWorkoutId();
+
+    try {
+      const workoutTemplateToSave = {
+        id: templateId,
+        name: workoutName,
+        createdAt: new Date().toISOString(),
+        createdByUsersId: "1",
+      };
+
+      // push the template to db
+      await postWorkoutTemplate(workoutTemplateToSave);
+
+      handleExercisesSave(templateId, exercises);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // 1. bij toevoegen van oefening wordt er een exercise state gemaakt inclusief sets reps rest, per oefening object
+  // 2. als ik de save ga doen, map ik over de exercise state en vul ik een saved exercises array met objecten die overeenkomt met database data
+  // 3. ik doe de post request net zo vaak als het aantal oefeningen in de array
+  // 4. ik handle success en error af. let op: ook nog even een loading animation bij ophalen alle exercises bij onMount
+  async function handleExercisesSave(templateId, exercisesData) {
+    try {
+      for (let i = 0; i < exercisesData.length; i++) {
+        const data = {
+          workoutTemplateId: templateId,
+          exerciseId: exercisesData[i].id,
+          sets: exercisesData[i].sets,
+          reps: exercisesData[i].reps,
+          rest: exercisesData[i].rest,
+          index: i,
+        };
+
+        const response = await axios.post(
+          API_ENDPOINTS.workoutExercises,
+          data,
+          {
+            headers: {
+              "novi-education-project-id": import.meta.env.VITE_API_KEY,
+              "content-type": "application/json",
+            },
+          },
+        );
+        console.log(response.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   function handleExerciseSearch(data) {
@@ -105,9 +229,9 @@ export function WorkoutBuilder() {
         {
           id: result.id,
           name: result.name,
-          sets: result.sets,
-          reps: result.reps,
-          rest: result.rest,
+          sets: "",
+          reps: "",
+          rest: "",
         },
       ]);
       setSearchValue("");
@@ -125,7 +249,7 @@ export function WorkoutBuilder() {
     e.dataTransfer.effectAllowed = "move";
 
     //pakt met de closest property het dichtsbijzinde html element
-    const row = e.target.closest("tr");
+    const row = e.currentTarget;
     // als waar dan voert hij de volgende berekeningen uit:
     if (row) {
       //ingebouwde method die een vierkantje om het geselecteerde element maakt
@@ -157,10 +281,13 @@ export function WorkoutBuilder() {
   function handleDrop(e, id) {
     e.preventDefault();
 
+    // let op: dataTransfer.getData() wordt altijd een string, daarom de checks in de code ook type matchen
     const draggedItemNumber = e.dataTransfer.getData("text/plain");
-    const dropItemNumber = id;
+    const dropItemNumber = id.toString();
 
     //Logica van array rangschikking
+
+    if (draggedItemNumber === id) return;
 
     // copy van de array welke volgens react goed is (arrCopy = exercises) mag niet omdat het een
     // verwijzing naar dezelde array uit state is.
@@ -168,12 +295,12 @@ export function WorkoutBuilder() {
 
     // verificatie van de id en positie van de dragged item
     const originalItemPosition = arrCopy.findIndex((exercise) => {
-      return exercise.id === draggedItemNumber;
+      return exercise.id.toString() === draggedItemNumber;
     });
 
     // verificatie van de id en positie van de dropped item
     const newItemPosition = arrCopy.findIndex((exercise) => {
-      return exercise.id === dropItemNumber;
+      return exercise.id.toString() === dropItemNumber;
     });
 
     // het verplaatste item
@@ -229,7 +356,7 @@ export function WorkoutBuilder() {
               id="name"
               placeholder="Workout name"
               handleChange={handleWorkoutNameChange}
-              value={workoutTemplate.name}
+              value={workoutName}
             />
           </InputWrapper>
           <Button
@@ -256,18 +383,19 @@ export function WorkoutBuilder() {
             </thead>
             <tbody>
               {/*Onderstaande inline manier is niet de meest performance efficiente blijkbaar*/}
-              {exercises.map((exercise) => {
-                return (
-                  <TableRow
-                    key={exercise.id}
-                    exercise={exercise}
-                    handleDragOver={handleDragOver}
-                    onDragStart={(e) => handleDragStart(e, exercise.id)}
-                    onDrop={(e) => handleDrop(e, exercise.id)}
-                    handleChange={handleExerciseParameterChange}
-                  />
-                );
-              })}
+              {exercises.length > 0 &&
+                exercises.map((exercise) => {
+                  return (
+                    <TableRow
+                      key={exercise.id}
+                      exercise={exercise}
+                      handleDragOver={handleDragOver}
+                      onDragStart={(e) => handleDragStart(e, exercise.id)}
+                      onDrop={(e) => handleDrop(e, exercise.id)}
+                      handleChange={handleExerciseParameterChange}
+                    />
+                  );
+                })}
             </tbody>
           </table>
         )}

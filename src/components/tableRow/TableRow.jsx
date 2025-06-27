@@ -18,12 +18,10 @@ export function TableRow({
       className={styles["draggable"]}
       onDragOver={handleDragOver}
       onDrop={onDrop}
+      draggable={true}
+      onDragStart={onDragStart}
     >
-      <td
-        draggable={true}
-        onDragStart={onDragStart}
-        className={`${styles["table-align-center"]} ${styles["drag-icon"]}`}
-      >
+      <td className={`${styles["table-align-center"]} ${styles["drag-icon"]}`}>
         <span>
           <FontAwesomeIcon icon={faGripVertical} />
         </span>
@@ -35,7 +33,7 @@ export function TableRow({
           type="text"
           id="sets"
           name="sets"
-          onChange={handleChange}
+          onChange={(e) => handleChange(e, exercise.id)}
           value={exercise.sets}
         />
       </td>
@@ -45,7 +43,7 @@ export function TableRow({
           type="text"
           id="reps"
           name="reps"
-          onChange={handleChange}
+          onChange={(e) => handleChange(e, exercise.id)}
           value={exercise.reps}
         />
       </td>
@@ -55,7 +53,7 @@ export function TableRow({
           type="text"
           id="rest"
           name="rest"
-          onChange={handleChange}
+          onChange={(e) => handleChange(e, exercise.id)}
           value={exercise.rest}
         />
       </td>
