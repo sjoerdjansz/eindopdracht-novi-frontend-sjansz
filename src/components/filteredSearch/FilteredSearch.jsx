@@ -41,7 +41,7 @@ export function FilteredSearch({
 
   return (
     searchValue.length > 0 &&
-    searchQuery.length > 1 && (
+    searchQuery.length > 0 && (
       <div className={styles["filtered-search"]} ref={searchFilterRef}>
         <ul className={styles["filtered-search__dropdown"]}>
           {searchQuery &&
