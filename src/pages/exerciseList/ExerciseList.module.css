@@ -30,6 +30,7 @@
 
 .exercise-list__icons > span > * {
   cursor: pointer;
+  min-width: 1rem;
 }
 
 .exercise-list__icons > span > *:hover {

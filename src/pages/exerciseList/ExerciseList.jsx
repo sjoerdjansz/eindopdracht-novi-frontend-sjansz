@@ -74,14 +74,24 @@ export function ExerciseList() {
     try {
       setIsLoading(true);
       const response = await axios.get(API_ENDPOINTS.exercises, {
-        headers: { "novi-education-project-id": import.meta.env.VITE_API_KEY },
+        headers: {
+          "novi-education-project-id": import.meta.env.VITE_API_KEY,
+        },
       });
 
-      let newData = valueToLabel(response.data, MOVEMENTS, "movement");
-      newData = valueToLabel(newData, MUSCLE_GROUPS, "primaryMuscle");
+      let cleanedExercises = valueToLabel(response.data, MOVEMENTS, "movement");
+      cleanedExercises = valueToLabel(
+        cleanedExercises,
+        MUSCLE_GROUPS,
+        "primaryMuscle",
+      );
 
-      setOriginalExercises(newData);
-      setFindExercises(newData);
+      const sortedExercises = cleanedExercises.sort((a, b) => {
+        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+      });
+
+      setOriginalExercises(sortedExercises);
+      setFindExercises(sortedExercises);
     } catch (e) {
       setErrorMessage(
         `${e.response.status}: ${e.code}. Failed to load exercises.`,
@@ -141,6 +151,8 @@ export function ExerciseList() {
   return (
     <div className={styles["exercise-list"]}>
       <h1>Exercise List</h1>
+      {isLoading && <LoadingSpinner />}
+
       {deleteItem && (
         <DeleteConfirmation
           title="Are you sure you want to delete"
@@ -169,7 +181,6 @@ export function ExerciseList() {
           label="create exercise"
           handleClick={handleCreateExerciseClick}
         />
-        {isLoading && <LoadingSpinner />}
         <div className={styles["exercise-list__inputs"]}>
           <InputWrapper>
             <SelectField

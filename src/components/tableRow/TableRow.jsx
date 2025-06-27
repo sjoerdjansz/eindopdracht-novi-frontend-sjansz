@@ -12,6 +12,7 @@ export function TableRow({
   onDragStart,
   exercise,
   handleChange,
+  handleDelete,
 }) {
   return (
     <tr
@@ -22,7 +23,7 @@ export function TableRow({
       onDragStart={onDragStart}
     >
       <td className={`${styles["table-align-center"]} ${styles["drag-icon"]}`}>
-        <span>
+        <span className={styles["drag-icon__inner"]}>
           <FontAwesomeIcon icon={faGripVertical} />
         </span>
       </td>
@@ -61,8 +62,7 @@ export function TableRow({
         <div>
           <div className={styles["table-row__icons"]}>
             <span>
-              <FontAwesomeIcon icon={faPenToSquare} />
-              <FontAwesomeIcon icon={faTrash} />
+              <FontAwesomeIcon icon={faTrash} onClick={handleDelete} />
             </span>
           </div>
         </div>

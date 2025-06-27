@@ -388,30 +388,228 @@
     "exercises": [
       {
         "id": 1,
-        "name": "Barbell Squat",
+        "name": "Barbell Back Squat",
         "bodypart": "legs",
         "movement": "squatting",
         "primaryMuscle": "quadriceps",
-        "instructions": "Place the bar on your upper back, brace your core and squat down until your thighs are parallel to the floor. Drive through your heels to return to standing.",
-        "videoURL": "https://example.com/barbell-squat"
+        "instructions": "Place the barbell on your upper traps, brace your core, and squat down until your thighs are parallel to the floor. Push through your heels to return to standing.",
+        "videoURL": "https://example.com/barbell-back-squat"
       },
       {
         "id": 2,
+        "name": "Romanian Deadlift",
+        "bodypart": "glutes",
+        "movement": "hipHinge",
+        "primaryMuscle": "gluteusMaximus",
+        "instructions": "Hold the barbell with an overhand grip, keep your knees slightly bent, and hinge at the hips to lower the bar along your legs. Return to standing by contracting your glutes.",
+        "videoURL": "https://example.com/romanian-deadlift"
+      },
+      {
+        "id": 3,
+        "name": "Flat Barbell Bench Press",
+        "bodypart": "chest",
+        "movement": "horizontalPush",
+        "primaryMuscle": "pectoralisMajor",
+        "instructions": "Lie on a flat bench, lower the barbell to your mid-chest and press it back up until your arms are extended.",
+        "videoURL": "https://example.com/bench-press"
+      },
+      {
+        "id": 4,
+        "name": "Pull-Up",
+        "bodypart": "back",
+        "movement": "verticalPull",
+        "primaryMuscle": "latissimusDorsi",
+        "instructions": "Grab the bar with a shoulder-width grip, pull your chest toward the bar by squeezing your lats, then slowly lower down.",
+        "videoURL": "https://example.com/pull-up"
+      },
+      {
+        "id": 5,
+        "name": "Overhead Barbell Press",
+        "bodypart": "shoulders",
+        "movement": "verticalPush",
+        "primaryMuscle": "deltoideus",
+        "instructions": "Start with the barbell at shoulder height and press it overhead until your arms are fully extended.",
+        "videoURL": "https://example.com/overhead-press"
+      },
+      {
+        "id": 6,
+        "name": "Barbell Bent-Over Row",
+        "bodypart": "back",
+        "movement": "horizontalPull",
+        "primaryMuscle": "rhomboideus",
+        "instructions": "Hinge at the hips with a barbell in hand, pull it toward your belly by retracting your shoulder blades.",
+        "videoURL": "https://example.com/barbell-row"
+      },
+      {
+        "id": 7,
+        "name": "Dumbbell Lateral Raise",
+        "bodypart": "shoulders",
+        "movement": "accessory",
+        "primaryMuscle": "deltoideus",
+        "instructions": "Lift dumbbells to your sides until shoulder height, keeping a slight bend in your elbows.",
+        "videoURL": "https://example.com/lateral-raise"
+      },
+      {
+        "id": 8,
+        "name": "Barbell Curl",
+        "bodypart": "arms",
+        "movement": "accessory",
+        "primaryMuscle": "bicepsBrachii",
+        "instructions": "Hold the barbell with an underhand grip and curl it toward your shoulders, keeping elbows tucked.",
+        "videoURL": "https://example.com/barbell-curl"
+      },
+      {
+        "id": 9,
+        "name": "Triceps Rope Pushdown",
+        "bodypart": "arms",
+        "movement": "accessory",
+        "primaryMuscle": "tricepsBrachii",
+        "instructions": "Using a cable machine, push the rope down until arms are extended. Control the return.",
+        "videoURL": "https://example.com/rope-pushdown"
+      },
+      {
+        "id": 10,
+        "name": "Seated Cable Row",
+        "bodypart": "back",
+        "movement": "horizontalPull",
+        "primaryMuscle": "trapezius",
+        "instructions": "Sit on the machine, pull the handle toward your torso while squeezing the shoulder blades.",
+        "videoURL": "https://example.com/cable-row"
+      },
+      {
+        "id": 11,
+        "name": "Leg Press",
+        "bodypart": "legs",
+        "movement": "squatting",
+        "primaryMuscle": "quadriceps",
+        "instructions": "Push the platform with your feet, extending your legs without locking the knees.",
+        "videoURL": "https://example.com/leg-press"
+      },
+      {
+        "id": 12,
+        "name": "Walking Lunge",
+        "bodypart": "legs",
+        "movement": "squatting",
+        "primaryMuscle": "bicepsFemoris",
+        "instructions": "Step forward into a lunge, lower until the back knee nearly touches the ground, and push through the front foot to stand.",
+        "videoURL": "https://example.com/walking-lunge"
+      },
+      {
+        "id": 13,
         "name": "Hip Thrust",
         "bodypart": "glutes",
         "movement": "hipHinge",
         "primaryMuscle": "gluteusMaximus",
-        "instructions": "Stand with feet hip-width apart, grip the barbell, keep your back straight and lift the weight by extending your hips and knees.",
-        "videoURL": "https://example.com/deadlift"
+        "instructions": "Place your upper back on a bench, feet flat, and thrust your hips upward until fully extended.",
+        "videoURL": "https://example.com/hip-thrust"
       },
       {
-        "id": 3,
-        "name": "Bench Press",
+        "id": 14,
+        "name": "Chest Fly (Machine)",
         "bodypart": "chest",
         "movement": "horizontalPush",
         "primaryMuscle": "pectoralisMajor",
-        "instructions": "Lie flat on a bench, lower the barbell to your chest with control and press it back up to arm's length.",
-        "videoURL": "https://example.com/bench-press"
+        "instructions": "With arms extended at chest height, bring the handles together in front of your chest, then slowly return.",
+        "videoURL": "https://example.com/chest-fly"
+      },
+      {
+        "id": 15,
+        "name": "Face Pull",
+        "bodypart": "shoulders",
+        "movement": "horizontalPull",
+        "primaryMuscle": "trapezius",
+        "instructions": "Using a rope at face height, pull toward your nose while keeping elbows high.",
+        "videoURL": "https://example.com/face-pull"
+      },
+      {
+        "id": 16,
+        "name": "Cable Lateral Raise",
+        "bodypart": "shoulders",
+        "movement": "accessory",
+        "primaryMuscle": "deltoideus",
+        "instructions": "Raise the cable handle sideways until your arm is parallel to the ground.",
+        "videoURL": "https://example.com/cable-lateral-raise"
+      },
+      {
+        "id": 17,
+        "name": "Hammer Curl",
+        "bodypart": "arms",
+        "movement": "accessory",
+        "primaryMuscle": "brachialis",
+        "instructions": "Hold dumbbells in a neutral grip and curl them toward your shoulders.",
+        "videoURL": "https://example.com/hammer-curl"
+      },
+      {
+        "id": 18,
+        "name": "Incline Dumbbell Press",
+        "bodypart": "chest",
+        "movement": "horizontalPush",
+        "primaryMuscle": "pectoralisMajor",
+        "instructions": "Press the dumbbells from your chest at a 45-degree incline bench.",
+        "videoURL": "https://example.com/incline-press"
+      },
+      {
+        "id": 19,
+        "name": "Cable Crunch",
+        "bodypart": "core",
+        "movement": "core",
+        "primaryMuscle": "rectusAbdominis",
+        "instructions": "Kneel and crunch downward using a rope, focusing on contracting your abs.",
+        "videoURL": "https://example.com/cable-crunch"
+      },
+      {
+        "id": 20,
+        "name": "Russian Twist",
+        "bodypart": "core",
+        "movement": "core",
+        "primaryMuscle": "externalObliques",
+        "instructions": "Sit with knees bent, twist your torso from side to side while holding a weight.",
+        "videoURL": "https://example.com/russian-twist"
+      },
+      {
+        "id": 21,
+        "name": "Standing Calf Raise",
+        "bodypart": "legs",
+        "movement": "accessory",
+        "primaryMuscle": "gastrocnemius",
+        "instructions": "Stand on a platform and raise your heels by contracting your calves.",
+        "videoURL": "https://example.com/standing-calf-raise"
+      },
+      {
+        "id": 22,
+        "name": "Seated Calf Raise",
+        "bodypart": "legs",
+        "movement": "accessory",
+        "primaryMuscle": "soleus",
+        "instructions": "Sit with the machine pad over your thighs and lift your heels.",
+        "videoURL": "https://example.com/seated-calf-raise"
+      },
+      {
+        "id": 23,
+        "name": "Reverse Crunch",
+        "bodypart": "core",
+        "movement": "core",
+        "primaryMuscle": "rectusAbdominis",
+        "instructions": "Lie on your back and bring your knees toward your chest by curling your hips upward.",
+        "videoURL": "https://example.com/reverse-crunch"
+      },
+      {
+        "id": 24,
+        "name": "Dumbbell Shoulder Press",
+        "bodypart": "shoulders",
+        "movement": "verticalPush",
+        "primaryMuscle": "deltoideus",
+        "instructions": "Press dumbbells overhead from shoulder level until arms are fully extended.",
+        "videoURL": "https://example.com/dumbbell-shoulder-press"
+      },
+      {
+        "id": 25,
+        "name": "Lat Pulldown",
+        "bodypart": "back",
+        "movement": "verticalPull",
+        "primaryMuscle": "latissimusDorsi",
+        "instructions": "Pull the bar down to your chest while keeping your torso upright and elbows driving down.",
+        "videoURL": "https://example.com/lat-pulldown"
       }
     ],
     "workoutExercises": [

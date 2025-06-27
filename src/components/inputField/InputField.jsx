@@ -12,6 +12,7 @@ export function InputField({
   toggleHandler,
   style,
   required,
+  onFocus,
 }) {
   return (
     <>
@@ -30,6 +31,7 @@ export function InputField({
           value={value}
           onChange={handleChange}
           placeholder={placeholder}
+          onFocus={onFocus}
         />
 
         {icon && (

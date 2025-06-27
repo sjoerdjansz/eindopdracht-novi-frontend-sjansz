@@ -13,13 +13,13 @@ import { EXERCISES } from "../../data/exerciseData.js";
 import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
 import { API_ENDPOINTS } from "../../api/api.js";
+import { LoadingSpinner } from "../../components/loadingSpinner/LoadingSpinner.jsx";
+import { FilteredSearch } from "../../components/filteredSearch/FilteredSearch.jsx";
 
 export function WorkoutBuilder() {
   const [exercises, setExercises] = useState([]);
   const [exercisesFromApi, setExercisesFromApi] = useState([]);
   const [searchValue, setSearchValue] = useState("");
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
   const [workoutTemplate, setWorkoutTemplate] = useState({
     id: "",
     workoutName: "",
@@ -27,45 +27,25 @@ export function WorkoutBuilder() {
     createdBy: "",
   });
   const [workoutName, setWorkoutName] = useState("");
-  const [workoutExercises, setWorkoutExercises] = useState([]);
-
-  // 1. Onderstaande workoutExercises object moet toegevoegd worden aan de workoutExercises array bij
-  // elke nieuw toegevoegde oefening in de workout.
-  // 2. Vervolgens functie maken om de workout array te vullen met de exercises, denk aan spread operator
-  // 3. Een aparte edit functie maken om de sets, reps en rest per oefening aan te kunnen passen
-  // 4. Het hele schema opslaan in de backend door eerst de template op te slaan en daarna de exercises.
-  // (5.) nog ff checken of de handleworkout name change niet overkill is
-
-  // id: "",
-  // workoutTemplateId: "",
-  // exerciseId: "",
-  // sets: "",
-  // reps: "",
-  // rest: "",
-  // index: "",
+  const [isLoading, setIsLoading] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState({
+    open: false,
+    message: "",
+    status: "",
+  });
+  const [showSearchFilter, setShowSearchFilter] = useState(false);
 
   useEffect(() => {
     getAllExercises();
   }, []);
 
-  // function addExerciseToTemplate(addedExercises, templateId) {
-  //   console.log(addedExercises);
-  //   setWorkoutExercises((prevState) => [
-  //     ...prevState,
-  //     {
-  //       id: addedExercises.id,
-  //       workoutTemplateId: templateId,
-  //       exerciseId: addedExercises.id,
-  //       sets: addedExercises.sets,
-  //       reps: addedExercises.reps,
-  //       rest: addedExercises.rest,
-  //       index: addedExercises.index,
-  //     },
-  //   ]);
-  // }
+  useEffect(() => {
+    setShowSearchFilter(true);
+  }, [searchValue]);
 
   async function getAllExercises() {
     try {
+      setIsLoading(true);
       const { data } = await axios.get(API_ENDPOINTS.exercises, {
         headers: {
           "novi-education-project-id": import.meta.env.VITE_API_KEY,
@@ -75,11 +55,14 @@ export function WorkoutBuilder() {
       setExercisesFromApi(data);
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   const getHightestWorkoutId = async () => {
     try {
+      setIsLoading(true);
       const { data } = await axios.get(API_ENDPOINTS.workoutTemplates, {
         headers: {
           "novi-education-project-id": import.meta.env.VITE_API_KEY,
@@ -102,6 +85,8 @@ export function WorkoutBuilder() {
       return currentHighest + 1;
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -130,6 +115,18 @@ export function WorkoutBuilder() {
     setWorkoutName(e.target.value);
   }
 
+  function handleDeleteExercise(id) {
+    if (!id) {
+      return;
+    }
+
+    const updatedExerciseArray = exercises.filter((exercise) => {
+      return exercise.id !== id;
+    });
+
+    setExercises(updatedExerciseArray);
+  }
+
   // functie to add the workout template to the database
   async function postWorkoutTemplate(template) {
     try {
@@ -153,6 +150,14 @@ export function WorkoutBuilder() {
 
   // function to handle the save workout logic: constructing and posting the template and adding the exercises afterwards
   async function handleWorkoutSave() {
+    if (!workoutName || exercises.length === 0) {
+      setShowSnackbar({
+        open: true,
+        message: "Make sure the workout has a name and at least one exercise",
+        status: "error",
+      });
+      return;
+    }
     const templateId = await getHightestWorkoutId();
 
     try {
@@ -163,28 +168,39 @@ export function WorkoutBuilder() {
         createdByUsersId: "1",
       };
 
-      // push the template to db
+      // push the template & exercises to db
       await postWorkoutTemplate(workoutTemplateToSave);
+      await handleExercisesSave(templateId, exercises);
 
-      handleExercisesSave(templateId, exercises);
+      setShowSnackbar({
+        open: true,
+        message: "Workout template saved successfully",
+        status: "success",
+      });
     } catch (error) {
       console.error(error);
+      setShowSnackbar({
+        open: true,
+        message: "Error while saving workout",
+        status: "warning",
+      });
     }
   }
 
-  // 1. bij toevoegen van oefening wordt er een exercise state gemaakt inclusief sets reps rest, per oefening object
-  // 2. als ik de save ga doen, map ik over de exercise state en vul ik een saved exercises array met objecten die overeenkomt met database data
-  // 3. ik doe de post request net zo vaak als het aantal oefeningen in de array
-  // 4. ik handle success en error af. let op: ook nog even een loading animation bij ophalen alle exercises bij onMount
   async function handleExercisesSave(templateId, exercisesData) {
     try {
+      setShowSnackbar({
+        open: false,
+        message: "",
+        status: "",
+      });
       for (let i = 0; i < exercisesData.length; i++) {
         const data = {
           workoutTemplateId: templateId,
           exerciseId: exercisesData[i].id,
-          sets: exercisesData[i].sets,
-          reps: exercisesData[i].reps,
-          rest: exercisesData[i].rest,
+          sets: exercisesData[i].sets || 3,
+          reps: exercisesData[i].reps || 12,
+          rest: exercisesData[i].rest || 90,
           index: i,
         };
 
@@ -202,25 +218,60 @@ export function WorkoutBuilder() {
       }
     } catch (error) {
       console.error(error);
+      setShowSnackbar({
+        open: true,
+        message: "Error while saving an exercise",
+        status: "warning",
+      });
     }
+  }
+
+  function handleFilterSelectExercise(exercise) {
+    const duplicate = exercises.some((e) => {
+      return e.id === exercise.id;
+    });
+
+    if (duplicate) {
+      setShowSnackbar({
+        open: true,
+        message: "Exercise is already in workout",
+        status: "error",
+      });
+      return;
+    }
+
+    setExercises((previous) => [
+      ...previous,
+      { id: exercise.id, name: exercise.name, sets: "", reps: "", rest: "" },
+    ]);
+    setShowSnackbar({
+      open: false,
+      message: "",
+      status: "",
+    });
+    setSearchValue("");
   }
 
   function handleExerciseSearch(data) {
     const searchQuery = searchValue.toLowerCase().trim();
-    setShowSnackbar(false);
-
+    setShowSnackbar({
+      open: false,
+      message: "",
+      status: "",
+    });
     const result = data.find((exercise) => {
       return exercise.name.toLowerCase() === searchQuery;
     });
 
     if (result) {
       if (exercises.some((exercise) => exercise.id === result.id)) {
-        console.log(
-          `Exercise --[${result.name}]-- is already in schedule. No duplicates allowed.`,
-        );
-        setSnackbarMessage("Exercise is already in workout");
-        setShowSnackbar(true);
-        return; // Stop hier, voeg niets toe
+        setShowSnackbar({
+          open: true,
+          message: "Exercise is already in workout",
+          status: "error",
+        });
+
+        return; // Stop hier en voeg niets toe
       }
 
       // Voeg toe als het GEEN duplicaat is
@@ -236,9 +287,11 @@ export function WorkoutBuilder() {
       ]);
       setSearchValue("");
     } else {
-      console.log("Exercise not found");
-      setSnackbarMessage("Exercise not found");
-      setShowSnackbar(true);
+      setShowSnackbar({
+        open: true,
+        message: "Exercise not found",
+        status: "warning",
+      });
       setSearchValue("");
     }
   }
@@ -314,19 +367,26 @@ export function WorkoutBuilder() {
 
   return (
     <div className={styles["workout-page"]}>
+      {isLoading && <LoadingSpinner />}
+
       {showSnackbar && (
         <Snackbar
-          message={snackbarMessage}
-          open={showSnackbar}
-          status="warning"
+          message={showSnackbar.message}
+          open={showSnackbar.open}
+          status={showSnackbar.status}
           durationVisible={3000}
-          onClose={() => setShowSnackbar(false)}
+          onClose={() =>
+            setShowSnackbar({
+              ...showSnackbar,
+              open: false,
+            })
+          }
         />
       )}
       <h1>Build Workout</h1>
 
       <section className={styles["workout-page__header"]}>
-        <div>
+        <div className={styles["search-container"]}>
           <InputWrapper>
             <InputField
               type="text"
@@ -335,17 +395,29 @@ export function WorkoutBuilder() {
               placeholder="Search exercise"
               handleChange={handleSearchChange}
               value={searchValue}
+              onFocus={() => setShowSearchFilter(true)}
+            />
+            <Button
+              buttonType="secondary"
+              label="Add"
+              type="button"
+              buttonSize="small"
+              handleClick={() => {
+                handleExerciseSearch(exercisesFromApi);
+              }}
             />
           </InputWrapper>
-          <Button
-            buttonType="secondary"
-            label="Add"
-            type="button"
-            buttonSize="small"
-            handleClick={() => {
-              handleExerciseSearch(exercisesFromApi);
-            }}
-          />
+          {showSearchFilter && (
+            <FilteredSearch
+              exercises={exercisesFromApi}
+              searchValue={searchValue}
+              handleSelectExercise={(exercise) => {
+                handleFilterSelectExercise(exercise);
+                setShowSearchFilter(false);
+              }}
+              onClose={() => setShowSearchFilter(false)}
+            />
+          )}
         </div>
 
         <div>
@@ -393,6 +465,7 @@ export function WorkoutBuilder() {
                       onDragStart={(e) => handleDragStart(e, exercise.id)}
                       onDrop={(e) => handleDrop(e, exercise.id)}
                       handleChange={handleExerciseParameterChange}
+                      handleDelete={() => handleDeleteExercise(exercise.id)}
                     />
                   );
                 })}
