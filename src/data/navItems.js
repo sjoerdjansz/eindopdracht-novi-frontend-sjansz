@@ -18,7 +18,7 @@ export const NAV_ITEMS = [
   {
     id: 4,
     label: "build workout",
-    to: "/workout-builder",
+    to: "/workouts/new-workout",
     icon: faPuzzlePiece,
   },
   { id: 5, label: "clients", to: "/clients", icon: faUser },

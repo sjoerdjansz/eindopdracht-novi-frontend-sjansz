@@ -1,7 +1,8 @@
 export function formatDate() {
   const options = {
     weekday: "short",
-    month: "long",
+    year: "numeric",
+    month: "short",
     day: "numeric",
   };
   return new Date().toLocaleDateString("default", options);

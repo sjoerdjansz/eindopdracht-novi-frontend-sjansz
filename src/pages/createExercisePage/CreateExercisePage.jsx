@@ -198,7 +198,10 @@ export function CreateExercisePage() {
           onClose={() => setShowSnackbar(false)}
         />
       )}
-      <Modal title={id ? "Update Exercise" : "Create New Exercise"}>
+      <Modal
+        title={id ? "Update Exercise" : "Create New Exercise"}
+        path="/exercise-library"
+      >
         <div className={styles["container__layout"]}>
           <form className={styles["create-exercise-form"]}>
             <InputWrapper direction="column">

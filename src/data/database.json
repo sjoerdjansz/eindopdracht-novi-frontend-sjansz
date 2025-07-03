@@ -291,26 +291,32 @@
       {
         "id": 2,
         "name": "Upper Body Hypertrophy",
-        "createdAt": "2025-06-20",
+        "createdAt": "2025-06-26",
         "createdByUsersId": 2
       },
       {
         "id": 3,
         "name": "Lower Body Power",
-        "createdAt": "2025-06-20",
+        "createdAt": "2025-11-10",
         "createdByUsersId": 2
       },
       {
         "id": 4,
         "name": "Push Pull Legs",
-        "createdAt": "2025-06-20",
+        "createdAt": "2025-04-19",
         "createdByUsersId": 1
       },
       {
         "id": 5,
         "name": "Core Stability Routine",
-        "createdAt": "2025-06-20",
+        "createdAt": "2025-05-04",
         "createdByUsersId": 1
+      },
+      {
+        "id": 6,
+        "name": "Full Body Strength B",
+        "createdAt": "2025-03-30",
+        "createdByUsersId": 3
       }
     ],
     "profiles": [
@@ -333,56 +339,6 @@
         "joinedAt": "2025-06-01",
         "avatar": null,
         "userId": 2
-      },
-      {
-        "id": 3,
-        "firstName": "Lisa",
-        "lastName": "Vermeer",
-        "phone": 612345683,
-        "gender": "female",
-        "joinedAt": "2025-06-15",
-        "avatar": null,
-        "userId": 1
-      },
-      {
-        "id": 4,
-        "firstName": "Mark",
-        "lastName": "de Groot",
-        "phone": 612345684,
-        "gender": "male",
-        "joinedAt": "2025-06-15",
-        "avatar": null,
-        "userId": 1
-      },
-      {
-        "id": 5,
-        "firstName": "Eva",
-        "lastName": "Vos",
-        "phone": 612345685,
-        "gender": "female",
-        "joinedAt": "2025-06-15",
-        "avatar": null,
-        "userId": 1
-      },
-      {
-        "id": 6,
-        "firstName": "Tom",
-        "lastName": "Pieters",
-        "phone": 612345686,
-        "gender": "male",
-        "joinedAt": "2025-06-15",
-        "avatar": null,
-        "userId": 1
-      },
-      {
-        "id": 7,
-        "firstName": "Sanne",
-        "lastName": "Klaassen",
-        "phone": 612345687,
-        "gender": "female",
-        "joinedAt": "2025-06-15",
-        "avatar": null,
-        "userId": 1
       }
     ],
     "exercises": [

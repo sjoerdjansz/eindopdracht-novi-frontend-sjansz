@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export function TopNav() {
   return (
     <nav className={styles["top-nav"]}>
-      <p>{formatDate()}</p>
+      <p className={styles["top-nav__date"]}>{formatDate()}</p>
       <div className={styles["top-nav__controls"]}>
         <FontAwesomeIcon icon={faComment} />
         <FontAwesomeIcon icon={faBell} />

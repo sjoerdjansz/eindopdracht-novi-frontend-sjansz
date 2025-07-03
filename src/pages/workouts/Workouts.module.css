@@ -25,22 +25,16 @@
 }
 
 .workouts-page__controls :nth-child(1) {
-  max-width: 600px;
+  max-width: 500px;
   flex-basis: 300px;
-  flex-grow: 2;
-  flex-shrink: 1;
-}
-.workouts-page__controls :nth-child(2) {
-  max-width: 400px;
-  flex-basis: 200px;
   flex-grow: 1;
   flex-shrink: 1;
 }
-
-.workouts-page__search-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.workouts-page__controls :nth-child(2) {
+  max-width: 500px;
+  flex-basis: 300px;
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 .workout-page__list {

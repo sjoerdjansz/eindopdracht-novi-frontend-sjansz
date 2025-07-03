@@ -18,7 +18,7 @@ export function AppRoutes() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/clients" element={<Clients />} />
         <Route path="/workouts" element={<Workouts />} />
-        <Route path="/workout-builder" element={<WorkoutBuilder />} />
+        <Route path="/workouts/new-workout" element={<WorkoutBuilder />} />
         <Route path="/exercise-library" element={<ExerciseList />} />
         <Route
           path="/exercise-library/create"

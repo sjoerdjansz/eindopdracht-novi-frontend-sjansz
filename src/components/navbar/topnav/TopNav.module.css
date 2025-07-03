@@ -36,3 +36,7 @@
 .top-nav__controls svg {
   cursor: pointer;
 }
+
+.top-nav__date {
+  text-transform: capitalize;
+}
