@@ -28,7 +28,7 @@ export function AppRoutes() {
           path="/exercise-library/create/:id"
           element={<CreateExercisePage />}
         />
-        <Route path="/clients/profile/:id" element={<ClientProfile />} />
+        <Route path="/profiles/:id" element={<ClientProfile />} />
         <Route path="/clients/create" element={<CreateClientPage />} />
       </Route>
     </Routes>
