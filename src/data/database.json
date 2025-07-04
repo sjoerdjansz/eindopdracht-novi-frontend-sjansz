@@ -202,8 +202,23 @@
           "required": false
         },
         {
-          "name": "avatar",
+          "name": "imageUrl",
           "type": "image",
+          "required": false
+        },
+        {
+          "name": "completedWorkouts",
+          "type": "number",
+          "required": false
+        },
+        {
+          "name": "compliance",
+          "type": "number",
+          "required": false
+        },
+        {
+          "name": "currentPlan",
+          "type": "string",
           "required": false
         },
         {
@@ -316,7 +331,7 @@
         "id": 6,
         "name": "Full Body Strength B",
         "createdAt": "2025-03-30",
-        "createdByUsersId": 3
+        "createdByUsersId": 1
       }
     ],
     "profiles": [
@@ -327,7 +342,10 @@
         "phone": 612345678,
         "gender": "male",
         "joinedAt": "2025-06-01",
-        "avatar": null,
+        "imageUrl": null,
+        "completedWorkouts": 24,
+        "compliance": 90,
+        "currentPlan": "Hybrid training",
         "userId": 1
       },
       {
@@ -337,7 +355,10 @@
         "phone": 612345679,
         "gender": "female",
         "joinedAt": "2025-06-01",
-        "avatar": null,
+        "imageUrl": null,
+        "completedWorkouts": 78,
+        "compliance": 82,
+        "currentPlan": "Strength program",
         "userId": 2
       }
     ],
