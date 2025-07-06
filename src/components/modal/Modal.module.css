@@ -51,5 +51,5 @@
 .success-message {
   padding: 0.3rem;
   background-color: var(--color-success);
-  border-radius: 0.3rem;
+  border-radius: var(--border-radius-sm);
 }

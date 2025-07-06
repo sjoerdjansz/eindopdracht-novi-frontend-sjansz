@@ -1,0 +1,7 @@
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  white-space: nowrap;
+}

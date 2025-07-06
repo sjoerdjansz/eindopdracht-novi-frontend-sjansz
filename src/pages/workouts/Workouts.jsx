@@ -1,7 +1,8 @@
 import styles from "./Workouts.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 // Components
 import { Button } from "../../components/button/Button.jsx";
@@ -9,11 +10,12 @@ import { SelectField } from "../../components/selectField/SelectField.jsx";
 import { InputField } from "../../components/inputField/InputField.jsx";
 import { Card } from "../../components/card/Card.jsx";
 import { CardHeader } from "../../components/card/CardHeader.jsx";
-import { CardContent } from "../../components/card/CardContent.jsx";
 import { CardFooter } from "../../components/card/CardFooter.jsx";
+import { LoadingSpinner } from "../../components/loadingSpinner/LoadingSpinner.jsx";
+import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
+import { CustomCheckbox } from "../../components/customCheckbox/CustomCheckbox.jsx";
 
 // Data
-import { WORKOUTS } from "../../data/workoutData.js";
 import { WORKOUT_FILTER_OPTIONS } from "../../data/workoutFilterOptions.js";
 
 // Icons
@@ -22,18 +24,129 @@ import {
   faPenToSquare,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import { CustomCheckbox } from "../../components/customCheckbox/CustomCheckbox.jsx";
-import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
 import { useNavigate } from "react-router-dom";
+import { API_ENDPOINTS } from "../../api/api.js";
+import { CardContent } from "../../components/card/CardContent.jsx";
 
 export function Workouts() {
   const [selectedWorkouts, setSelectedWorkouts] = useState([]);
-  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [allWorkoutTemplates, setAllWorkoutTemplates] = useState([]);
+  const [filteredWorkoutTemplates, setFilteredWorkoutTemplates] = useState([]);
+  const [profiles, setProfiles] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState({
+    open: false,
+    message: "",
+    status: "",
+  });
+  const [workoutFilter, setWorkoutFilter] = useState("");
+  const [searchWorkouts, setSearchWorkouts] = useState("");
+
+  useEffect(() => {
+    fetchWorkoutTemplates();
+  }, []);
+
+  useEffect(() => {
+    let filteredArr = [...allWorkoutTemplates];
+
+    // filtering on search query
+    if (searchWorkouts) {
+      filteredArr = filteredArr.filter((workout) => {
+        return workout.name
+          .toLowerCase()
+          .includes(searchWorkouts.toLowerCase());
+      });
+    }
+
+    // filtering on date or name
+    if (workoutFilter === "dateAdded") {
+      filteredArr.sort((a, b) => {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      });
+    } else if (workoutFilter === "name") {
+      filteredArr.sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      });
+    }
+    setFilteredWorkoutTemplates(filteredArr);
+  }, [allWorkoutTemplates, searchWorkouts, workoutFilter]);
 
   const navigate = useNavigate();
 
+  async function fetchWorkoutTemplates() {
+    try {
+      setIsLoading(true);
+      const { data } = await axios.get(API_ENDPOINTS.workoutTemplates, {
+        headers: {
+          "novi-education-project-id": import.meta.env.VITE_API_KEY,
+        },
+      });
+
+      setAllWorkoutTemplates(data);
+      setFilteredWorkoutTemplates(data);
+
+      // filtering unique user ids so that we don't have to do redundant api calls
+      const userIds = data.map((user) => {
+        return user.createdByUsersId;
+      });
+
+      const uniqueUserIds = userIds.filter((id, index) => {
+        return userIds.indexOf(id) === index;
+      });
+
+      await fetchProfiles(uniqueUserIds);
+    } catch (error) {
+      setShowSnackbar({
+        open: true,
+        message: "Couldn't fetch workout templates",
+        status: "warning",
+      });
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function fetchProfiles(ids) {
+    try {
+      const requests = ids.map((id) => {
+        return axios.get(`${API_ENDPOINTS.profiles}/${id}`, {
+          headers: {
+            "novi-education-project-id": import.meta.env.VITE_API_KEY,
+          },
+        });
+      });
+
+      const responses = await Promise.all(requests);
+      const users = responses.map((response) => response.data);
+
+      setProfiles(users);
+    } catch (error) {
+      setShowSnackbar({
+        open: true,
+        message: "Failed to load user profiles",
+        status: "warning",
+      });
+      console.error(error);
+    }
+  }
+
+  function handleResetFilters() {
+    setWorkoutFilter("");
+    setSearchWorkouts("");
+  }
+
+  function handleSearchWorkouts(e) {
+    setSearchWorkouts(e.target.value.toLowerCase());
+  }
+
+  function handleFilterWorkout(e) {
+    setWorkoutFilter(e.target.value);
+    console.log(e.target.value);
+  }
+
   function handleCreateWorkoutClick() {
-    navigate("/workout-builder");
+    navigate("/workouts/new-workout");
   }
 
   function removeItem(arr, value) {
@@ -60,11 +173,12 @@ export function Workouts() {
 
   return (
     <div className={styles["workouts-page"]}>
+      {isLoading && <LoadingSpinner />}
       {showSnackbar && (
         <Snackbar
-          message="Exercise already in exercise library"
-          open={showSnackbar}
-          status="warning"
+          message={showSnackbar.message}
+          open={showSnackbar.open}
+          status={showSnackbar.status}
           durationVisible={3000}
           onClose={() => setShowSnackbar(false)}
         />
@@ -80,59 +194,65 @@ export function Workouts() {
         />
       </div>
       <section className={styles["workouts-page__controls"]}>
-        <div className={styles["workouts-page__search-group"]}>
-          <InputField
-            type="text"
-            name="search-client"
-            id="search-client"
-            placeholder="Search client"
-            icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
-          />
-          <Button
-            buttonType="secondary"
-            label="Add"
-            type="button"
-            buttonSize="small"
-          />
-        </div>
+        <InputField
+          type="text"
+          name="search-workout"
+          id="search-workout"
+          placeholder="Search workout"
+          icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
+          handleChange={handleSearchWorkouts}
+          value={searchWorkouts}
+        />
         <div>
           <SelectField
             id="workout-filter"
             name="workout-filter"
             options={WORKOUT_FILTER_OPTIONS}
             title="Filter workouts"
+            handleChange={handleFilterWorkout}
+            value={workoutFilter}
+            button={true}
+            buttonLabel="Reset"
+            onButtonClick={handleResetFilters}
           />
         </div>
       </section>
       <section className={styles["workout-page__list"]}>
-        {WORKOUTS.map((workout) => {
+        {filteredWorkoutTemplates.map((workout) => {
           return (
             <Card key={workout.id} variant="horizontal" size="medium">
               <div className={styles["workout-page__card-container"]}>
-                <div className={styles["workouts-page__card-header"]}>
-                  <CustomCheckbox
-                    className={styles["workouts__card-select"]}
-                    type="button"
-                    name="select-workout"
-                    onClick={() => {
-                      handleClick(workout.id);
-                    }}
-                    selected={selectedWorkouts.find((id) => {
-                      return id === workout.id;
-                    })}
-                  />
-                  <CardHeader>
-                    <h4>{workout.title}</h4>
-                    <p>Author: {workout.createdBy}</p>
-                  </CardHeader>
-                </div>
-                <CardContent>
-                  <div className={styles["workouts-page__card-details"]}>
-                    <p>Assigned: {workout.assignedClients}</p>
-                    <p>Completed: {workout.completedTimes}</p>
-                    <p>Exercises: {workout.exercises}</p>
+                <CardHeader>
+                  <div className={styles["workouts-page__card-header"]}>
+                    <CustomCheckbox
+                      className={styles["workouts__card-select"]}
+                      type="button"
+                      name="select-workout"
+                      onClick={() => {
+                        handleClick(workout.id);
+                      }}
+                      selected={selectedWorkouts.find((id) => {
+                        return id === workout.id;
+                      })}
+                    />
+                    <div>
+                      <h4>{workout.name}</h4>
+                      <p>
+                        {(() => {
+                          const author = profiles.find(
+                            (profile) =>
+                              profile.userId === workout.createdByUsersId,
+                          );
+                          return author
+                            ? `Author: ${author.firstName} ${author.lastName}`
+                            : "";
+                        })()}
+                      </p>
+                      <p>{workout.createdAt}</p>
+                    </div>
                   </div>
-                </CardContent>
+                </CardHeader>
+
                 <CardFooter>
                   <div className={styles["workouts__icons-container"]}>
                     <FontAwesomeIcon icon={faPenToSquare} />

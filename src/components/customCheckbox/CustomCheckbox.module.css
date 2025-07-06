@@ -1,12 +1,12 @@
 .custom-checkbox {
   padding: 0.6rem;
   background-color: var(--color-gray-light);
-  border-radius: 0.3rem;
+  border-radius: var(--border-radius-lg);
   border: 2px solid var(--color-primary);
   margin-right: 0.5rem;
   cursor: pointer;
 }
 
 .selected {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-light);
 }

@@ -9,27 +9,35 @@ import { ExerciseList } from "../pages/exerciseList/ExerciseList.jsx";
 import { CreateExercisePage } from "../pages/createExercisePage/CreateExercisePage.jsx";
 import { ClientProfile } from "../pages/clientProfile/ClientProfile.jsx";
 import { CreateClientPage } from "../pages/createClientPage/CreateClientPage.jsx";
+import { NotFound } from "../pages/notFound/NotFound.jsx";
+import { ClientAccountDetails } from "../components/clientAccountDetails/ClientAccountDetails.jsx";
+import { ClientWorkouts } from "../components/clientWorkouts/ClientWorkouts.jsx";
 
 export function AppRoutes() {
   return (
     <Routes>
       <Route path="/signup" element={<Signup />} />
+
       <Route path="/" element={<Layout />}>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/clients" element={<Clients />} />
-        <Route path="/workouts" element={<Workouts />} />
-        <Route path="/workout-builder" element={<WorkoutBuilder />} />
-        <Route path="/exercise-library" element={<ExerciseList />} />
-        <Route
-          path="/exercise-library/create"
-          element={<CreateExercisePage />}
-        />
-        <Route
-          path="/exercise-library/create/:id"
-          element={<CreateExercisePage />}
-        />
-        <Route path="/clients/profile/:id" element={<ClientProfile />} />
-        <Route path="/clients/create" element={<CreateClientPage />} />
+        <Route index element={<Dashboard />} />
+        <Route path="workouts">
+          <Route index element={<Workouts />} />
+          <Route path="new-workout" element={<WorkoutBuilder />} />
+        </Route>
+        <Route path="exercise-library">
+          <Route index element={<ExerciseList />} />
+          <Route path="create" element={<CreateExercisePage />} />
+          <Route path="create/:id" element={<CreateExercisePage />} />
+        </Route>
+        <Route path="clients" element={<Clients />} />
+        <Route path="create" element={<CreateClientPage />} />
+
+        <Route path="clients/:id" element={<ClientProfile />}>
+          <Route index element={<ClientAccountDetails />} />
+          <Route path="account" element={<ClientAccountDetails />} />
+          <Route path="workouts" element={<ClientWorkouts />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

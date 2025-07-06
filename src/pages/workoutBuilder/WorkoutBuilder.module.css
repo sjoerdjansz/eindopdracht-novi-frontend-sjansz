@@ -14,12 +14,18 @@
   gap: 1rem;
 }
 
-.workout-page__header :nth-child(1) {
+.search-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.workout-page__header > :nth-child(1) {
   display: flex;
   gap: 1rem;
 }
 
-.workout-page__header :nth-child(2) {
+.workout-page__header > :nth-child(2) {
   display: flex;
   gap: 1rem;
 }

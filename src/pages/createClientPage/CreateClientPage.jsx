@@ -24,7 +24,7 @@ export function CreateClientPage() {
           onClose={() => setShowSnackbar(false)}
         />
       )}
-      <Modal title="Add Client">
+      <Modal title="Add Client" path="/clients">
         <div className={styles["create-client__modal"]}>
           <form action="">
             <div className={styles["create-client__form"]}>

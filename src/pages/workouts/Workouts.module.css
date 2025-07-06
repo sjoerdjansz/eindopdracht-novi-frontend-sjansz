@@ -2,12 +2,6 @@
   width: 100%;
 }
 
-.workout-page__card-container {
-  display: flex;
-  overflow: hidden;
-  width: 100%;
-}
-
 .workouts-page__header {
   display: flex;
   justify-content: space-between;
@@ -25,22 +19,16 @@
 }
 
 .workouts-page__controls :nth-child(1) {
-  max-width: 600px;
+  max-width: 500px;
   flex-basis: 300px;
-  flex-grow: 2;
-  flex-shrink: 1;
-}
-.workouts-page__controls :nth-child(2) {
-  max-width: 400px;
-  flex-basis: 200px;
   flex-grow: 1;
   flex-shrink: 1;
 }
-
-.workouts-page__search-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.workouts-page__controls :nth-child(2) {
+  max-width: 500px;
+  flex-basis: 300px;
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 .workout-page__list {
@@ -50,26 +38,28 @@
   gap: 1rem;
 }
 
+.workout-page__card-container {
+  display: flex;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
+
 .workouts-page__card-header {
   display: flex;
   align-items: center;
-  flex: 1;
-}
-
-.workouts-page__card-details {
-  display: flex;
-  flex: 2;
   gap: 1rem;
+  flex: 1 0 auto;
 }
 
 .workouts__icons-container {
   display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  align-items: center;
-  min-width: 75px;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: flex-end;
   width: 100%;
-  justify-content: space-between;
+  min-width: 50px;
+  justify-content: flex-start;
 }
 
 .workouts__icons-container svg {
@@ -89,7 +79,7 @@
 @media (max-width: 768px) {
   .workout-page__card-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 1rem;
   }
 
@@ -100,7 +90,7 @@
 
   .workouts__icons-container {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: center;
   }
 }

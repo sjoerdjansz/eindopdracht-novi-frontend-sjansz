@@ -1,9 +1,10 @@
 .button {
   border: none;
-  border-radius: 0.2rem;
-  font-weight: 500;
+  border-radius: var(--border-radius-sm);
+  font-weight: 600;
   text-transform: capitalize;
   white-space: nowrap;
+  box-shadow: var(--element-shadow-subtle);
 }
 
 /* button Varianten */
@@ -18,12 +19,12 @@
 }
 
 .secondary {
-  background-color: var(--color-black);
+  background-color: var(--color-gray-dark);
   color: #ffffff;
 }
 
 .secondary:hover {
-  background-color: var(--color-gray-dark);
+  background-color: var(--color-gray-medium);
 }
 
 .tertiary {

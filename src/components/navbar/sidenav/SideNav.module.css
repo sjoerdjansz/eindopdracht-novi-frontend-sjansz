@@ -81,7 +81,7 @@
   text-transform: capitalize;
 }
 
-.side-nav__nav-links a {
+.side-nav__nav-links > a {
   color: var(--color-black);
 }
 

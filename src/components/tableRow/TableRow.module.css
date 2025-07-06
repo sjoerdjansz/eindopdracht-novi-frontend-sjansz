@@ -1,7 +1,20 @@
-.drag-icon > span {
-  width: 1rem;
-  display: block;
-  cursor: pointer;
+.drag-icon {
+  padding: 0.5rem;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.drag-icon__inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  cursor: grab;
+  font-size: 1.2rem;
+  width: 2rem;
+  padding: 0.25rem;
+  transition: color 0.2s ease;
 }
 
 .drag-icon > span:hover {
@@ -9,22 +22,30 @@
 }
 
 .table-row__icons > span {
-  display: flex;
-  gap: 2rem;
-  width: 1rem;
-}
-
-.table-row__icons > span > * {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
   cursor: pointer;
+  font-size: 1rem;
+  width: 2rem;
+  padding: 0.25rem;
+  transition: color 0.2s ease;
 }
 
 .table-row__icons > span > *:hover {
   color: var(--color-primary);
 }
 
-@media (max-width: 768px) {
-  .table-row__icons > span {
-    flex-direction: column;
-    gap: 1rem;
-  }
+.exercise-parameter-input {
+  border: 1px solid var(--color-gray-mediumlight);
+  border-radius: 0.2rem;
+  width: 3rem;
+  padding: 0.2rem 0.4rem;
+  background-color: transparent;
+  box-shadow: var(--element-shadow-subtle);
+  outline: none;
 }
+
+/*@media (max-width: 768px) {*/
+/*}*/

@@ -1,0 +1,30 @@
+/* Profile page settings details and form */
+
+.profile-page__settings-details {
+  display: flex;
+}
+
+.profile-page__settings-form {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  flex: 0 1 800px;
+  padding: 1rem;
+  border-radius: 0.3rem;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.gender-radio-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.form-group {
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
