@@ -1,5 +1,13 @@
 import styles from "./ClientProfile.module.css";
-import { Link, Route, useLocation, useParams } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  Outlet,
+  Route,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import axios from "axios";
 
 import { Card } from "../../components/card/Card.jsx";
@@ -27,14 +35,51 @@ export function ClientProfile() {
     compliance: 0,
     wellbeing: "",
   });
+  const [clientWorkouts, setClientWorkouts] = useState([]);
+  const [workoutTemplates, setWorkoutTemplates] = useState([]);
   const { id } = useParams();
-  let location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(id);
-    console.log(location);
-    fetchProfile();
-  }, []);
+    const fetchData = async () => {
+      await fetchProfile();
+      await fetchWorkouts();
+    };
+    fetchData();
+  }, [id]);
+
+  async function fetchWorkouts() {
+    try {
+      setIsLoading(true);
+      const { data } = await axios.get(
+        `${API_ENDPOINTS.profiles}/${id}/userWorkouts`,
+        {
+          headers: {
+            "novi-education-project-id": import.meta.env.VITE_API_KEY,
+          },
+        },
+      );
+
+      const response = await axios.all(
+        data.map((workout) => {
+          return axios.get(
+            `${API_ENDPOINTS.workoutTemplates}/${workout.workoutTemplateId}`,
+            {
+              headers: {
+                "novi-education-project-id": import.meta.env.VITE_API_KEY,
+              },
+            },
+          );
+        }),
+      );
+      const results = response.map((res) => res.data);
+      setWorkoutTemplates(results);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   async function fetchProfile() {
     try {
@@ -86,12 +131,25 @@ export function ClientProfile() {
                 <h4>{`${profile.firstName} ${profile.lastName}`}</h4>
                 <p>{`Joined: ${profile.joinedAt}`}</p>
               </div>
-              <Button
-                buttonType="success"
-                label="Start Workout"
-                type="button"
-                buttonSize="medium"
-              />
+
+              {/* TODO Veranderen naar Link en workout assign text, schijnt netter te zijn*/}
+              {workoutTemplates.length > 0 ? (
+                <Button
+                  buttonType="success"
+                  label="Start Workout"
+                  type="button"
+                  buttonSize="medium"
+                  handleClick={() => navigate(`/clients/${id}/workouts`)}
+                />
+              ) : (
+                <Button
+                  buttonType="secondary"
+                  label="Assign workout"
+                  type="button"
+                  buttonSize="medium"
+                  handleClick={() => navigate("/workouts")}
+                />
+              )}
             </div>
             <div className={styles["profile-page__user-stats"]}>
               <p className={styles["statistic"]}>
@@ -115,115 +173,34 @@ export function ClientProfile() {
             <nav className={styles["profile-page__settings-navigation"]}>
               <ul className={styles["profile-page__settings-links"]}>
                 <li className={styles["profile-page__settings-link"]}>
-                  <Link to={`/clients/${id}/workouts`}>Workouts</Link>
+                  <NavLink
+                    to="account"
+                    className={({ isActive }) => {
+                      return isActive ? styles.activeNavLink : "";
+                    }}
+                  >
+                    Account
+                  </NavLink>
                 </li>
                 <li className={styles["profile-page__settings-link"]}>
-                  <Link to={`/clients/${id}/account`}>Account</Link>
+                  <NavLink
+                    to="workouts"
+                    className={({ isActive }) => {
+                      return isActive ? styles.activeNavLink : "";
+                    }}
+                  >
+                    Workouts
+                  </NavLink>
                 </li>
               </ul>
             </nav>
-            <section className={styles["profile-page__settings-details"]}>
-              <form action="" className={styles["profile-page__settings-form"]}>
-                <div className={styles["form-group"]}>
-                  <InputField
-                    type="text"
-                    name="firstName"
-                    id="firstName"
-                    label="First name"
-                    value={profile.firstName}
-                    handleChange={(e) =>
-                      setProfile({
-                        ...profile,
-                        firstName: e.target.value,
-                      })
-                    }
-                  ></InputField>
-                </div>
-                <div className={styles["form-group"]}>
-                  <InputField
-                    type="text"
-                    name="lastName"
-                    id="lastName"
-                    label="Last name"
-                    value={profile.lastName}
-                    handleChange={(e) =>
-                      setProfile({
-                        ...profile,
-                        lastName: e.target.value,
-                      })
-                    }
-                  ></InputField>
-                </div>
-                <div className={styles["form-group"]}>
-                  <InputField
-                    type="email"
-                    name="email"
-                    id="email"
-                    label="E-Mail"
-                    value={profile.email ? profile.email : "Unknown"}
-                    handleChange={(e) =>
-                      setProfile({
-                        ...profile,
-                        email: e.target.value,
-                      })
-                    }
-                  ></InputField>
-                </div>
-                <div className={styles["form-group"]}>
-                  <InputField
-                    type="tel"
-                    name="phone"
-                    id="phone"
-                    label="Phone"
-                    value={`+31 ${profile.phone}`}
-                    handleChange={(e) =>
-                      setProfile({
-                        ...profile,
-                        phone: e.target.value,
-                      })
-                    }
-                  ></InputField>
-                </div>
-                <div className={styles["form-group"]}>
-                  <p>Gender</p>
-                  <div className={styles["gender-radio-wrapper"]}>
-                    <label htmlFor="male" className={styles["gender-option"]}>
-                      Male
-                      <input
-                        type="radio"
-                        id="male"
-                        name="gender"
-                        value="male"
-                        checked={profile.gender === "male"}
-                        onChange={(e) =>
-                          setProfile({
-                            ...profile,
-                            gender: e.target.value,
-                          })
-                        }
-                      />
-                    </label>
-
-                    <label htmlFor="female" className={styles["gender-option"]}>
-                      Female
-                      <input
-                        type="radio"
-                        id="female"
-                        name="gender"
-                        value="female"
-                        checked={profile.gender === "female"}
-                        onChange={(e) =>
-                          setProfile({
-                            ...profile,
-                            gender: e.target.value,
-                          })
-                        }
-                      />
-                    </label>
-                  </div>
-                </div>
-              </form>
-            </section>
+            <Outlet
+              context={{
+                profile: profile,
+                clientWorkouts: clientWorkouts,
+                workoutTemplates: workoutTemplates,
+              }}
+            />
           </div>
         </Card>
       </div>

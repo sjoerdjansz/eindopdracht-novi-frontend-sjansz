@@ -129,43 +129,55 @@ export function Clients() {
           filteredClients.map((client) => {
             return (
               <Card key={client.id} variant="horizontal" size="medium">
-                <CardHeader>
-                  <div className={styles["clients-page__card-header"]}>
-                    <div className={styles["clients-page__avatar-wrapper"]}>
-                      <img
-                        src={client.avatar ? client.avatar : placeholderAvatar}
-                        alt={`client ${client.firstName} ${client.lastName} `}
+                <div className={styles["clients-page__card-container"]}>
+                  <CardHeader>
+                    <div className={styles["clients-page__card-header"]}>
+                      <div className={styles["clients-page__avatar-wrapper"]}>
+                        <img
+                          src={
+                            client.avatar ? client.avatar : placeholderAvatar
+                          }
+                          alt={`client ${client.firstName} ${client.lastName} `}
+                        />
+                      </div>
+                      <div className={styles["clients-page__card-details"]}>
+                        <p>{`${client.firstName} ${client.lastName} `}</p>
+                        <p>{client.joinedAt}</p>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className={styles["clients-page__card-content"]}>
+                      <p>
+                        Workouts: <span>{client.completedWorkouts}</span>
+                      </p>
+                      <p>
+                        Compliance:{" "}
+                        <span
+                          className={styles[colorCodeText(client.compliance)]}
+                        >
+                          {client.compliance}%
+                        </span>
+                      </p>
+                      <p>
+                        Plan: <span>{client.currentPlan}</span>
+                      </p>
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <div className={styles["clients-page-footer"]}>
+                      <Button
+                        buttonType="secondary"
+                        type="button"
+                        label="View profile"
+                        handleClick={() => {
+                          navigate(`/clients/${client.id}`);
+                        }}
+                        buttonSize="medium"
                       />
                     </div>
-                    <div className={styles["clients-page__card-details"]}>
-                      <p>{`${client.firstName} ${client.lastName} `}</p>
-                      <p>{client.joinedAt}</p>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className={styles["clients-page__card-training-info"]}>
-                    <p>
-                      Workouts: <span>{client.completedWorkouts}</span>
-                    </p>
-                    <p>
-                      Compliance:{" "}
-                      <span
-                        className={styles[colorCodeText(client.compliance)]}
-                      >
-                        {client.compliance}%
-                      </span>
-                    </p>
-                    <p>
-                      Plan: <span>{client.currentPlan}</span>
-                    </p>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <div className={styles["clients-page-footer"]}>
-                    <Link to={`/clients/${client.id}`}>View Profile</Link>
-                  </div>
-                </CardFooter>
+                  </CardFooter>
+                </div>
               </Card>
             );
           })}

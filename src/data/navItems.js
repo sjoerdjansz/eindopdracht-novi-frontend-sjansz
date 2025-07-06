@@ -10,7 +10,7 @@ export const NAV_ITEMS = [
   {
     id: 1,
     label: "dashboard",
-    to: "/dashboard",
+    to: "/",
     icon: faTableColumns,
   },
   { id: 2, label: "exercise library", to: "/exercise-library", icon: faBook },

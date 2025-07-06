@@ -26,6 +26,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINTS } from "../../api/api.js";
+import { CardContent } from "../../components/card/CardContent.jsx";
 
 export function Workouts() {
   const [selectedWorkouts, setSelectedWorkouts] = useState([]);
@@ -221,34 +222,37 @@ export function Workouts() {
           return (
             <Card key={workout.id} variant="horizontal" size="medium">
               <div className={styles["workout-page__card-container"]}>
-                <div className={styles["workouts-page__card-header"]}>
-                  <CustomCheckbox
-                    className={styles["workouts__card-select"]}
-                    type="button"
-                    name="select-workout"
-                    onClick={() => {
-                      handleClick(workout.id);
-                    }}
-                    selected={selectedWorkouts.find((id) => {
-                      return id === workout.id;
-                    })}
-                  />
-                  <CardHeader>
-                    <h4>{workout.name}</h4>
-                    <p>
-                      {(() => {
-                        const author = profiles.find(
-                          (profile) =>
-                            profile.userId === workout.createdByUsersId,
-                        );
-                        return author
-                          ? `Author: ${author.firstName} ${author.lastName}`
-                          : "";
-                      })()}
-                    </p>
-                    <p>{workout.createdAt}</p>
-                  </CardHeader>
-                </div>
+                <CardHeader>
+                  <div className={styles["workouts-page__card-header"]}>
+                    <CustomCheckbox
+                      className={styles["workouts__card-select"]}
+                      type="button"
+                      name="select-workout"
+                      onClick={() => {
+                        handleClick(workout.id);
+                      }}
+                      selected={selectedWorkouts.find((id) => {
+                        return id === workout.id;
+                      })}
+                    />
+                    <div>
+                      <h4>{workout.name}</h4>
+                      <p>
+                        {(() => {
+                          const author = profiles.find(
+                            (profile) =>
+                              profile.userId === workout.createdByUsersId,
+                          );
+                          return author
+                            ? `Author: ${author.firstName} ${author.lastName}`
+                            : "";
+                        })()}
+                      </p>
+                      <p>{workout.createdAt}</p>
+                    </div>
+                  </div>
+                </CardHeader>
+
                 <CardFooter>
                   <div className={styles["workouts__icons-container"]}>
                     <FontAwesomeIcon icon={faPenToSquare} />

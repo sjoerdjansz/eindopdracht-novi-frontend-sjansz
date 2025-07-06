@@ -10,6 +10,8 @@ import { CreateExercisePage } from "../pages/createExercisePage/CreateExercisePa
 import { ClientProfile } from "../pages/clientProfile/ClientProfile.jsx";
 import { CreateClientPage } from "../pages/createClientPage/CreateClientPage.jsx";
 import { NotFound } from "../pages/notFound/NotFound.jsx";
+import { ClientAccountDetails } from "../components/clientAccountDetails/ClientAccountDetails.jsx";
+import { ClientWorkouts } from "../components/clientWorkouts/ClientWorkouts.jsx";
 
 export function AppRoutes() {
   return (
@@ -27,10 +29,13 @@ export function AppRoutes() {
           <Route path="create" element={<CreateExercisePage />} />
           <Route path="create/:id" element={<CreateExercisePage />} />
         </Route>
-        <Route path="clients">
-          <Route index element={<Clients />} />
-          <Route path="create" element={<CreateClientPage />} />
-          <Route path=":id" element={<ClientProfile />} />
+        <Route path="clients" element={<Clients />} />
+        <Route path="create" element={<CreateClientPage />} />
+
+        <Route path="clients/:id" element={<ClientProfile />}>
+          <Route index element={<ClientAccountDetails />} />
+          <Route path="account" element={<ClientAccountDetails />} />
+          <Route path="workouts" element={<ClientWorkouts />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Route>
