@@ -47,9 +47,5 @@
   outline: none;
 }
 
-.exercise-parameter-input:focus {
-  box-shadow: 0 0 0 2px hsla(342, 100%, 62%, 0.3);
-}
-
 /*@media (max-width: 768px) {*/
 /*}*/

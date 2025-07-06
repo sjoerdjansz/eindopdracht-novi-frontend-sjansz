@@ -163,7 +163,7 @@ export function Clients() {
                 </CardContent>
                 <CardFooter>
                   <div className={styles["clients-page-footer"]}>
-                    <Link to={`/profiles/${client.id}`}>View Profile</Link>
+                    <Link to={`/clients/${client.id}`}>View Profile</Link>
                   </div>
                 </CardFooter>
               </Card>

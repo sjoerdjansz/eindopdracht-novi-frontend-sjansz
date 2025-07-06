@@ -9,7 +9,7 @@
   padding: 1rem;
   background-color: var(--color-primary-light);
   border: 2px solid var(--color-primary);
-  border-radius: 0.2rem;
+  border-radius: var(--border-radius-sm);
   left: 50%;
   transform: translate(-50%);
   top: 200px;

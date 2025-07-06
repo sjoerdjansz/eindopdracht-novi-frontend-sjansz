@@ -9,27 +9,30 @@ import { ExerciseList } from "../pages/exerciseList/ExerciseList.jsx";
 import { CreateExercisePage } from "../pages/createExercisePage/CreateExercisePage.jsx";
 import { ClientProfile } from "../pages/clientProfile/ClientProfile.jsx";
 import { CreateClientPage } from "../pages/createClientPage/CreateClientPage.jsx";
+import { NotFound } from "../pages/notFound/NotFound.jsx";
 
 export function AppRoutes() {
   return (
     <Routes>
       <Route path="/signup" element={<Signup />} />
+
       <Route path="/" element={<Layout />}>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/clients" element={<Clients />} />
-        <Route path="/workouts" element={<Workouts />} />
-        <Route path="/workouts/new-workout" element={<WorkoutBuilder />} />
-        <Route path="/exercise-library" element={<ExerciseList />} />
-        <Route
-          path="/exercise-library/create"
-          element={<CreateExercisePage />}
-        />
-        <Route
-          path="/exercise-library/create/:id"
-          element={<CreateExercisePage />}
-        />
-        <Route path="/profiles/:id" element={<ClientProfile />} />
-        <Route path="/clients/create" element={<CreateClientPage />} />
+        <Route index element={<Dashboard />} />
+        <Route path="workouts">
+          <Route index element={<Workouts />} />
+          <Route path="new-workout" element={<WorkoutBuilder />} />
+        </Route>
+        <Route path="exercise-library">
+          <Route index element={<ExerciseList />} />
+          <Route path="create" element={<CreateExercisePage />} />
+          <Route path="create/:id" element={<CreateExercisePage />} />
+        </Route>
+        <Route path="clients">
+          <Route index element={<Clients />} />
+          <Route path="create" element={<CreateClientPage />} />
+          <Route path=":id" element={<ClientProfile />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

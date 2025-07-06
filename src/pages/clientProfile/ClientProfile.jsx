@@ -1,5 +1,5 @@
 import styles from "./ClientProfile.module.css";
-import { Link, useParams } from "react-router-dom";
+import { Link, Route, useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 
 import { Card } from "../../components/card/Card.jsx";
@@ -28,8 +28,11 @@ export function ClientProfile() {
     wellbeing: "",
   });
   const { id } = useParams();
+  let location = useLocation();
 
   useEffect(() => {
+    console.log(id);
+    console.log(location);
     fetchProfile();
   }, []);
 
@@ -112,13 +115,10 @@ export function ClientProfile() {
             <nav className={styles["profile-page__settings-navigation"]}>
               <ul className={styles["profile-page__settings-links"]}>
                 <li className={styles["profile-page__settings-link"]}>
-                  <Link to={"/"}>Workouts</Link>
+                  <Link to={`/clients/${id}/workouts`}>Workouts</Link>
                 </li>
                 <li className={styles["profile-page__settings-link"]}>
-                  <Link to={"/"}>Account</Link>
-                </li>
-                <li className={styles["profile-page__settings-link"]}>
-                  <Link to={"/"}>Notifications</Link>
+                  <Link to={`/clients/${id}/account`}>Account</Link>
                 </li>
               </ul>
             </nav>
@@ -132,7 +132,10 @@ export function ClientProfile() {
                     label="First name"
                     value={profile.firstName}
                     handleChange={(e) =>
-                      setProfile({ ...profile, firstName: e.target.value })
+                      setProfile({
+                        ...profile,
+                        firstName: e.target.value,
+                      })
                     }
                   ></InputField>
                 </div>
@@ -144,7 +147,10 @@ export function ClientProfile() {
                     label="Last name"
                     value={profile.lastName}
                     handleChange={(e) =>
-                      setProfile({ ...profile, lastName: e.target.value })
+                      setProfile({
+                        ...profile,
+                        lastName: e.target.value,
+                      })
                     }
                   ></InputField>
                 </div>
@@ -156,7 +162,10 @@ export function ClientProfile() {
                     label="E-Mail"
                     value={profile.email ? profile.email : "Unknown"}
                     handleChange={(e) =>
-                      setProfile({ ...profile, email: e.target.value })
+                      setProfile({
+                        ...profile,
+                        email: e.target.value,
+                      })
                     }
                   ></InputField>
                 </div>
@@ -168,7 +177,10 @@ export function ClientProfile() {
                     label="Phone"
                     value={`+31 ${profile.phone}`}
                     handleChange={(e) =>
-                      setProfile({ ...profile, phone: e.target.value })
+                      setProfile({
+                        ...profile,
+                        phone: e.target.value,
+                      })
                     }
                   ></InputField>
                 </div>
@@ -184,7 +196,10 @@ export function ClientProfile() {
                         value="male"
                         checked={profile.gender === "male"}
                         onChange={(e) =>
-                          setProfile({ ...profile, gender: e.target.value })
+                          setProfile({
+                            ...profile,
+                            gender: e.target.value,
+                          })
                         }
                       />
                     </label>
@@ -198,7 +213,10 @@ export function ClientProfile() {
                         value="female"
                         checked={profile.gender === "female"}
                         onChange={(e) =>
-                          setProfile({ ...profile, gender: e.target.value })
+                          setProfile({
+                            ...profile,
+                            gender: e.target.value,
+                          })
                         }
                       />
                     </label>
