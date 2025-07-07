@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 
 import axios from "axios";
 import { API_ENDPOINTS } from "../../api/api.js";
+import { formatDate } from "../../utils/formatDate.js";
 
 export function Clients() {
   const [clients, setClients] = useState([]);
@@ -54,6 +55,14 @@ export function Clients() {
       filteredArr.sort((a, b) => {
         return b.completedWorkouts - a.completedWorkouts;
       });
+    } else if (filterOption === "joinedAtOld") {
+      filteredArr.sort((a, b) => {
+        return new Date(a.joinedAt) - new Date(b.joinedAt);
+      });
+    } else if (filterOption === "joinedAtNew") {
+      filteredArr.sort((a, b) => {
+        return new Date(b.joinedAt) - new Date(a.joinedAt);
+      });
     } else {
       setFilterOption("");
     }
@@ -64,7 +73,7 @@ export function Clients() {
   async function fetchClients() {
     try {
       setIsLoading(true);
-      const { data } = await axios.get(API_ENDPOINTS.profiles, {
+      const { data } = await axios.get(API_ENDPOINTS.clients, {
         headers: {
           "novi-education-project-id": import.meta.env.VITE_API_KEY,
         },
@@ -93,7 +102,12 @@ export function Clients() {
         <Snackbar
           message={showSnackbar.message}
           open={showSnackbar.open}
-          onClose={() => setShowSnackbar(false)}
+          onClose={() =>
+            setShowSnackbar({
+              ...showSnackbar,
+              open: true,
+            })
+          }
           durationVisible={showSnackbar.duration}
           status={showSnackbar.status}
         />
@@ -142,7 +156,7 @@ export function Clients() {
                       </div>
                       <div className={styles["clients-page__card-details"]}>
                         <p>{`${client.firstName} ${client.lastName} `}</p>
-                        <p>{client.joinedAt}</p>
+                        <p>{formatDate(client.joinedAt)}</p>
                       </div>
                     </div>
                   </CardHeader>

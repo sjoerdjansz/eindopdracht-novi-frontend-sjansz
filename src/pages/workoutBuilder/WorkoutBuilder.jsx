@@ -150,6 +150,8 @@ export function WorkoutBuilder() {
     }
   }
 
+  // TODO: make sure there is error handling when user adds 1 char name at workout builder when saving. bugged
+
   // function to handle the save workout logic: constructing and posting the template and adding the exercises afterwards
   async function handleWorkoutSave() {
     // check if there are workouts added and if there's a name, if not: return

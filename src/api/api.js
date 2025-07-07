@@ -9,6 +9,6 @@ export const API_ENDPOINTS = {
   workoutTemplates: `${BASE_URL}/workoutTemplates`,
   exercises: `${BASE_URL}/exercises`,
   workoutExercises: `${BASE_URL}/workoutExercises`,
-  profiles: `${BASE_URL}/profiles`,
+  clients: `${BASE_URL}/clients`,
   userWorkouts: `${BASE_URL}/userWorkouts`,
 };

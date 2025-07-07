@@ -3,7 +3,6 @@ import { Link, useOutletContext } from "react-router-dom";
 
 export function ClientWorkouts() {
   const { profile, workoutTemplates } = useOutletContext();
-  console.log(workoutTemplates);
   return (
     <div className={styles["client-workouts"]}>
       <h2>Assigned Workouts</h2>
