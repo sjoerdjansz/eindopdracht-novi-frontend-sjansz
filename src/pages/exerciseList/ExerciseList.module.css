@@ -7,18 +7,26 @@
 
 .exercise-list__controls {
   display: flex;
-  flex-direction: row;
-  margin: 1rem 0;
-  justify-content: space-between;
-  align-items: flex-end;
+  flex-direction: column;
+  margin-bottom: 1rem;
   gap: 1rem;
   width: 100%;
 }
 
+.exercise-list__controls > :first-child {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
 .exercise-list__inputs {
   display: flex;
-  gap: 2rem;
-  align-self: flex-end;
+  min-width: 0;
+  width: 100%;
+  flex-direction: row;
+  gap: 1rem;
 }
 
 /* Exercise list and table styling */
@@ -40,6 +48,10 @@
 /* Media queries */
 
 @media (max-width: 768px) {
+  .exercise-list__inputs {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
   .exercise-movement--td,
   .exercise-movement--th,
   .exercise-muscle--td,
@@ -51,15 +63,5 @@
     display: flex;
     flex-direction: row;
     gap: 1rem;
-  }
-
-  .exercise-list__controls {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .exercise-list__inputs {
-    justify-content: space-between;
-    width: 100%;
   }
 }

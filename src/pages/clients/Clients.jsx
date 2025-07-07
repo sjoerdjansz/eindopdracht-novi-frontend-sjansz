@@ -113,16 +113,18 @@ export function Clients() {
         />
       )}
       {isLoading && <LoadingSpinner />}
-      <h1>Clients</h1>
-
       <section className={styles["clients-page__header"]}>
-        <Button
-          buttonType="primary"
-          buttonSize="medium"
-          type="button"
-          label="add client"
-          handleClick={handleCreateClientClick}
-        />
+        <div className={styles["clients-page__header-text"]}>
+          <h1>Clients</h1>
+          <Button
+            buttonType="primary"
+            buttonSize="medium"
+            type="button"
+            label="add client"
+            handleClick={handleCreateClientClick}
+          />
+        </div>
+
         <InputWrapper width="small">
           <SelectField
             id="client-filter"
@@ -133,6 +135,8 @@ export function Clients() {
             value={filterOption}
             handleChange={(e) => setFilterOption(e.target.value)}
             button={true}
+            styling="secondary"
+            buttonStyle="secondary"
             buttonLabel="Reset"
             onButtonClick={() => setFilterOption("")}
           />
@@ -181,13 +185,13 @@ export function Clients() {
                   <CardFooter>
                     <div className={styles["clients-page-footer"]}>
                       <Button
-                        buttonType="secondary"
+                        buttonType="tertiary"
                         type="button"
                         label="View profile"
                         handleClick={() => {
                           navigate(`/clients/${client.id}`);
                         }}
-                        buttonSize="medium"
+                        buttonSize="small"
                       />
                     </div>
                   </CardFooter>

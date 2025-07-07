@@ -27,6 +27,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINTS } from "../../api/api.js";
 import { CardContent } from "../../components/card/CardContent.jsx";
+import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 
 export function Workouts() {
   const [selectedWorkouts, setSelectedWorkouts] = useState([]);
@@ -194,16 +195,7 @@ export function Workouts() {
         />
       </div>
       <section className={styles["workouts-page__controls"]}>
-        <InputField
-          type="text"
-          name="search-workout"
-          id="search-workout"
-          placeholder="Search workout"
-          icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
-          handleChange={handleSearchWorkouts}
-          value={searchWorkouts}
-        />
-        <div>
+        <InputWrapper width="small">
           <SelectField
             id="workout-filter"
             name="workout-filter"
@@ -213,9 +205,21 @@ export function Workouts() {
             value={workoutFilter}
             button={true}
             buttonLabel="Reset"
+            buttonStyle="secondary"
             onButtonClick={handleResetFilters}
           />
-        </div>
+        </InputWrapper>
+        <InputWrapper width="small">
+          <InputField
+            type="text"
+            name="search-workout"
+            id="search-workout"
+            placeholder="Search workout"
+            icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
+            handleChange={handleSearchWorkouts}
+            value={searchWorkouts}
+          />
+        </InputWrapper>
       </section>
       <section className={styles["workout-page__list"]}>
         {filteredWorkoutTemplates.map((workout) => {

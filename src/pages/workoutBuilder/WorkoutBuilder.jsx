@@ -408,8 +408,8 @@ export function WorkoutBuilder() {
       <h1>Build Workout</h1>
 
       <section className={styles["workout-page__header"]}>
-        <div className={styles["search-container"]}>
-          <InputWrapper>
+        <div className={styles["exercise-search-container"]}>
+          <InputWrapper width="small">
             <InputField
               type="text"
               name="exercise"
@@ -442,8 +442,8 @@ export function WorkoutBuilder() {
           )}
         </div>
 
-        <div>
-          <InputWrapper>
+        <div className={styles["workout-name-container"]}>
+          <InputWrapper width="small">
             <InputField
               type="text"
               name="name"

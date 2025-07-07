@@ -4,7 +4,11 @@ import { InputField } from "../../components/inputField/InputField.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMagnifyingGlass,
+  faPenToSquare,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_ENDPOINTS } from "../../api/api.js";
@@ -150,7 +154,46 @@ export function ExerciseList() {
 
   return (
     <div className={styles["exercise-list"]}>
-      <h1>Exercise List</h1>
+      <section className={styles["exercise-list__controls"]}>
+        <div>
+          <h1>Exercise List</h1>
+          <Button
+            buttonType="primary"
+            type="button"
+            buttonSize="medium"
+            label="create exercise"
+            handleClick={handleCreateExerciseClick}
+          />
+        </div>
+        <div className={styles["exercise-list__inputs"]}>
+          <InputWrapper width="small">
+            <SelectField
+              id="bodypart"
+              name="bodypart"
+              options={BODYPART_FILTER_OPTIONS}
+              value={bodyPartFilter}
+              title="Bodypart"
+              handleChange={filterBodypartChangeHandler}
+              onButtonClick={resetAllFilters}
+              button={true}
+              buttonLabel="reset"
+              buttonStyle="secondary"
+            />
+          </InputWrapper>
+          <InputWrapper width="small">
+            <InputField
+              type="text"
+              name="find-exercise"
+              id="find-exercise"
+              placeholder="Find exercise"
+              style="primary"
+              value={exerciseSearchQuery}
+              handleChange={findExerciseChangeHandler}
+              icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
+            />
+          </InputWrapper>
+        </div>
+      </section>
       {isLoading && <LoadingSpinner />}
 
       {deleteItem && (
@@ -173,41 +216,6 @@ export function ExerciseList() {
           }}
         />
       )}
-      <section className={styles["exercise-list__controls"]}>
-        <Button
-          buttonType="primary"
-          type="button"
-          buttonSize="medium"
-          label="create exercise"
-          handleClick={handleCreateExerciseClick}
-        />
-        <div className={styles["exercise-list__inputs"]}>
-          <InputWrapper>
-            <SelectField
-              id="bodypart"
-              name="bodypart"
-              options={BODYPART_FILTER_OPTIONS}
-              value={bodyPartFilter}
-              title="Bodypart"
-              handleChange={filterBodypartChangeHandler}
-              onButtonClick={resetAllFilters}
-              button={true}
-              buttonLabel="reset"
-            />
-          </InputWrapper>
-          <InputWrapper>
-            <InputField
-              type="text"
-              name="find-exercise"
-              id="find-exercise"
-              placeholder="Find exercise"
-              style="primary"
-              value={exerciseSearchQuery}
-              handleChange={findExerciseChangeHandler}
-            />
-          </InputWrapper>
-        </div>
-      </section>
       <table>
         <thead>
           <tr className={styles["exercise-list__header"]}>

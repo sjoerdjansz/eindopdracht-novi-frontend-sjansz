@@ -5,11 +5,16 @@
 
 .clients-page__header {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: flex-end;
-  flex-wrap: wrap;
   padding: 1rem 0;
   gap: 1rem;
+}
+
+.clients-page__header-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .clients-page__list {

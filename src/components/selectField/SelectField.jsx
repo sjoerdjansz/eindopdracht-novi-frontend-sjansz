@@ -6,6 +6,7 @@ export function SelectField({
   id,
   name,
   styling,
+  buttonStyle,
   title,
   required,
   button,
@@ -48,7 +49,7 @@ export function SelectField({
             type="button"
             label={buttonLabel}
             buttonSize="small"
-            buttonType="primary"
+            buttonType={buttonStyle}
             handleClick={onButtonClick}
           />
         )}
