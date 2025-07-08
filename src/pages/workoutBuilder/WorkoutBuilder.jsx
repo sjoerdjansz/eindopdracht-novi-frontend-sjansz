@@ -22,6 +22,8 @@ export function WorkoutBuilder() {
   const [exercises, setExercises] = useState([]);
   // exercisesFromApi state is for http request to get all the exercises
   const [exercisesFromApi, setExercisesFromApi] = useState([]);
+  const [exercisesCurrentlyInWorkout, setExercisesCurrentlyInWorkout] =
+    useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [workoutName, setWorkoutName] = useState("");
   // utility states
@@ -62,7 +64,6 @@ export function WorkoutBuilder() {
           },
         },
       );
-      console.log(templateData);
       setWorkoutName(templateData.name);
 
       //get all the exercises matching the id of the workout template
@@ -75,8 +76,11 @@ export function WorkoutBuilder() {
         },
       );
 
+      // put exercises that are currently in the workout (while in edit mode) to state to (maybe) use later
+      setExercisesCurrentlyInWorkout(workoutTemplateExercises);
+
       //get specific exercise data. promise.all waits for all api calls to finish and in promise.all we
-      // use .map over all the exercises in the workouttemplate.
+      // use .map over all the exercises in the workouttemplate. Used to get the exercise name
       const exerciseData = await Promise.all(
         workoutTemplateExercises.map(async (exercise) => {
           const { data } = await axios.get(
@@ -209,7 +213,6 @@ export function WorkoutBuilder() {
           },
         },
       );
-      console.log(response);
     } catch (error) {
       console.error(error);
     }
@@ -232,6 +235,7 @@ export function WorkoutBuilder() {
     const templateId = await getHighestWorkoutId();
 
     try {
+      // make workout template object where we check for edit mode or new workout mode
       const workoutTemplateToSave = {
         id: isEditMode ? parseInt(editTemplateId) : templateId,
         name: workoutName,
@@ -239,7 +243,11 @@ export function WorkoutBuilder() {
         createdByUsersId: "1", // TODO: add user through useContext() hook
       };
 
+      // if edit mode then make sure to do put request
       if (isEditMode) {
+        // console.log(workoutTemplateToSave);
+        //
+        // console.log(exercises);
         await axios.put(
           `${API_ENDPOINTS.workoutTemplates}/${editTemplateId}`,
           workoutTemplateToSave,
@@ -251,10 +259,19 @@ export function WorkoutBuilder() {
           },
         );
       } else {
-        // push the template & exercises to db
+        // post the template to db (new workout template)
         await postWorkoutTemplate(workoutTemplateToSave);
+        // post the exercises to db (related to the new workout template)
+        await handleExercisesSave(workoutTemplateToSave.id, exercises);
       }
-      await handleExercisesSave(workoutTemplateToSave.id, exercises);
+
+      // check for duplicates in exercises before putting in database and delete duplicates
+      console.log(exercises); // actual state/ui exercises for editing
+      console.log(exercisesCurrentlyInWorkout); // initially loaded / original exercises
+
+      // TODO: met filter en some checken of er duplicates zijn. zo ja, plaats de aangepaste in een
+      //  nieuweExercises variabele en push die naar de db met de handle exercxise save.
+      //  eigenlijk ook nog een differentiator/checker maken voor deletes en aanpassingen in de parameters...
 
       setShowSnackbar({
         open: true,
@@ -281,16 +298,16 @@ export function WorkoutBuilder() {
         status: "",
       });
 
-      // loop over all exercises that are currently in de exercisesData array
+      // loop over all exercises that are currently in de exercisesData arr
       for (let i = 0; i < exercisesData.length; i++) {
-        // create a scoped data object to add to post request with each iteration
+        // create data object to add to post request with each iteration
         const data = {
           workoutTemplateId: templateId, // parent workout template id
           exerciseId: exercisesData[i].id, // exercise id (matches exercises from api)
-          sets: exercisesData[i].sets || 3, // paramaters with default if no value is given
+          sets: exercisesData[i].sets || 3, // paramaters with default vals
           reps: exercisesData[i].reps || 12,
           rest: exercisesData[i].rest || 90,
-          index: i, // use index of loop to set the exercise order (for when we have to get the workout later)
+          index: i, // use index of loop to set exercise order (for when we have to get the workout later)
         };
 
         const response = await axios.post(
