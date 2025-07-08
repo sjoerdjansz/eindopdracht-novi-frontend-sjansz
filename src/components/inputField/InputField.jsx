@@ -32,6 +32,7 @@ export function InputField({
           onChange={handleChange}
           placeholder={placeholder}
           onFocus={onFocus}
+          autoComplete="off"
         />
 
         {icon && (

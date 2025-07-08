@@ -13,6 +13,8 @@ import { FilteredSearch } from "../../components/filteredSearch/FilteredSearch.j
 
 // Api
 import { API_ENDPOINTS } from "../../api/api.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 export function WorkoutBuilder() {
   // exercises state main purpose is UI, drag and drop and adding parameters
@@ -414,9 +416,10 @@ export function WorkoutBuilder() {
               type="text"
               name="exercise"
               id="exercise"
-              placeholder="Search exercise"
+              placeholder="Find exercise"
               handleChange={handleSearchChange}
               value={searchValue}
+              icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
               onFocus={() => setShowSearchFilter(true)}
             />
             <Button
