@@ -23,6 +23,7 @@ export function AppRoutes() {
         <Route path="workouts">
           <Route index element={<Workouts />} />
           <Route path="new-workout" element={<WorkoutBuilder />} />
+          <Route path="edit-workout/:id" element={<WorkoutBuilder />} />
         </Route>
         <Route path="exercise-library">
           <Route index element={<ExerciseList />} />

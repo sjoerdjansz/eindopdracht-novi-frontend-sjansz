@@ -299,7 +299,7 @@
         "id": 2,
         "name": "Upper Body Hypertrophy",
         "createdAt": "2025-06-26",
-        "createdByUsersId": 2
+        "createdByUsersId": 1
       },
       {
         "id": 3,
@@ -323,7 +323,7 @@
         "id": 6,
         "name": "Full Body Strength B",
         "createdAt": "2025-03-30",
-        "createdByUsersId": 1
+        "createdByUsersId": 2
       }
     ],
     "clients": [

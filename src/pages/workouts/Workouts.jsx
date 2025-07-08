@@ -26,14 +26,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINTS } from "../../api/api.js";
-import { CardContent } from "../../components/card/CardContent.jsx";
 import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
+import { formatDate } from "../../utils/formatDate.js";
 
 export function Workouts() {
   const [selectedWorkouts, setSelectedWorkouts] = useState([]);
   const [allWorkoutTemplates, setAllWorkoutTemplates] = useState([]);
   const [filteredWorkoutTemplates, setFilteredWorkoutTemplates] = useState([]);
-  const [profiles, setProfiles] = useState([]);
+  const [workoutAuthors, setWorkoutAuthors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState({
     open: false,
@@ -42,6 +42,7 @@ export function Workouts() {
   });
   const [workoutFilter, setWorkoutFilter] = useState("");
   const [searchWorkouts, setSearchWorkouts] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchWorkoutTemplates();
@@ -72,8 +73,6 @@ export function Workouts() {
     setFilteredWorkoutTemplates(filteredArr);
   }, [allWorkoutTemplates, searchWorkouts, workoutFilter]);
 
-  const navigate = useNavigate();
-
   async function fetchWorkoutTemplates() {
     try {
       setIsLoading(true);
@@ -85,17 +84,6 @@ export function Workouts() {
 
       setAllWorkoutTemplates(data);
       setFilteredWorkoutTemplates(data);
-
-      // filtering unique user ids so that we don't have to do redundant api calls
-      const userIds = data.map((user) => {
-        return user.createdByUsersId;
-      });
-
-      const uniqueUserIds = userIds.filter((id, index) => {
-        return userIds.indexOf(id) === index;
-      });
-
-      await fetchProfiles(uniqueUserIds);
     } catch (error) {
       setShowSnackbar({
         open: true,
@@ -108,27 +96,42 @@ export function Workouts() {
     }
   }
 
-  async function fetchProfiles(ids) {
+  async function handleDeleteWorkout(workoutTemplateId) {
+    if (!workoutTemplateId) {
+      setShowSnackbar({
+        message: "Workout couldn't be deleted",
+        open: true,
+        status: "error",
+      });
+      return;
+    }
     try {
-      const requests = ids.map((id) => {
-        return axios.get(`${API_ENDPOINTS.profiles}/${id}`, {
+      setIsLoading(true);
+      await axios.delete(
+        `${API_ENDPOINTS.workoutTemplates}/${workoutTemplateId}`,
+        {
           headers: {
             "novi-education-project-id": import.meta.env.VITE_API_KEY,
           },
-        });
+        },
+      );
+
+      await fetchWorkoutTemplates();
+
+      setShowSnackbar({
+        message: "Workout deleted successfully",
+        open: true,
+        status: "success",
       });
-
-      const responses = await Promise.all(requests);
-      const users = responses.map((response) => response.data);
-
-      setProfiles(users);
     } catch (error) {
       setShowSnackbar({
+        message: "Something went wrong while trying to delete the workout",
         open: true,
-        message: "Failed to load user profiles",
-        status: "warning",
+        status: "error",
       });
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -153,7 +156,7 @@ export function Workouts() {
   function removeItem(arr, value) {
     setSelectedWorkouts(
       arr.filter((item) => {
-        console.log("deleted item:", value);
+        console.log("deselected item:", value);
         return item !== value;
       }),
     );
@@ -167,7 +170,7 @@ export function Workouts() {
     if (value) {
       removeItem(selectedWorkouts, value);
     } else {
-      console.log("added item:", workoutId);
+      console.log("selected item:", workoutId);
       setSelectedWorkouts([...selectedWorkouts, workoutId]);
     }
   }
@@ -241,26 +244,23 @@ export function Workouts() {
                     />
                     <div>
                       <h4>{workout.name}</h4>
-                      <p>
-                        {(() => {
-                          const author = profiles.find(
-                            (profile) =>
-                              profile.userId === workout.createdByUsersId,
-                          );
-                          return author
-                            ? `Author: ${author.firstName} ${author.lastName}`
-                            : "";
-                        })()}
-                      </p>
-                      <p>{workout.createdAt}</p>
+                      <p>{formatDate(workout.createdAt)}</p>
                     </div>
                   </div>
                 </CardHeader>
 
                 <CardFooter>
                   <div className={styles["workouts__icons-container"]}>
-                    <FontAwesomeIcon icon={faPenToSquare} />
-                    <FontAwesomeIcon icon={faTrash} />
+                    <FontAwesomeIcon
+                      icon={faPenToSquare}
+                      onClick={() =>
+                        navigate(`/workouts/edit-workout/${workout.id}`)
+                      }
+                    />
+                    <FontAwesomeIcon
+                      icon={faTrash}
+                      onClick={() => handleDeleteWorkout(workout.id)}
+                    />
                   </div>
                 </CardFooter>
               </div>
