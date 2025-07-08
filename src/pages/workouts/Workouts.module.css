@@ -1,34 +1,21 @@
 .workouts-page {
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .workouts-page__header {
   display: flex;
+  width: 100%;
   justify-content: space-between;
-  align-items: flex-end;
   gap: 1rem;
 }
 
 .workouts-page__controls {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  width: 100%;
   padding: 1rem 0;
   gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.workouts-page__controls :nth-child(1) {
-  max-width: 500px;
-  flex-basis: 300px;
-  flex-grow: 1;
-  flex-shrink: 1;
-}
-.workouts-page__controls :nth-child(2) {
-  max-width: 500px;
-  flex-basis: 300px;
-  flex-grow: 1;
-  flex-shrink: 1;
 }
 
 .workout-page__list {
@@ -83,9 +70,9 @@
     gap: 1rem;
   }
 
-  .workouts-page__header {
+  .workouts-page__controls {
     flex-direction: column;
-    align-items: stretch;
+    gap: 0.5rem;
   }
 
   .workouts__icons-container {

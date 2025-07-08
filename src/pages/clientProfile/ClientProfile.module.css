@@ -64,6 +64,42 @@
   display: block;
 }
 
+.profile-page__workout-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.profile-page__workout-buttons > p {
+  font-weight: 600;
+}
+
+.workout-button {
+  padding: 1rem 2rem;
+  background-color: var(--color-gray-dark);
+  color: #ffffff;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+}
+
+.start {
+  background-color: var(--color-primary);
+}
+.start:hover {
+  background-color: var(--color-primary-light);
+  color: #ffffff;
+}
+
+.assign {
+  background-color: var(--color-gray-dark);
+}
+
+.assign:hover {
+  background-color: var(--color-gray-medium);
+  color: #ffffff;
+}
+
 /* profile page left side bottom content*/
 
 .profile-page__user-stats {
@@ -118,6 +154,12 @@
 /* Active nav link styling */
 .activeNavLink {
   color: var(--color-primary);
+}
+
+.delete-link {
+  color: var(--color-accent);
+  background-color: transparent;
+  border: none;
 }
 
 /* Media Queries */

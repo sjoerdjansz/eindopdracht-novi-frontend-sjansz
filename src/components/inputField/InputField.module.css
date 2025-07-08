@@ -4,12 +4,15 @@
   border-radius: var(--border-radius-sm);
   outline: none;
   padding: var(--space-sm);
+  font-size: 0.8rem;
+  line-height: 1.5;
   background-color: var(--color-white);
   box-shadow: var(--element-shadow-subtle);
 }
 
 .input-field-container {
   position: relative;
+  width: 100%;
 }
 
 .input-field-icon {

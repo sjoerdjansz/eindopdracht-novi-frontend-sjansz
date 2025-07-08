@@ -30,7 +30,7 @@ export function AppRoutes() {
           <Route path="create/:id" element={<CreateExercisePage />} />
         </Route>
         <Route path="clients" element={<Clients />} />
-        <Route path="create" element={<CreateClientPage />} />
+        <Route path="/clients/create" element={<CreateClientPage />} />
 
         <Route path="clients/:id" element={<ClientProfile />}>
           <Route index element={<ClientAccountDetails />} />

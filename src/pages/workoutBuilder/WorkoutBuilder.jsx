@@ -13,6 +13,8 @@ import { FilteredSearch } from "../../components/filteredSearch/FilteredSearch.j
 
 // Api
 import { API_ENDPOINTS } from "../../api/api.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 export function WorkoutBuilder() {
   // exercises state main purpose is UI, drag and drop and adding parameters
@@ -149,6 +151,8 @@ export function WorkoutBuilder() {
       console.error(error);
     }
   }
+
+  // TODO: make sure there is error handling when user adds 1 char name at workout builder when saving. bugged
 
   // function to handle the save workout logic: constructing and posting the template and adding the exercises afterwards
   async function handleWorkoutSave() {
@@ -406,15 +410,16 @@ export function WorkoutBuilder() {
       <h1>Build Workout</h1>
 
       <section className={styles["workout-page__header"]}>
-        <div className={styles["search-container"]}>
-          <InputWrapper>
+        <div className={styles["exercise-search-container"]}>
+          <InputWrapper width="small">
             <InputField
               type="text"
               name="exercise"
               id="exercise"
-              placeholder="Search exercise"
+              placeholder="Find exercise"
               handleChange={handleSearchChange}
               value={searchValue}
+              icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
               onFocus={() => setShowSearchFilter(true)}
             />
             <Button
@@ -440,8 +445,8 @@ export function WorkoutBuilder() {
           )}
         </div>
 
-        <div>
-          <InputWrapper>
+        <div className={styles["workout-name-container"]}>
+          <InputWrapper width="small">
             <InputField
               type="text"
               name="name"
