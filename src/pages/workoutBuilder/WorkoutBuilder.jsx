@@ -265,13 +265,50 @@ export function WorkoutBuilder() {
         await handleExercisesSave(workoutTemplateToSave.id, exercises);
       }
 
-      // check for duplicates in exercises before putting in database and delete duplicates
-      console.log(exercises); // actual state/ui exercises for editing
-      console.log(exercisesCurrentlyInWorkout); // initially loaded / original exercises
+      // TODO: Onderstaande 3 diff functies gebruiken om met de handleExerciseSave de diff variant/exercise te posten/putten naar de db
 
-      // TODO: met filter en some checken of er duplicates zijn. zo ja, plaats de aangepaste in een
-      //  nieuweExercises variabele en push die naar de db met de handle exercxise save.
-      //  eigenlijk ook nog een differentiator/checker maken voor deletes en aanpassingen in de parameters...
+      // check which exercises are newly added
+      const newExercises = exercises.filter((exercise) => {
+        return !exercisesCurrentlyInWorkout.some((newExercise) => {
+          return newExercise.exerciseId === exercise.id;
+        });
+      });
+
+      // check which exercises are deleted
+      const deletedExercises = exercisesCurrentlyInWorkout.filter(
+        (exercise) => {
+          return !exercises.some((deletedExercise) => {
+            return deletedExercise.id === exercise.exerciseId;
+          });
+        },
+      );
+
+      // check exercises that have been updated (their parameters)
+      const updatedExercises = exercises.filter((exercise) => {
+        const match = exercisesCurrentlyInWorkout.find((updatedExercise) => {
+          return exercise.id === updatedExercise.exerciseId;
+        });
+
+        if (!match) {
+          return false;
+        }
+
+        if (
+          exercise.sets !== match.sets ||
+          exercise.reps !== match.reps ||
+          exercise.rest !== match.rest
+        ) {
+          return true;
+        }
+        return false;
+      });
+
+      console.log("NEW exercises:::");
+      console.log(newExercises);
+      console.log("DELETED exercises:::");
+      console.log(deletedExercises);
+      console.log("UPDATED exercises:::");
+      console.log(updatedExercises);
 
       setShowSnackbar({
         open: true,
