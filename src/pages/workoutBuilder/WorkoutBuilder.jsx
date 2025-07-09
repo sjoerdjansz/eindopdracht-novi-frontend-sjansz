@@ -123,35 +123,45 @@ export function WorkoutBuilder() {
         },
       );
 
-      // TODO: Dit deel heeft een fix nodig. discutabel
-      const uiExerciseData = data
-        .map((workoutExercise) => {
-          console.log(workoutExercise);
-          const match = allSearchableExercises.find((exercise) => {
-            return exercise.id === workoutExercise.exerciseId;
-          });
+      console.log(data);
 
-          if (!match) {
-            console.warn("No match found for: " + workoutExercise.exerciseId);
-          }
-
-          return {
-            id: workoutExercise.id,
-            exerciseId: workoutExercise.exerciseId,
-            workoutTemplateId: workoutExercise.workoutTemplateId,
-            name: match.name || "Unknown",
-            sets: workoutExercise.sets,
-            reps: workoutExercise.reps,
-            rest: workoutExercise.rest,
-            index: workoutExercise.index,
-          };
-        })
-        .sort((a, b) => {
-          return a.index - b.index;
+      const matchedExercises = data.map((workoutExercise) => {
+        return allSearchableExercises.find((exercise) => {
+          return exercise.id === workoutExercise.exerciseId;
         });
+      });
 
-      console.log(uiExerciseData);
-      setExercises(uiExerciseData);
+      console.log(matchedExercises);
+
+      // TODO: Dit deel heeft een fix nodig. discutabel
+      // const uiExerciseData = data
+      //   .map((workoutExercise) => {
+      //     console.log(workoutExercise);
+      //     const match = allSearchableExercises.find((exercise) => {
+      //       return exercise.id === workoutExercise.exerciseId;
+      //     });
+      //
+      //     if (!match) {
+      //       console.warn("No match found for: " + workoutExercise.exerciseId);
+      //     }
+      //
+      //     return {
+      //       id: workoutExercise.id,
+      //       exerciseId: workoutExercise.exerciseId,
+      //       workoutTemplateId: workoutExercise.workoutTemplateId,
+      //       name: match.name || "Unknown",
+      //       sets: workoutExercise.sets,
+      //       reps: workoutExercise.reps,
+      //       rest: workoutExercise.rest,
+      //       index: workoutExercise.index,
+      //     };
+      //   })
+      //   .sort((a, b) => {
+      //     return a.index - b.index;
+      //   });
+      //
+      // console.log(uiExerciseData);
+      // setExercises(uiExerciseData);
     } catch (error) {
       console.error(error);
     }
@@ -198,29 +208,27 @@ export function WorkoutBuilder() {
         );
         console.log(response.data);
 
-        const requests = await Promise.all(
-          exercisesArr.map((exercise, index) => {
-            const exerciseDataObject = {
-              workoutTemplateId: response.data.id,
-              exerciseId: exercisesArr[index].id,
-              sets: parseInt(exercisesArr[index].sets) || 3,
-              reps: parseInt(exercisesArr[index].reps) || 12,
-              rest: parseInt(exercisesArr[index].rest) || 90,
-              index: index,
-            };
-            return axios.post(
-              `${API_ENDPOINTS.workoutExercises}`,
-              exerciseDataObject,
-              {
-                headers: {
-                  "novi-education-project-id": import.meta.env.VITE_API_KEY,
-                  "Content-Type": "application/json",
-                },
+        for (let i = 0; i < exercisesArr.length; i++) {
+          const exerciseDataObject = {
+            workoutTemplateId: response.data.id,
+            exerciseId: exercisesArr[i].id,
+            sets: parseInt(exercisesArr[i].sets) || 3,
+            reps: parseInt(exercisesArr[i].reps) || 12,
+            rest: parseInt(exercisesArr[i].rest) || 90,
+            index: i,
+          };
+          await axios.post(
+            `${API_ENDPOINTS.workoutExercises}`,
+            exerciseDataObject,
+            {
+              headers: {
+                "novi-education-project-id": import.meta.env.VITE_API_KEY,
+                "Content-Type": "application/json",
               },
-            );
-          }),
-        );
-        console.log(requests);
+            },
+          );
+        }
+
         setShowSnackbar({
           open: true,
           message: `Workout ${workoutTemplateObject.name} has been added`,
@@ -229,14 +237,15 @@ export function WorkoutBuilder() {
       } else {
         setShowSnackbar({
           open: true,
-          message: "Add atleast one exercise",
+          message: "Add at least one exercise",
           status: "error",
         });
       }
     } catch (error) {
+      console.log(error);
       setShowSnackbar({
         open: true,
-        message: error.response.data[0],
+        message: "Add at least one exercise and a valid workout name",
         status: "error",
       });
     } finally {
