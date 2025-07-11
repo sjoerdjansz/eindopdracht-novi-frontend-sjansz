@@ -34,15 +34,25 @@ export function SelectField({
           <option value="" disabled>
             {title}
           </option>
-          {options
-            .sort((a, b) => a.value.localeCompare(b.value))
-            .map((option) => {
-              return (
-                <option key={option.value} value={option.value.trim()}>
-                  {option.label}
-                </option>
-              );
-            })}
+          {options &&
+            options
+              .sort((a, b) => {
+                if (a.value) {
+                  return a.value.localeCompare(b.value);
+                } else {
+                  return a.localeCompare(b);
+                }
+              })
+              .map((option) => {
+                return (
+                  <option
+                    key={option.value || option}
+                    value={option.value ? option.value.trim() : option.trim()}
+                  >
+                    {option.label || option}
+                  </option>
+                );
+              })}
         </select>
         {button && (
           <Button

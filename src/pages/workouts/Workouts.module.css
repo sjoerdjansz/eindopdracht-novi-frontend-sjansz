@@ -13,8 +13,19 @@
 
 .workouts-page__controls {
   display: flex;
-  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   padding: 1rem 0;
+  gap: 1rem;
+}
+
+.workouts-page__controls > :nth-child(1) {
+}
+
+.workouts-page__controls > :nth-child(2) {
+  display: flex;
+  align-items: center;
   gap: 1rem;
 }
 
@@ -46,7 +57,7 @@
   align-items: flex-end;
   width: 100%;
   min-width: 50px;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .workouts__icons-container svg {
@@ -72,12 +83,7 @@
 
   .workouts-page__controls {
     flex-direction: column;
+    align-items: stretch;
     gap: 0.5rem;
-  }
-
-  .workouts__icons-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
   }
 }

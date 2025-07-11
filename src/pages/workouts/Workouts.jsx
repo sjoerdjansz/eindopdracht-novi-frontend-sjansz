@@ -38,10 +38,13 @@ export function Workouts() {
   });
   const [workoutFilter, setWorkoutFilter] = useState("");
   const [searchWorkouts, setSearchWorkouts] = useState("");
+  const [selectClient, setSelectClient] = useState("");
+  const [allClients, setAllClients] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchWorkoutTemplates();
+    fetchClients();
   }, []);
 
   useEffect(() => {
@@ -96,6 +99,44 @@ export function Workouts() {
     }
   }
 
+  async function pairUserWorkoutsToUser(clientId, workoutTemplates) {
+    if (!clientId) {
+      return;
+    }
+
+    if (!workoutTemplates) {
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      for (let i = 0; i < workoutTemplates.length; i++) {
+        console.log("workoutTemplate ID:", workoutTemplates[i]);
+        console.log("clientIds:", clientId);
+        const { data } = await axios.post(
+          `${API_ENDPOINTS.userWorkouts}`,
+
+          {
+            userProfileId: parseInt(clientId),
+            workoutTemplateId: parseInt(workoutTemplates[i]),
+          },
+          {
+            headers: {
+              "novi-education-project-id": import.meta.env.VITE_API_KEY,
+              "Content-Type": "application/json",
+            },
+          },
+        );
+        console.log(data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   async function fetchWorkoutExercises(templateId) {
     if (!templateId) {
       return;
@@ -115,6 +156,27 @@ export function Workouts() {
       }));
     } catch (error) {
       console.error(error);
+    }
+  }
+
+  async function fetchClients() {
+    try {
+      setIsLoading(true);
+      const { data } = await axios.get(`${API_ENDPOINTS.clients}`, {
+        headers: {
+          "novi-education-project-id": import.meta.env.VITE_API_KEY,
+        },
+      });
+      setAllClients(data);
+    } catch (error) {
+      setShowSnackbar({
+        open: true,
+        message: "Failed to fetch clients",
+        status: "error",
+      });
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -171,11 +233,16 @@ export function Workouts() {
     console.log(e.target.value);
   }
 
+  function handleSelectClient(e) {
+    setSelectClient(e.target.value);
+    console.log(e.target.value);
+  }
+
   function handleCreateWorkoutClick() {
     navigate("/workouts/new-workout");
   }
 
-  function removeItem(arr, value) {
+  function deselectWorkout(arr, value) {
     setSelectedWorkouts(
       arr.filter((item) => {
         console.log("deselected item:", value);
@@ -184,17 +251,18 @@ export function Workouts() {
     );
   }
 
-  function handleClick(workoutId) {
+  function selectWorkout(workoutId) {
     const value = selectedWorkouts.find((id) => {
       return id === workoutId;
     });
 
     if (value) {
-      removeItem(selectedWorkouts, value);
+      deselectWorkout(selectedWorkouts, value);
     } else {
       console.log("selected item:", workoutId);
       setSelectedWorkouts([...selectedWorkouts, workoutId]);
     }
+    console.log(selectedWorkouts);
   }
 
   return (
@@ -220,31 +288,54 @@ export function Workouts() {
         />
       </div>
       <section className={styles["workouts-page__controls"]}>
-        <InputWrapper width="small">
-          <SelectField
-            id="workout-filter"
-            name="workout-filter"
-            options={WORKOUT_FILTER_OPTIONS}
-            title="Filter workouts"
-            handleChange={handleFilterWorkout}
-            value={workoutFilter}
-            button={true}
-            buttonLabel="Reset"
-            buttonStyle="secondary"
-            onButtonClick={handleResetFilters}
-          />
-        </InputWrapper>
-        <InputWrapper width="small">
-          <InputField
-            type="text"
-            name="search-workout"
-            id="search-workout"
-            placeholder="Search workout"
-            icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
-            handleChange={handleSearchWorkouts}
-            value={searchWorkouts}
-          />
-        </InputWrapper>
+        <div>
+          <InputWrapper width="small">
+            <SelectField
+              id="client-select"
+              name="client-select"
+              title="Select client"
+              options={allClients.map((client) => ({
+                label: `${client.firstName} ${client.lastName}`,
+                value: client.id.toString(),
+              }))}
+              value={selectClient.id}
+              handleChange={handleSelectClient}
+              button={true}
+              buttonLabel="Add workouts"
+              buttonStyle="secondary"
+              onButtonClick={() => {
+                pairUserWorkoutsToUser(selectClient, selectedWorkouts);
+              }}
+            />
+          </InputWrapper>
+        </div>
+        <div>
+          <InputWrapper width="small">
+            <SelectField
+              id="workout-filter"
+              name="workout-filter"
+              options={WORKOUT_FILTER_OPTIONS}
+              title="Filter workouts"
+              handleChange={handleFilterWorkout}
+              value={workoutFilter}
+              button={true}
+              buttonLabel="Reset"
+              buttonStyle="secondary"
+              onButtonClick={handleResetFilters}
+            />
+          </InputWrapper>
+          <InputWrapper width="small">
+            <InputField
+              type="text"
+              name="search-workout"
+              id="search-workout"
+              placeholder="Search workout"
+              icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
+              handleChange={handleSearchWorkouts}
+              value={searchWorkouts}
+            />
+          </InputWrapper>
+        </div>
       </section>
       <section className={styles["workout-page__list"]}>
         {filteredWorkoutTemplates.map((template) => {
@@ -258,7 +349,7 @@ export function Workouts() {
                       type="button"
                       name="select-workout"
                       onClick={() => {
-                        handleClick(template.id);
+                        selectWorkout(template.id);
                       }}
                       selected={selectedWorkouts.find((id) => {
                         return id === template.id;
