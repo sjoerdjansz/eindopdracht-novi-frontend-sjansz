@@ -19,11 +19,7 @@ import { CustomCheckbox } from "../../components/customCheckbox/CustomCheckbox.j
 import { WORKOUT_FILTER_OPTIONS } from "../../data/workoutFilterOptions.js";
 
 // Icons
-import {
-  faMagnifyingGlass,
-  faPenToSquare,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINTS } from "../../api/api.js";
 import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
@@ -33,7 +29,7 @@ export function Workouts() {
   const [selectedWorkouts, setSelectedWorkouts] = useState([]);
   const [allWorkoutTemplates, setAllWorkoutTemplates] = useState([]);
   const [filteredWorkoutTemplates, setFilteredWorkoutTemplates] = useState([]);
-  const [workoutAuthors, setWorkoutAuthors] = useState([]);
+  const [workoutExercises, setWorkoutExercises] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState({
     open: false,
@@ -82,6 +78,10 @@ export function Workouts() {
         },
       });
 
+      await Promise.all(
+        data.map((template) => fetchWorkoutExercises(template.id)),
+      );
+
       setAllWorkoutTemplates(data);
       setFilteredWorkoutTemplates(data);
     } catch (error) {
@@ -93,6 +93,28 @@ export function Workouts() {
       console.error(error);
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function fetchWorkoutExercises(templateId) {
+    if (!templateId) {
+      return;
+    }
+    try {
+      const { data } = await axios.get(
+        `${API_ENDPOINTS.workoutTemplates}/${templateId}/workoutExercises`,
+        {
+          headers: {
+            "novi-education-project-id": import.meta.env.VITE_API_KEY,
+          },
+        },
+      );
+      setWorkoutExercises((prevState) => ({
+        ...prevState,
+        [templateId]: data,
+      }));
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -225,9 +247,9 @@ export function Workouts() {
         </InputWrapper>
       </section>
       <section className={styles["workout-page__list"]}>
-        {filteredWorkoutTemplates.map((workout) => {
+        {filteredWorkoutTemplates.map((template) => {
           return (
-            <Card key={workout.id} variant="horizontal" size="medium">
+            <Card key={template.id} variant="horizontal" size="medium">
               <div className={styles["workout-page__card-container"]}>
                 <CardHeader>
                   <div className={styles["workouts-page__card-header"]}>
@@ -236,15 +258,19 @@ export function Workouts() {
                       type="button"
                       name="select-workout"
                       onClick={() => {
-                        handleClick(workout.id);
+                        handleClick(template.id);
                       }}
                       selected={selectedWorkouts.find((id) => {
-                        return id === workout.id;
+                        return id === template.id;
                       })}
                     />
                     <div>
-                      <h4>{workout.name}</h4>
-                      <p>{formatDate(workout.createdAt)}</p>
+                      <h4>{template.name}</h4>
+                      <p>
+                        {workoutExercises[template.id]?.length || "No"}{" "}
+                        exercises in workout
+                      </p>
+                      <p>{formatDate(template.createdAt)}</p>
                     </div>
                   </div>
                 </CardHeader>
@@ -253,7 +279,7 @@ export function Workouts() {
                   <div className={styles["workouts__icons-container"]}>
                     <FontAwesomeIcon
                       icon={faTrash}
-                      onClick={() => handleDeleteWorkout(workout.id)}
+                      onClick={() => handleDeleteWorkout(template.id)}
                     />
                   </div>
                 </CardFooter>
