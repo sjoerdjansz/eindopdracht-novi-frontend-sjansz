@@ -1,10 +1,6 @@
 import styles from "./TableRow.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faGripVertical,
-  faPenToSquare,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faGripVertical, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 export function TableRow({
   handleDragOver,
@@ -34,7 +30,7 @@ export function TableRow({
           type="text"
           id="sets"
           name="sets"
-          onChange={(e) => handleChange(e, exercise.id)}
+          onChange={(e) => handleChange(e, exercise.exerciseId)}
           value={exercise.sets}
         />
       </td>
@@ -44,7 +40,7 @@ export function TableRow({
           type="text"
           id="reps"
           name="reps"
-          onChange={(e) => handleChange(e, exercise.id)}
+          onChange={(e) => handleChange(e, exercise.exerciseId)}
           value={exercise.reps}
         />
       </td>
@@ -54,7 +50,7 @@ export function TableRow({
           type="text"
           id="rest"
           name="rest"
-          onChange={(e) => handleChange(e, exercise.id)}
+          onChange={(e) => handleChange(e, exercise.exerciseId)}
           value={exercise.rest}
         />
       </td>

@@ -252,12 +252,6 @@ export function Workouts() {
                 <CardFooter>
                   <div className={styles["workouts__icons-container"]}>
                     <FontAwesomeIcon
-                      icon={faPenToSquare}
-                      onClick={() =>
-                        navigate(`/workouts/edit-workout/${workout.id}`)
-                      }
-                    />
-                    <FontAwesomeIcon
                       icon={faTrash}
                       onClick={() => handleDeleteWorkout(workout.id)}
                     />

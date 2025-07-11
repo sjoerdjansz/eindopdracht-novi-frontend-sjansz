@@ -15,14 +15,12 @@ import { FilteredSearch } from "../../components/filteredSearch/FilteredSearch.j
 import { API_ENDPOINTS } from "../../api/api.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { useParams } from "react-router-dom";
 
 export function WorkoutBuilder() {
   // exercises state main purpose is UI, drag and drop and adding parameters
   const [exercises, setExercises] = useState([]);
   // exercisesFromApi state is for http request to get all the exercises in state
   const [allSearchableExercises, setAllSearchableExercises] = useState([]);
-  const [workoutTemplates, setWorkoutTemplates] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [workoutName, setWorkoutName] = useState("");
 
@@ -34,32 +32,14 @@ export function WorkoutBuilder() {
     status: "",
   });
   const [showSearchFilter, setShowSearchFilter] = useState(false);
-  const { id: editTemplateId } = useParams();
-  const isEditMode = Boolean(editTemplateId);
 
   useEffect(() => {
     fetchAllExercises();
-    fetchWorkoutTemplates();
   }, []);
 
   useEffect(() => {
     setShowSearchFilter(true);
   }, [searchValue]);
-
-  useEffect(() => {
-    if (isEditMode) {
-      console.log("IN EDIT MODE");
-
-      const template = workoutTemplates.find((workout) => {
-        return workout.id === parseInt(editTemplateId);
-      });
-
-      if (template) {
-        setWorkoutName(template?.name || "");
-        fetchWorkoutExercises(template.id);
-      }
-    }
-  }, [isEditMode, workoutTemplates, editTemplateId, allSearchableExercises]);
 
   // get all exercises from api and into state
   async function fetchAllExercises() {
@@ -70,118 +50,12 @@ export function WorkoutBuilder() {
           "novi-education-project-id": import.meta.env.VITE_API_KEY,
         },
       });
+      console.warn("SEARCHABLE EXERCISES:", data);
       setAllSearchableExercises(data);
     } catch (error) {
       console.error(error);
     } finally {
       setIsLoading(false);
-    }
-  }
-
-  // Fetch the workout templates and put in state
-  async function fetchWorkoutTemplates() {
-    try {
-      setIsLoading(true);
-      const { data } = await axios.get(API_ENDPOINTS.workoutTemplates, {
-        headers: {
-          "novi-education-project-id": import.meta.env.VITE_API_KEY,
-        },
-      });
-      setWorkoutTemplates(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  // To EDIT new workout we need the following:
-  // 1. GET the workout template based on the id param √√
-  // 2. Set to state to display workout name √√
-  // 2. GET all the exercises associated with that workout template (thus workoutExercises)
-  // 3. Set to state (probably can use exercises)
-  // 4. Make sure to add the following functions:
-  //    - delete exercise function (reload page and all data after delete button click)
-  //    - update params function (reload page and all data after update button click)
-  //    - new exercises function (reload page after adding new exercise)
-  //    - BONUS: edge case, what if you change parameters and add an exercise after that. will it not PUT the updated params? OnBlur of een debounce schrijven
-  //    - BONUS: should I save after button click or after a delay or leaving a field?
-
-  // ----- FETCH WORKOUT EXERCISE FROM DB ----- //
-  async function fetchWorkoutExercises(workoutTemplateId) {
-    if (!workoutTemplateId) {
-      return;
-    }
-
-    try {
-      const { data } = await axios.get(
-        `${API_ENDPOINTS.workoutTemplates}/${workoutTemplateId}/workoutExercises`,
-        {
-          headers: {
-            "novi-education-project-id": import.meta.env.VITE_API_KEY,
-          },
-        },
-      );
-
-      console.log(data);
-
-      const matchedExercises = data.map((workoutExercise) => {
-        return allSearchableExercises.find((exercise) => {
-          return exercise.id === workoutExercise.exerciseId;
-        });
-      });
-
-      console.log(matchedExercises);
-
-      // TODO: Dit deel heeft een fix nodig. discutabel
-      // const uiExerciseData = data
-      //   .map((workoutExercise) => {
-      //     console.log(workoutExercise);
-      //     const match = allSearchableExercises.find((exercise) => {
-      //       return exercise.id === workoutExercise.exerciseId;
-      //     });
-      //
-      //     if (!match) {
-      //       console.warn("No match found for: " + workoutExercise.exerciseId);
-      //     }
-      //
-      //     return {
-      //       id: workoutExercise.id,
-      //       exerciseId: workoutExercise.exerciseId,
-      //       workoutTemplateId: workoutExercise.workoutTemplateId,
-      //       name: match.name || "Unknown",
-      //       sets: workoutExercise.sets,
-      //       reps: workoutExercise.reps,
-      //       rest: workoutExercise.rest,
-      //       index: workoutExercise.index,
-      //     };
-      //   })
-      //   .sort((a, b) => {
-      //     return a.index - b.index;
-      //   });
-      //
-      // console.log(uiExerciseData);
-      // setExercises(uiExerciseData);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  // ----- DELETE WORKOUT EXERCISE FROM DB ----- //
-  async function deleteWorkoutExerciseFromDb(workoutExerciseId) {
-    console.log(workoutExerciseId);
-    try {
-      const response = await axios.delete(
-        `${API_ENDPOINTS.workoutExercises}/${workoutExerciseId}`,
-        {
-          headers: {
-            "novi-education-project-id": import.meta.env.VITE_API_KEY,
-          },
-        },
-      );
-      console.log(response);
-    } catch (error) {
-      console.error(error);
     }
   }
 
@@ -211,7 +85,7 @@ export function WorkoutBuilder() {
         for (let i = 0; i < exercisesArr.length; i++) {
           const exerciseDataObject = {
             workoutTemplateId: response.data.id,
-            exerciseId: exercisesArr[i].id,
+            exerciseId: exercisesArr[i].exerciseId,
             sets: parseInt(exercisesArr[i].sets) || 3,
             reps: parseInt(exercisesArr[i].reps) || 12,
             rest: parseInt(exercisesArr[i].rest) || 90,
@@ -262,7 +136,7 @@ export function WorkoutBuilder() {
       return previousExercises.map((exercise) => {
         // check if ids are the same
         // return new object with updated sets reps and rest
-        if (exercise.id === exerciseId) {
+        if (exercise.exerciseId === exerciseId) {
           return {
             ...exercise, // spread existing obj properties
             [name]: value, // dynamic update of changed property
@@ -287,13 +161,12 @@ export function WorkoutBuilder() {
     if (!id) {
       return;
     }
-
-    deleteWorkoutExerciseFromDb(id);
+    console.log("deleted:", id);
 
     // update state/ui
     // temporary array copy that keeps all the exercises that don't have matching ids
     const updatedExerciseArray = exercises.filter((exercise) => {
-      return exercise.id !== id;
+      return exercise.exerciseId !== id;
     });
 
     setExercises(updatedExerciseArray);
@@ -304,7 +177,7 @@ export function WorkoutBuilder() {
   function handleFilterSelectExercise(exercise) {
     // check if the exercise is already in the workout
     const duplicate = exercises.some((e) => {
-      return e.id === exercise.id;
+      return e.exerciseId === exercise.id;
     });
 
     if (duplicate) {
@@ -315,13 +188,18 @@ export function WorkoutBuilder() {
       });
       return;
     }
-
     // add selected exercise to exercises state
     // While keeping all the previous items in the array (functional state update, de nieuwe baseren op de vorige)
     // Only set the id and name so the parameters can be filled in later.
     setExercises((previous) => [
       ...previous,
-      { id: exercise.id, name: exercise.name, sets: "", reps: "", rest: "" },
+      {
+        exerciseId: exercise.id,
+        name: exercise.name,
+        sets: "",
+        reps: "",
+        rest: "",
+      },
     ]);
     setShowSnackbar({
       open: false,
@@ -349,7 +227,7 @@ export function WorkoutBuilder() {
 
     // check if exercise is already in the workout
     if (result) {
-      if (exercises.some((exercise) => exercise.id === result.id)) {
+      if (exercises.some((exercise) => exercise.exerciseId === result.id)) {
         setShowSnackbar({
           open: true,
           message: "Exercise is already in workout",
@@ -383,8 +261,8 @@ export function WorkoutBuilder() {
 
   // ----- DRAG AND DROP LOGIC ----- //
   // de start van de drag - item wordt opgepakt
-  function handleDragStart(e, exerciseId) {
-    e.dataTransfer.setData("text/plain", exerciseId);
+  function handleDragStart(e, id) {
+    e.dataTransfer.setData("text/plain", id);
     e.dataTransfer.effectAllowed = "move";
 
     //pakt met de closest property het dichtsbijzinde html element
@@ -434,12 +312,12 @@ export function WorkoutBuilder() {
 
     // verificatie van de id en positie van de dragged item
     const originalItemPosition = arrCopy.findIndex((exercise) => {
-      return exercise.id.toString() === draggedItemNumber;
+      return exercise.exerciseId.toString() === draggedItemNumber;
     });
 
     // verificatie van de id en positie van de dropped item
     const newItemPosition = arrCopy.findIndex((exercise) => {
-      return exercise.id.toString() === dropItemNumber;
+      return exercise.exerciseId.toString() === dropItemNumber;
     });
 
     // het verplaatste item
@@ -469,7 +347,7 @@ export function WorkoutBuilder() {
           }
         />
       )}
-      {isEditMode ? <h1>Edit Workout</h1> : <h1>Build Workout</h1>}
+      <h1>Build Workout</h1>
 
       <section className={styles["workout-page__header"]}>
         <div className={styles["exercise-search-container"]}>
@@ -522,7 +400,7 @@ export function WorkoutBuilder() {
             buttonType="primary"
             buttonSize="small"
             type="button"
-            label={isEditMode ? "Update workout" : "Save workout"}
+            label="Save workout"
             handleClick={() => {
               saveNewWorkout(workoutName, exercises);
             }}
@@ -548,13 +426,17 @@ export function WorkoutBuilder() {
                 exercises.map((exercise) => {
                   return (
                     <TableRow
-                      key={exercise.id}
+                      key={exercise.exerciseId}
                       exercise={exercise}
                       handleDragOver={handleDragOver}
-                      onDragStart={(e) => handleDragStart(e, exercise.id)}
-                      onDrop={(e) => handleDrop(e, exercise.id)}
+                      onDragStart={(e) =>
+                        handleDragStart(e, exercise.exerciseId)
+                      }
+                      onDrop={(e) => handleDrop(e, exercise.exerciseId)}
                       handleChange={handleExerciseParameterChange}
-                      handleDelete={() => handleDeleteExercise(exercise.id)}
+                      handleDelete={() =>
+                        handleDeleteExercise(exercise.exerciseId)
+                      }
                     />
                   );
                 })}
