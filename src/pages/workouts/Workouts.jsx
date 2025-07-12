@@ -100,26 +100,38 @@ export function Workouts() {
   }
 
   async function pairUserWorkoutsToUser(clientId, workoutTemplates) {
-    if (!clientId) {
-      return;
-    }
-
-    if (!workoutTemplates) {
+    if (!clientId || !workoutTemplates?.length) {
       return;
     }
 
     try {
       setIsLoading(true);
+      const existingWorkoutTemplates = await fetchClientWorkouts(clientId);
 
-      for (let i = 0; i < workoutTemplates.length; i++) {
-        console.log("workoutTemplate ID:", workoutTemplates[i]);
-        console.log("clientIds:", clientId);
-        const { data } = await axios.post(
+      const existingTemplateIds = existingWorkoutTemplates.map((template) => {
+        return template.workoutTemplateId;
+      });
+
+      const newTemplatesToAssign = workoutTemplates.filter((templateId) => {
+        return !existingTemplateIds.includes(parseInt(templateId));
+      });
+
+      if (newTemplatesToAssign.length === 0) {
+        setShowSnackbar({
+          open: true,
+          message: "A selected workout is already assigned",
+          status: "error",
+        });
+        return;
+      }
+
+      for (let i = 0; i < newTemplatesToAssign.length; i++) {
+        await axios.post(
           `${API_ENDPOINTS.userWorkouts}`,
 
           {
             userProfileId: parseInt(clientId),
-            workoutTemplateId: parseInt(workoutTemplates[i]),
+            workoutTemplateId: parseInt(newTemplatesToAssign[i]),
           },
           {
             headers: {
@@ -128,9 +140,46 @@ export function Workouts() {
             },
           },
         );
-        console.log(data);
+
+        const matchedClientId = allClients.find(
+          (client) => parseInt(selectClient) === parseInt(client.id),
+        );
+        setShowSnackbar({
+          open: true,
+          message: `Workout(s) successfully assigned to ${matchedClientId.firstName} ${matchedClientId.lastName}`,
+          status: "success",
+        });
       }
     } catch (error) {
+      setShowSnackbar({
+        open: true,
+        message: "Something went wrong while assigning the workout(s)",
+        status: "error",
+      });
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function fetchClientWorkouts(clientId) {
+    try {
+      setIsLoading(true);
+      const { data } = await axios.get(
+        `${API_ENDPOINTS.clients}/${clientId}/userWorkouts`,
+        {
+          headers: {
+            "novi-education-project-id": import.meta.env.VITE_API_KEY,
+          },
+        },
+      );
+      return data;
+    } catch (error) {
+      setShowSnackbar({
+        open: true,
+        status: "error",
+        message: "Couldn't fetch the client workout templates",
+      });
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -230,12 +279,10 @@ export function Workouts() {
 
   function handleFilterWorkout(e) {
     setWorkoutFilter(e.target.value);
-    console.log(e.target.value);
   }
 
   function handleSelectClient(e) {
     setSelectClient(e.target.value);
-    console.log(e.target.value);
   }
 
   function handleCreateWorkoutClick() {
@@ -245,7 +292,6 @@ export function Workouts() {
   function deselectWorkout(arr, value) {
     setSelectedWorkouts(
       arr.filter((item) => {
-        console.log("deselected item:", value);
         return item !== value;
       }),
     );
@@ -259,10 +305,8 @@ export function Workouts() {
     if (value) {
       deselectWorkout(selectedWorkouts, value);
     } else {
-      console.log("selected item:", workoutId);
       setSelectedWorkouts([...selectedWorkouts, workoutId]);
     }
-    console.log(selectedWorkouts);
   }
 
   return (
@@ -298,7 +342,7 @@ export function Workouts() {
                 label: `${client.firstName} ${client.lastName}`,
                 value: client.id.toString(),
               }))}
-              value={selectClient.id}
+              value={selectClient}
               handleChange={handleSelectClient}
               button={true}
               buttonLabel="Add workouts"

@@ -3,7 +3,7 @@ import {
   faBook,
   faDumbbell,
   faUser,
-  faPuzzlePiece,
+  faShapes,
 } from "@fortawesome/free-solid-svg-icons";
 
 export const NAV_ITEMS = [
@@ -19,7 +19,7 @@ export const NAV_ITEMS = [
     id: 4,
     label: "build workout",
     to: "/workouts/new-workout",
-    icon: faPuzzlePiece,
+    icon: faShapes,
   },
   { id: 5, label: "clients", to: "/clients", icon: faUser },
 ];
