@@ -10,7 +10,7 @@ export function ClientWorkoutStatusCard({
 }) {
   return (
     <li className={styles["client-list__client-info"]}>
-      <img src={clientImage} alt="Client Jimmy profile picture" />
+      <img src={clientImage} alt="Client profile picture" />
       <div>
         <p className={styles["client-list__client-name"]}>{clientName}</p>
         <p className={styles["client-list__workout-info"]}>

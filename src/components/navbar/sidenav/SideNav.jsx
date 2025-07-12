@@ -15,7 +15,7 @@ import { useState } from "react";
 import { NAV_ITEMS } from "../../../data/navItems.js";
 
 export function SideNav() {
-  const [toggleNav, setToggleNav] = useState(true);
+  const [toggleNav, setToggleNav] = useState(false);
 
   return (
     <nav

@@ -19,10 +19,11 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 export function WorkoutBuilder() {
   // exercises state main purpose is UI, drag and drop and adding parameters
   const [exercises, setExercises] = useState([]);
-  // exercisesFromApi state is for http request to get all the exercises
-  const [exercisesFromApi, setExercisesFromApi] = useState([]);
+  // exercisesFromApi state is for http request to get all the exercises in state
+  const [allSearchableExercises, setAllSearchableExercises] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [workoutName, setWorkoutName] = useState("");
+
   // utility states
   const [isLoading, setIsLoading] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState({
@@ -33,7 +34,7 @@ export function WorkoutBuilder() {
   const [showSearchFilter, setShowSearchFilter] = useState(false);
 
   useEffect(() => {
-    getAllExercises();
+    fetchAllExercises();
   }, []);
 
   useEffect(() => {
@@ -41,7 +42,7 @@ export function WorkoutBuilder() {
   }, [searchValue]);
 
   // get all exercises from api and into state
-  async function getAllExercises() {
+  async function fetchAllExercises() {
     try {
       setIsLoading(true);
       const { data } = await axios.get(API_ENDPOINTS.exercises, {
@@ -49,7 +50,8 @@ export function WorkoutBuilder() {
           "novi-education-project-id": import.meta.env.VITE_API_KEY,
         },
       });
-      setExercisesFromApi(data);
+      console.warn("SEARCHABLE EXERCISES:", data);
+      setAllSearchableExercises(data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -57,37 +59,73 @@ export function WorkoutBuilder() {
     }
   }
 
-  // function to get the current highest workout id from the workoutTemplates
-  const getHightestWorkoutId = async () => {
+  // ----- SAVE NEW WORKOUT (TEMPLATE AND WORKOUT EXERCISES) ----- //
+  async function saveNewWorkout(templateName, exercisesArr) {
+    const workoutTemplateObject = {
+      name: templateName ? templateName : "Workout",
+      createdAt: new Date().toISOString(),
+      createdByUsersId: 1, // change to userId from userContext (which is the logged in trainer)
+    };
+
     try {
       setIsLoading(true);
-      const { data } = await axios.get(API_ENDPOINTS.workoutTemplates, {
-        headers: {
-          "novi-education-project-id": import.meta.env.VITE_API_KEY,
-        },
-      });
+      if (exercises.length > 0) {
+        const response = await axios.post(
+          `${API_ENDPOINTS.workoutTemplates}`,
+          workoutTemplateObject,
+          {
+            headers: {
+              "novi-education-project-id": import.meta.env.VITE_API_KEY,
+              "Content-Type": "application/json",
+            },
+          },
+        );
+        console.log(response.data);
 
-      // map workout template id's to new array and sort it from high to low. Get highest num by [0].
-      // Needed when saving the exercise
-      let currentHighest = 0;
+        for (let i = 0; i < exercisesArr.length; i++) {
+          const exerciseDataObject = {
+            workoutTemplateId: response.data.id,
+            exerciseId: exercisesArr[i].exerciseId,
+            sets: parseInt(exercisesArr[i].sets) || 3,
+            reps: parseInt(exercisesArr[i].reps) || 12,
+            rest: parseInt(exercisesArr[i].rest) || 90,
+            index: i,
+          };
+          await axios.post(
+            `${API_ENDPOINTS.workoutExercises}`,
+            exerciseDataObject,
+            {
+              headers: {
+                "novi-education-project-id": import.meta.env.VITE_API_KEY,
+                "Content-Type": "application/json",
+              },
+            },
+          );
+        }
 
-      if (data.length > 0) {
-        currentHighest = data
-          .map((template) => {
-            return template.id;
-          })
-          .sort((a, b) => {
-            return b - a;
-          })[0];
+        setShowSnackbar({
+          open: true,
+          message: `Workout ${workoutTemplateObject.name} has been added`,
+          status: "success",
+        });
+      } else {
+        setShowSnackbar({
+          open: true,
+          message: "Add at least one exercise",
+          status: "error",
+        });
       }
-      // add 1 to increment to the correct count
-      return currentHighest + 1;
     } catch (error) {
-      console.error(error);
+      console.log(error);
+      setShowSnackbar({
+        open: true,
+        message: "Add at least one exercise and a valid workout name",
+        status: "error",
+      });
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   // function to handle the changes to the (sets, reps, rest) parameters per exercise
   function handleExerciseParameterChange(e, exerciseId) {
@@ -98,7 +136,7 @@ export function WorkoutBuilder() {
       return previousExercises.map((exercise) => {
         // check if ids are the same
         // return new object with updated sets reps and rest
-        if (exercise.id === exerciseId) {
+        if (exercise.exerciseId === exerciseId) {
           return {
             ...exercise, // spread existing obj properties
             [name]: value, // dynamic update of changed property
@@ -123,127 +161,23 @@ export function WorkoutBuilder() {
     if (!id) {
       return;
     }
+    console.log("deleted:", id);
+
+    // update state/ui
     // temporary array copy that keeps all the exercises that don't have matching ids
     const updatedExerciseArray = exercises.filter((exercise) => {
-      return exercise.id !== id;
+      return exercise.exerciseId !== id;
     });
 
     setExercises(updatedExerciseArray);
   }
 
-  // functie to add the workout template to database
-  async function postWorkoutTemplate(template) {
-    try {
-      const response = await axios.post(
-        API_ENDPOINTS.workoutTemplates,
-
-        template, // workout template object as data
-
-        {
-          headers: {
-            "novi-education-project-id": import.meta.env.VITE_API_KEY,
-            "Content-Type": "application/json",
-          },
-        },
-      );
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  // TODO: make sure there is error handling when user adds 1 char name at workout builder when saving. bugged
-
-  // function to handle the save workout logic: constructing and posting the template and adding the exercises afterwards
-  async function handleWorkoutSave() {
-    // check if there are workouts added and if there's a name, if not: return
-    if (!workoutName || exercises.length === 0) {
-      setShowSnackbar({
-        open: true,
-        message: "Make sure the workout has a name and at least one exercise",
-        status: "error",
-      });
-      return;
-    }
-
-    const templateId = await getHightestWorkoutId();
-
-    try {
-      const workoutTemplateToSave = {
-        id: templateId,
-        name: workoutName,
-        createdAt: new Date().toISOString(),
-        createdByUsersId: "1", // TODO: add user through useContext() hook
-      };
-
-      // push the template & exercises to db
-      await postWorkoutTemplate(workoutTemplateToSave);
-      await handleExercisesSave(templateId, exercises);
-
-      setShowSnackbar({
-        open: true,
-        message: "Workout template saved successfully",
-        status: "success",
-      });
-    } catch (error) {
-      console.error(error);
-      setShowSnackbar({
-        open: true,
-        message: "Error while saving workout",
-        status: "warning",
-      });
-    }
-  }
-  // function that adds the exercises to the database
-  // TODO: low prio - change to Promise.all
-  async function handleExercisesSave(templateId, exercisesData) {
-    // reset snackbar
-    try {
-      setShowSnackbar({
-        open: false,
-        message: "",
-        status: "",
-      });
-
-      // loop over all exercises that are currently in de exercisesData array
-      for (let i = 0; i < exercisesData.length; i++) {
-        // create a scoped data object to add to post request with each iteration
-        const data = {
-          workoutTemplateId: templateId, // parent workout template id
-          exerciseId: exercisesData[i].id, // exercise id (matches exercises from api)
-          sets: exercisesData[i].sets || 3, // paramaters with default if no value is given
-          reps: exercisesData[i].reps || 12,
-          rest: exercisesData[i].rest || 90,
-          index: i, // use index of loop to set the exercise order (for when we have to get the workout later)
-        };
-
-        const response = await axios.post(
-          API_ENDPOINTS.workoutExercises,
-          data,
-          {
-            headers: {
-              "novi-education-project-id": import.meta.env.VITE_API_KEY,
-              "content-type": "application/json",
-            },
-          },
-        );
-        console.log(response.data);
-      }
-    } catch (error) {
-      console.error(error);
-      setShowSnackbar({
-        open: true,
-        message: "Error while saving an exercise",
-        status: "warning",
-      });
-    }
-  }
-
+  // ----- SELECTING EXERCISE FROM FILTER ----- //
   // function that handles the selection of an exercise from the search exercise filtering dropdown
   function handleFilterSelectExercise(exercise) {
     // check if the exercise is already in the workout
     const duplicate = exercises.some((e) => {
-      return e.id === exercise.id;
+      return e.exerciseId === exercise.id;
     });
 
     if (duplicate) {
@@ -254,13 +188,18 @@ export function WorkoutBuilder() {
       });
       return;
     }
-
     // add selected exercise to exercises state
     // While keeping all the previous items in the array (functional state update, de nieuwe baseren op de vorige)
     // Only set the id and name so the parameters can be filled in later.
     setExercises((previous) => [
       ...previous,
-      { id: exercise.id, name: exercise.name, sets: "", reps: "", rest: "" },
+      {
+        exerciseId: exercise.id,
+        name: exercise.name,
+        sets: "",
+        reps: "",
+        rest: "",
+      },
     ]);
     setShowSnackbar({
       open: false,
@@ -270,7 +209,7 @@ export function WorkoutBuilder() {
     setSearchValue("");
   }
 
-  // regular exercise search
+  // ----- EXERCISE SEARCH ----- //
   function handleExerciseSearch(data) {
     // cleanup the searchQuery (might need moving to where it's been set in state)
     const searchQuery = searchValue.toLowerCase().trim();
@@ -288,7 +227,7 @@ export function WorkoutBuilder() {
 
     // check if exercise is already in the workout
     if (result) {
-      if (exercises.some((exercise) => exercise.id === result.id)) {
+      if (exercises.some((exercise) => exercise.exerciseId === result.id)) {
         setShowSnackbar({
           open: true,
           message: "Exercise is already in workout",
@@ -320,9 +259,10 @@ export function WorkoutBuilder() {
     }
   }
 
+  // ----- DRAG AND DROP LOGIC ----- //
   // de start van de drag - item wordt opgepakt
-  function handleDragStart(e, exerciseId) {
-    e.dataTransfer.setData("text/plain", exerciseId);
+  function handleDragStart(e, id) {
+    e.dataTransfer.setData("text/plain", id);
     e.dataTransfer.effectAllowed = "move";
 
     //pakt met de closest property het dichtsbijzinde html element
@@ -372,12 +312,12 @@ export function WorkoutBuilder() {
 
     // verificatie van de id en positie van de dragged item
     const originalItemPosition = arrCopy.findIndex((exercise) => {
-      return exercise.id.toString() === draggedItemNumber;
+      return exercise.exerciseId.toString() === draggedItemNumber;
     });
 
     // verificatie van de id en positie van de dropped item
     const newItemPosition = arrCopy.findIndex((exercise) => {
-      return exercise.id.toString() === dropItemNumber;
+      return exercise.exerciseId.toString() === dropItemNumber;
     });
 
     // het verplaatste item
@@ -428,13 +368,13 @@ export function WorkoutBuilder() {
               type="button"
               buttonSize="small"
               handleClick={() => {
-                handleExerciseSearch(exercisesFromApi);
+                handleExerciseSearch(allSearchableExercises);
               }}
             />
           </InputWrapper>
           {showSearchFilter && (
             <FilteredSearch
-              exercises={exercisesFromApi}
+              exercises={allSearchableExercises}
               searchValue={searchValue}
               handleSelectExercise={(exercise) => {
                 handleFilterSelectExercise(exercise);
@@ -461,7 +401,9 @@ export function WorkoutBuilder() {
             buttonSize="small"
             type="button"
             label="Save workout"
-            handleClick={handleWorkoutSave}
+            handleClick={() => {
+              saveNewWorkout(workoutName, exercises);
+            }}
           />
         </div>
       </section>
@@ -484,13 +426,17 @@ export function WorkoutBuilder() {
                 exercises.map((exercise) => {
                   return (
                     <TableRow
-                      key={exercise.id}
+                      key={exercise.exerciseId}
                       exercise={exercise}
                       handleDragOver={handleDragOver}
-                      onDragStart={(e) => handleDragStart(e, exercise.id)}
-                      onDrop={(e) => handleDrop(e, exercise.id)}
+                      onDragStart={(e) =>
+                        handleDragStart(e, exercise.exerciseId)
+                      }
+                      onDrop={(e) => handleDrop(e, exercise.exerciseId)}
                       handleChange={handleExerciseParameterChange}
-                      handleDelete={() => handleDeleteExercise(exercise.id)}
+                      handleDelete={() =>
+                        handleDeleteExercise(exercise.exerciseId)
+                      }
                     />
                   );
                 })}

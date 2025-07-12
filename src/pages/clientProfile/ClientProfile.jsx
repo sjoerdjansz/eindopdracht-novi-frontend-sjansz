@@ -3,8 +3,6 @@ import {
   Link,
   NavLink,
   Outlet,
-  Route,
-  useLocation,
   useNavigate,
   useParams,
 } from "react-router-dom";
@@ -15,7 +13,6 @@ import { Button } from "../../components/button/Button.jsx";
 import placeholderAvatar from "../../assets/no_profile_picture_image.jpeg";
 import { LoadingSpinner } from "../../components/loadingSpinner/LoadingSpinner.jsx";
 
-import { InputField } from "../../components/inputField/InputField.jsx";
 import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
 import { useEffect, useState } from "react";
 import { API_ENDPOINTS } from "../../api/api.js";
@@ -72,6 +69,8 @@ export function ClientProfile() {
         },
       );
 
+      setClientWorkouts(data);
+
       const response = await axios.all(
         data.map((workout) => {
           return axios.get(
@@ -84,13 +83,46 @@ export function ClientProfile() {
           );
         }),
       );
-      const results = response.map((res) => res.data);
-      setWorkoutTemplates(results);
+
+      const templates = response.map((res, index) => ({
+        ...res.data,
+        userWorkoutId: data[index].id,
+      }));
+
+      setWorkoutTemplates(templates);
     } catch (error) {
       console.error(error);
     } finally {
       setIsLoading(false);
       setIsWorkoutsLoaded(true);
+    }
+  }
+
+  async function deleteWorkout(userWorkoutId) {
+    try {
+      setIsLoading(true);
+      await axios.delete(`${API_ENDPOINTS.userWorkouts}/${userWorkoutId}`, {
+        headers: {
+          "novi-education-project-id": import.meta.env.VITE_API_KEY,
+        },
+      });
+
+      setShowSnackbar({
+        open: true,
+        status: "success",
+        message: "Workout deleted",
+      });
+
+      await fetchWorkouts();
+    } catch (error) {
+      setShowSnackbar({
+        open: true,
+        status: "error",
+        message: "Something went wrong while deleting the workout",
+      });
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -321,6 +353,7 @@ export function ClientProfile() {
                     setProfile: setProfile,
                     clientWorkouts: clientWorkouts,
                     workoutTemplates: workoutTemplates,
+                    deleteWorkout: deleteWorkout,
                   }}
                 />
               </div>

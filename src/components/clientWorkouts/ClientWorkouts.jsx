@@ -1,8 +1,10 @@
 import styles from "./ClientWorkouts.module.css";
 import { Link, useOutletContext } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 export function ClientWorkouts() {
-  const { profile, workoutTemplates } = useOutletContext();
+  const { profile, workoutTemplates, deleteWorkout } = useOutletContext();
   return (
     <div className={styles["client-workouts"]}>
       <h2>Assigned Workouts</h2>
@@ -14,8 +16,15 @@ export function ClientWorkouts() {
                 className={styles["client-workouts__list-item"]}
                 key={workouts.id}
               >
-                <p>{workouts.name}</p>
-                <Link to={"/"}>View workout</Link>
+                <div>
+                  {" "}
+                  <Link to={"/"}>View</Link>
+                  <p>{workouts.name}</p>
+                </div>
+                <FontAwesomeIcon
+                  icon={faTrash}
+                  onClick={() => deleteWorkout(workouts.userWorkoutId)}
+                />
               </li>
             );
           })
