@@ -32,7 +32,7 @@
   margin: var(--space-xl);
 }
 
-.signup__content-form p {
+.signup__content-form > p {
   font-weight: 600;
 }
 

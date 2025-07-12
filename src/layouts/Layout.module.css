@@ -7,11 +7,10 @@ In de main komt een component die zelf nog een grid (bijv 12 stuks) of flexbox h
   min-height: 0;
   height: 100vh;
   grid-template-columns: auto 1fr;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: 70px 1fr;
   grid-template-areas:
     "sidenav topnav"
     "sidenav main";
-  overflow: hidden;
 }
 
 /* Centreert de content container in het midden en geeft de child container van de content pagina mogelijkheid tot flex basis etc*/
@@ -20,18 +19,9 @@ In de main komt een component die zelf nog een grid (bijv 12 stuks) of flexbox h
   display: flex;
   flex-direction: row;
   justify-content: center;
+  align-items: flex-start;
   background-color: var(--color-white);
-  overflow: auto;
   padding: var(--space-lg);
   height: 100%;
-}
-
-/* Media Queries */
-@media (max-width: 768px) {
-  .layout {
-    overflow: auto;
-  }
-  .page-content-container {
-    overflow: visible;
-  }
+  overflow: auto;
 }

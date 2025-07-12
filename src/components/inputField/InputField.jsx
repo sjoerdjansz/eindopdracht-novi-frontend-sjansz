@@ -13,18 +13,37 @@ export function InputField({
   style,
   required,
   onFocus,
+  togglePasswordValidation,
+  tooltip,
 }) {
+  function getValidPasswordStyle(bool, inputName) {
+    if (inputName === "password") {
+      if (bool === null) {
+        return "";
+      } else if (bool) {
+        return styles["password-invalid"];
+      } else {
+        return styles["password-valid"];
+      }
+    } else {
+      return "";
+    }
+  }
+
   return (
     <>
       {label && (
-        <label htmlFor={id}>
+        <label htmlFor={id} className={styles["input-field-label"]}>
           {label}
           {required && <span className={styles["required"]}>*</span>}
+          {tooltip && tooltip}
         </label>
       )}
       <div className={styles["input-field-container"]}>
         <input
-          className={`${styles["input-field"]} ${styles[style]}`}
+          className={`${styles["input-field"]} 
+    ${style ? styles[style] : ""} 
+    ${getValidPasswordStyle(togglePasswordValidation, name)}`}
           type={type}
           name={name}
           id={id}

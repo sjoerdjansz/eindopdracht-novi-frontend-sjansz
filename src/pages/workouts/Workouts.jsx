@@ -345,15 +345,15 @@ export function Workouts() {
               value={selectClient}
               handleChange={handleSelectClient}
               button={true}
-              buttonLabel="Add workouts"
+              buttonLabel="Add"
               buttonStyle="secondary"
               onButtonClick={() => {
                 pairUserWorkoutsToUser(selectClient, selectedWorkouts);
               }}
+              disabled={selectClient.length <= 0}
             />
           </InputWrapper>
-        </div>
-        <div>
+
           <InputWrapper width="small">
             <SelectField
               id="workout-filter"
@@ -368,18 +368,18 @@ export function Workouts() {
               onButtonClick={handleResetFilters}
             />
           </InputWrapper>
-          <InputWrapper width="small">
-            <InputField
-              type="text"
-              name="search-workout"
-              id="search-workout"
-              placeholder="Search workout"
-              icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
-              handleChange={handleSearchWorkouts}
-              value={searchWorkouts}
-            />
-          </InputWrapper>
         </div>
+        <InputWrapper width="small">
+          <InputField
+            type="text"
+            name="search-workout"
+            id="search-workout"
+            placeholder="Search workout"
+            icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
+            handleChange={handleSearchWorkouts}
+            value={searchWorkouts}
+          />
+        </InputWrapper>
       </section>
       <section className={styles["workout-page__list"]}>
         {filteredWorkoutTemplates.map((template) => {

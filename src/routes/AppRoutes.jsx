@@ -17,7 +17,6 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route path="/signup" element={<Signup />} />
-
       <Route path="/" element={<Layout />}>
         <Route index element={<Dashboard />} />
         <Route path="workouts">

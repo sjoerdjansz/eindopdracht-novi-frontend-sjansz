@@ -51,6 +51,12 @@
   background-color: var(--color-primary-light);
 }
 
+.disabled {
+  cursor: not-allowed;
+  background-color: var(--color-gray-medium);
+  color: var(--color-white);
+}
+
 /*Danger en succes nog maken alsook de hover states*/
 
 /* Sizes */

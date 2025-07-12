@@ -168,10 +168,12 @@ tr:nth-of-type(2n) {
 
   /* 2. Primary and secondary colors */
   --color-primary: hsl(342 92 56);
+  --color-primary-verylight: hsl(342 92 90);
   --color-primary-light: hsl(342 92 70);
   --color-primary-dark: hsl(342 92 45);
   --color-secondary: hsl(148 85 46);
   --color-secondary-light: hsl(148 85 70);
+  --color-secondary-verylight: hsl(148 85 90);
   --color-secondary-dark: hsl(148 85 45);
 
   /* 3. Grays */
