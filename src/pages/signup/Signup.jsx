@@ -155,6 +155,7 @@ export function Signup() {
             type="button"
             buttonSize="medium"
             buttonType="secondary"
+            disabled={true}
           />
           <hr />
           <InputField
@@ -177,7 +178,7 @@ export function Signup() {
             toggleHandler={handleToggle}
             togglePasswordValidation={isPasswordValid}
             tooltip={
-              <Tooltip content="Wachtwoord moet minstens één hoofdletter, kleine letter, getal en speciaal teken bevatten" />
+              <Tooltip content="Password must include an uppercase letter, lowercase letter, number and special character." />
             }
           />
           <a href="/">Forgot password?</a>
@@ -189,7 +190,7 @@ export function Signup() {
           />
         </form>
         <p>
-          Already have an account? <a href="/">Login here</a>
+          Already have an account? <a href="/login">Login here</a>
         </p>
       </section>
     </main>
