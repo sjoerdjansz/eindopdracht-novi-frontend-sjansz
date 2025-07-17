@@ -28,13 +28,18 @@ import { API_ENDPOINTS } from "../../api/api.js";
 import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 import { formatDate } from "../../utils/formatDate.js";
 import { NoContent } from "../../components/noContent/NoContent.jsx";
+import { useApiRequest } from "../../hooks/useApiRequest.js";
 
 export function Workouts() {
   const [selectedWorkouts, setSelectedWorkouts] = useState([]);
   const [allWorkoutTemplates, setAllWorkoutTemplates] = useState([]);
   const [filteredWorkoutTemplates, setFilteredWorkoutTemplates] = useState([]);
   const [workoutExercises, setWorkoutExercises] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingState, setLoadingState] = useState({
+    workouts: false,
+    assign: false,
+    archive: false,
+  });
   const [showSnackbar, setShowSnackbar] = useState({
     open: false,
     message: "",
@@ -48,9 +53,29 @@ export function Workouts() {
 
   const navigate = useNavigate();
 
+  // Custom hook
+  const { isLoading: isClientLoading, sendRequest } = useApiRequest();
+
   useEffect(() => {
     fetchWorkoutTemplates();
-    fetchClients();
+
+    // usage of custom hook
+    async function getClients() {
+      const result = await sendRequest({
+        method: "GET",
+        url: `${API_ENDPOINTS.clients}`,
+      });
+      if (result) {
+        setAllClients(result);
+      } else {
+        setShowSnackbar({
+          open: true,
+          message: "Failed to fetch clients",
+          status: "error",
+        });
+      }
+    }
+    getClients();
   }, []);
 
   useEffect(() => {
@@ -80,7 +105,7 @@ export function Workouts() {
 
   async function fetchWorkoutTemplates() {
     try {
-      setIsLoading(true);
+      setLoadingState((prevState) => ({ ...prevState, workouts: true }));
       const { data } = await axios.get(API_ENDPOINTS.workoutTemplates, {
         headers: {
           "novi-education-project-id": import.meta.env.VITE_API_KEY,
@@ -107,7 +132,7 @@ export function Workouts() {
       });
       console.error(error);
     } finally {
-      setIsLoading(false);
+      setLoadingState((prevState) => ({ ...prevState, workouts: false }));
       setHasLoaded(true);
     }
   }
@@ -118,7 +143,7 @@ export function Workouts() {
     }
 
     try {
-      setIsLoading(true);
+      setLoadingState((prevState) => ({ ...prevState, assign: true }));
       const existingWorkoutTemplates = await fetchClientWorkouts(clientId);
 
       const existingTemplateIds = existingWorkoutTemplates.map((template) => {
@@ -153,16 +178,18 @@ export function Workouts() {
             },
           },
         );
-
-        const matchedClientId = allClients.find(
-          (client) => parseInt(selectClient) === parseInt(client.id),
-        );
-        setShowSnackbar({
-          open: true,
-          message: `Workout(s) successfully assigned to ${matchedClientId.firstName} ${matchedClientId.lastName}`,
-          status: "success",
-        });
       }
+      const matchedClient = allClients.find(
+        (client) => parseInt(selectClient) === parseInt(client.id),
+      );
+
+      setSelectedWorkouts([]);
+
+      setShowSnackbar({
+        open: true,
+        message: `Workout(s) successfully assigned to ${matchedClient.firstName} ${matchedClient.lastName}`,
+        status: "success",
+      });
     } catch (error) {
       setShowSnackbar({
         open: true,
@@ -171,13 +198,13 @@ export function Workouts() {
       });
       console.error(error);
     } finally {
-      setIsLoading(false);
+      setLoadingState((prevState) => ({ ...prevState, assign: false }));
     }
   }
 
   async function fetchClientWorkouts(clientId) {
     try {
-      setIsLoading(true);
+      setLoadingState((prevState) => ({ ...prevState, workouts: true }));
       const { data } = await axios.get(
         `${API_ENDPOINTS.clients}/${clientId}/userWorkouts`,
         {
@@ -195,7 +222,7 @@ export function Workouts() {
       });
       console.error(error);
     } finally {
-      setIsLoading(false);
+      setLoadingState((prevState) => ({ ...prevState, workouts: false }));
     }
   }
 
@@ -221,27 +248,6 @@ export function Workouts() {
     }
   }
 
-  async function fetchClients() {
-    try {
-      setIsLoading(true);
-      const { data } = await axios.get(`${API_ENDPOINTS.clients}`, {
-        headers: {
-          "novi-education-project-id": import.meta.env.VITE_API_KEY,
-        },
-      });
-      setAllClients(data);
-    } catch (error) {
-      setShowSnackbar({
-        open: true,
-        message: "Failed to fetch clients",
-        status: "error",
-      });
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
   // deleting is actually archiving (TODO: create archived workouts component)
   async function handleDeleteWorkout(workoutTemplateId) {
     if (!workoutTemplateId) {
@@ -258,7 +264,7 @@ export function Workouts() {
     });
 
     try {
-      setIsLoading(true);
+      setLoadingState((prevState) => ({ ...prevState, archive: true }));
       await axios.put(
         `${API_ENDPOINTS.workoutTemplates}/${workoutTemplateId}`,
         { ...result, archivedAt: new Date().toISOString() },
@@ -279,7 +285,7 @@ export function Workouts() {
       });
       console.error(error);
     } finally {
-      setIsLoading(false);
+      setLoadingState((prevState) => ({ ...prevState, archive: false }));
     }
   }
 
@@ -324,7 +330,7 @@ export function Workouts() {
     }
   }
 
-  if (!hasLoaded || isLoading) {
+  if (!hasLoaded || loadingState.workouts || loadingState.archive) {
     return <LoadingSpinner />;
   }
 
@@ -349,7 +355,7 @@ export function Workouts() {
           open={showSnackbar.open}
           status={showSnackbar.status}
           durationVisible={3000}
-          onClose={() => setShowSnackbar(false)}
+          onClose={() => setShowSnackbar({ ...showSnackbar, open: false })}
         />
       )}
       <div className={styles["workouts-page__header"]}>
@@ -365,24 +371,28 @@ export function Workouts() {
       <section className={styles["workouts-page__controls"]}>
         <div>
           <InputWrapper width="small">
-            <SelectField
-              id="client-select"
-              name="client-select"
-              title="Select client"
-              options={allClients.map((client) => ({
-                label: `${client.firstName} ${client.lastName}`,
-                value: client.id.toString(),
-              }))}
-              value={selectClient}
-              handleChange={handleSelectClient}
-              button={true}
-              buttonLabel="Add"
-              buttonStyle="secondary"
-              onButtonClick={() => {
-                pairUserWorkoutsToUser(selectClient, selectedWorkouts);
-              }}
-              disabled={selectClient.length <= 0}
-            />
+            {isClientLoading ? (
+              <p>Loading clients...</p>
+            ) : (
+              <SelectField
+                id="client-select"
+                name="client-select"
+                title="Select client"
+                options={allClients.map((client) => ({
+                  label: `${client.firstName} ${client.lastName}`,
+                  value: client.id.toString(),
+                }))}
+                value={selectClient}
+                handleChange={handleSelectClient}
+                button={true}
+                buttonLabel="Add"
+                buttonStyle="secondary"
+                onButtonClick={() => {
+                  pairUserWorkoutsToUser(selectClient, selectedWorkouts);
+                }}
+                disabled={selectClient.length <= 0}
+              />
+            )}
           </InputWrapper>
 
           <InputWrapper width="small">

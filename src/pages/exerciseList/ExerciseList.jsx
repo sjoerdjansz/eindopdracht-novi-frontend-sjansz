@@ -19,21 +19,27 @@ import { BODYPART_FILTER_OPTIONS } from "../../data/clientFilterOptions.js";
 import { DeleteConfirmation } from "../../components/deleteConfirmation/DeleteConfirmation.jsx";
 import { MOVEMENTS } from "../../data/workoutFilterOptions.js";
 import { MUSCLE_GROUPS } from "../../data/muscleGroups.js";
+import { useApiRequest } from "../../hooks/useApiRequest.js";
 
 export function ExerciseList() {
   const navigate = useNavigate();
   const [exerciseSearchQuery, setExerciseSearchQuery] = useState("");
   const [originalExercises, setOriginalExercises] = useState([]);
   const [findExercises, setFindExercises] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState({
+    open: false,
+    message: "",
+    status: "",
+  });
   const [bodyPartFilter, setBodyPartFilter] = useState("");
   const [deleteItem, setDeleteItem] = useState(false);
   const [exerciseToBeDeleted, setExerciseToBeDeleted] = useState({
     id: "",
     name: "",
   });
+
+  // custom hook
+  const { isLoading: exercisesLoading, sendRequest } = useApiRequest();
 
   useEffect(() => {
     getExercises();
@@ -60,30 +66,24 @@ export function ExerciseList() {
     setFindExercises(filteredExercises);
   }, [bodyPartFilter, exerciseSearchQuery, originalExercises]);
 
-  // Adds label values to the data object for correct ui view
-  function valueToLabel(data, arr, type) {
-    return data.map((item) => {
-      const matched = arr.find((val) => {
-        return val.value === item[type];
-      });
-      return {
-        ...item,
-        [`${type}Label`]: matched ? matched.label : "",
-      };
-    });
-  }
-
-  // Get exercises api call
+  // Using custom hook
   async function getExercises() {
-    try {
-      setIsLoading(true);
-      const response = await axios.get(API_ENDPOINTS.exercises, {
-        headers: {
-          "novi-education-project-id": import.meta.env.VITE_API_KEY,
-        },
-      });
+    const result = await sendRequest({
+      method: "GET",
+      url: API_ENDPOINTS.exercises,
+    });
 
-      let cleanedExercises = valueToLabel(response.data, MOVEMENTS, "movement");
+    if (!result) {
+      setShowSnackbar({
+        message: "Failed to load exercises.",
+        open: true,
+        status: "error",
+      });
+      return;
+    }
+
+    if (result) {
+      let cleanedExercises = valueToLabel(result, MOVEMENTS, "movement");
       cleanedExercises = valueToLabel(
         cleanedExercises,
         MUSCLE_GROUPS,
@@ -96,15 +96,20 @@ export function ExerciseList() {
 
       setOriginalExercises(sortedExercises);
       setFindExercises(sortedExercises);
-    } catch (e) {
-      setErrorMessage(
-        `${e.response.status}: ${e.code}. Failed to load exercises.`,
-      );
-      setShowSnackbar(true);
-      console.error(e);
-    } finally {
-      setIsLoading(false);
     }
+  }
+
+  // Adds label values to the data object for correct ui view
+  function valueToLabel(data, arr, type) {
+    return data.map((item) => {
+      const matched = arr.find((val) => {
+        return val.value === item[type];
+      });
+      return {
+        ...item,
+        [`${type}Label`]: matched ? matched.label : "",
+      };
+    });
   }
 
   const handleCreateExerciseClick = () => {
@@ -144,7 +149,6 @@ export function ExerciseList() {
         },
       );
       setDeleteItem(false);
-      console.log("Exercise successfully deleted");
       await getExercises();
       console.log(response.data);
     } catch (error) {
@@ -154,6 +158,15 @@ export function ExerciseList() {
 
   return (
     <div className={styles["exercise-list"]}>
+      {showSnackbar.open && (
+        <Snackbar
+          message={showSnackbar.message}
+          open={showSnackbar.open}
+          status={showSnackbar.status}
+          durationVisible={3000}
+          onClose={() => setShowSnackbar({ ...showSnackbar, open: false })}
+        />
+      )}
       <section className={styles["exercise-list__controls"]}>
         <div>
           <h1>Exercise List</h1>
@@ -194,7 +207,7 @@ export function ExerciseList() {
           </InputWrapper>
         </div>
       </section>
-      {isLoading && <LoadingSpinner />}
+      {exercisesLoading && <LoadingSpinner />}
 
       {deleteItem && (
         <DeleteConfirmation
@@ -202,18 +215,6 @@ export function ExerciseList() {
           item={exerciseToBeDeleted.name}
           onCancel={handleCancelDelete}
           onDelete={handleDeleteExercise}
-        />
-      )}
-
-      {showSnackbar && (
-        <Snackbar
-          message={errorMessage}
-          open={showSnackbar}
-          status="warning"
-          durationVisible={3000}
-          onClose={() => {
-            setShowSnackbar(false);
-          }}
         />
       )}
       <table>
