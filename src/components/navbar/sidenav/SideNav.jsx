@@ -9,13 +9,15 @@ import {
   faArrowRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../../context/AuthContextProvider.jsx";
 
 // nav links
 import { NAV_ITEMS } from "../../../data/navItems.js";
 
 export function SideNav() {
   const [toggleNav, setToggleNav] = useState(false);
+  const { logout } = useContext(AuthContext);
 
   return (
     <nav
@@ -55,7 +57,10 @@ export function SideNav() {
         </ul>
       </div>
       <NavLink
-        to="/signup"
+        onClick={() => {
+          logout();
+        }}
+        to="/login"
         className={`${styles["side-nav__sign-out"]} ${toggleNav ? styles["collapsed"] : ""}`}
       >
         <FontAwesomeIcon icon={faArrowRightFromBracket} />

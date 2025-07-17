@@ -210,7 +210,7 @@ export function ClientProfile() {
 
       setTimeout(() => {
         navigate("/clients");
-      }, 2000);
+      }, 1500);
     } catch (error) {
       console.error(error);
       setShowSnackbar({
@@ -285,12 +285,7 @@ export function ClientProfile() {
 
                   <div className={styles["profile-page__workout-buttons"]}>
                     {workoutTemplates.length > 0 ? (
-                      <Link
-                        className={`${styles["workout-button"]} ${styles.start}`}
-                        to={`/clients/${id}/workouts`}
-                      >
-                        Start Workout
-                      </Link>
+                      <p>{`${workoutTemplates.length} workouts assigned`}</p>
                     ) : (
                       <>
                         <p>No workouts assigned yet.</p>

@@ -10,6 +10,11 @@
   box-shadow: var(--element-shadow-subtle);
 }
 
+.input-field-label {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .input-field-container {
   position: relative;
   width: 100%;
@@ -33,4 +38,12 @@
 .required {
   color: var(--color-primary);
   margin-left: 0.3rem;
+}
+
+.password-valid {
+  background-color: var(--color-primary-verylight);
+}
+
+.password-invalid {
+  background-color: var(--color-secondary-verylight);
 }

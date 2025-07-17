@@ -19,11 +19,15 @@ import { CustomCheckbox } from "../../components/customCheckbox/CustomCheckbox.j
 import { WORKOUT_FILTER_OPTIONS } from "../../data/workoutFilterOptions.js";
 
 // Icons
-import { faMagnifyingGlass, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBoxArchive,
+  faMagnifyingGlass,
+} from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINTS } from "../../api/api.js";
 import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 import { formatDate } from "../../utils/formatDate.js";
+import { NoContent } from "../../components/noContent/NoContent.jsx";
 
 export function Workouts() {
   const [selectedWorkouts, setSelectedWorkouts] = useState([]);
@@ -40,6 +44,8 @@ export function Workouts() {
   const [searchWorkouts, setSearchWorkouts] = useState("");
   const [selectClient, setSelectClient] = useState("");
   const [allClients, setAllClients] = useState([]);
+  const [hasLoaded, setHasLoaded] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -81,12 +87,18 @@ export function Workouts() {
         },
       });
 
+      setWorkoutExercises({});
+
+      const filteredTemplatesData = data.filter(
+        (template) => !template.archivedAt,
+      );
+
       await Promise.all(
         data.map((template) => fetchWorkoutExercises(template.id)),
       );
 
-      setAllWorkoutTemplates(data);
-      setFilteredWorkoutTemplates(data);
+      setAllWorkoutTemplates(filteredTemplatesData);
+      setFilteredWorkoutTemplates(filteredTemplatesData);
     } catch (error) {
       setShowSnackbar({
         open: true,
@@ -96,6 +108,7 @@ export function Workouts() {
       console.error(error);
     } finally {
       setIsLoading(false);
+      setHasLoaded(true);
     }
   }
 
@@ -229,36 +242,38 @@ export function Workouts() {
     }
   }
 
+  // deleting is actually archiving (TODO: create archived workouts component)
   async function handleDeleteWorkout(workoutTemplateId) {
     if (!workoutTemplateId) {
       setShowSnackbar({
-        message: "Workout couldn't be deleted",
+        message: "Workout couldn't be archived",
         open: true,
         status: "error",
       });
       return;
     }
+
+    const result = filteredWorkoutTemplates.find((template) => {
+      return template.id === workoutTemplateId;
+    });
+
     try {
       setIsLoading(true);
-      await axios.delete(
+      await axios.put(
         `${API_ENDPOINTS.workoutTemplates}/${workoutTemplateId}`,
+        { ...result, archivedAt: new Date().toISOString() },
         {
           headers: {
             "novi-education-project-id": import.meta.env.VITE_API_KEY,
+            "Content-Type": "application/json",
           },
         },
       );
 
       await fetchWorkoutTemplates();
-
-      setShowSnackbar({
-        message: "Workout deleted successfully",
-        open: true,
-        status: "success",
-      });
     } catch (error) {
       setShowSnackbar({
-        message: "Something went wrong while trying to delete the workout",
+        message: "Something went wrong while trying to archive the workout",
         open: true,
         status: "error",
       });
@@ -309,10 +324,26 @@ export function Workouts() {
     }
   }
 
+  if (!hasLoaded || isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (filteredWorkoutTemplates.length === 0) {
+    return (
+      <NoContent
+        title="No workout templates yet"
+        message="Create your first workout."
+        handleClick={() => {
+          navigate("/workouts/new-workout");
+        }}
+        buttonLabel="Create workout"
+      />
+    );
+  }
+
   return (
     <div className={styles["workouts-page"]}>
-      {isLoading && <LoadingSpinner />}
-      {showSnackbar && (
+      {showSnackbar.open && (
         <Snackbar
           message={showSnackbar.message}
           open={showSnackbar.open}
@@ -345,15 +376,15 @@ export function Workouts() {
               value={selectClient}
               handleChange={handleSelectClient}
               button={true}
-              buttonLabel="Add workouts"
+              buttonLabel="Add"
               buttonStyle="secondary"
               onButtonClick={() => {
                 pairUserWorkoutsToUser(selectClient, selectedWorkouts);
               }}
+              disabled={selectClient.length <= 0}
             />
           </InputWrapper>
-        </div>
-        <div>
+
           <InputWrapper width="small">
             <SelectField
               id="workout-filter"
@@ -368,18 +399,18 @@ export function Workouts() {
               onButtonClick={handleResetFilters}
             />
           </InputWrapper>
-          <InputWrapper width="small">
-            <InputField
-              type="text"
-              name="search-workout"
-              id="search-workout"
-              placeholder="Search workout"
-              icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
-              handleChange={handleSearchWorkouts}
-              value={searchWorkouts}
-            />
-          </InputWrapper>
         </div>
+        <InputWrapper width="small">
+          <InputField
+            type="text"
+            name="search-workout"
+            id="search-workout"
+            placeholder="Search workout"
+            icon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
+            handleChange={handleSearchWorkouts}
+            value={searchWorkouts}
+          />
+        </InputWrapper>
       </section>
       <section className={styles["workout-page__list"]}>
         {filteredWorkoutTemplates.map((template) => {
@@ -413,7 +444,7 @@ export function Workouts() {
                 <CardFooter>
                   <div className={styles["workouts__icons-container"]}>
                     <FontAwesomeIcon
-                      icon={faTrash}
+                      icon={faBoxArchive}
                       onClick={() => handleDeleteWorkout(template.id)}
                     />
                   </div>

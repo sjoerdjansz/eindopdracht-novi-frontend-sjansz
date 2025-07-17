@@ -14,6 +14,7 @@ export function SelectField({
   value,
   handleChange,
   onButtonClick,
+  disabled,
 }) {
   return (
     <>
@@ -61,6 +62,7 @@ export function SelectField({
             buttonSize="small"
             buttonType={buttonStyle}
             handleClick={onButtonClick}
+            disabled={disabled}
           />
         )}
       </div>
