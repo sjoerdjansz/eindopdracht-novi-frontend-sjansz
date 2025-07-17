@@ -76,7 +76,7 @@
 }
 
 .workout-button {
-  padding: 1rem 2rem;
+  padding: 1rem;
   background-color: var(--color-gray-dark);
   color: #ffffff;
   border-radius: var(--border-radius-sm);
@@ -164,7 +164,7 @@
 
 /* Media Queries */
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .profile-page__container {
     display: flex;
     flex-direction: column;

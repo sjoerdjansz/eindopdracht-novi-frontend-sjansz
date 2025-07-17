@@ -2,6 +2,7 @@ import React, { createContext, useEffect, useState } from "react";
 import { API_ENDPOINTS } from "../api/api.js";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import { checkTokenValidity } from "../utils/checkTokenValidity.js";
 
 export const AuthContext = createContext(null);
 
@@ -9,38 +10,34 @@ function AuthContextProvider({ children }) {
   // state waarin de context data wordt geplaatst
   const [authUser, setAuthUser] = useState({ user: null, status: "pending" });
 
+  // check if token is still present and valid so the user stays authenticated & logged in
   useEffect(() => {
     const token = localStorage.getItem("token");
 
     if (token) {
       try {
         const { exp, userId, email } = jwtDecode(token);
-        checkTokenValidity(exp, userId, email);
+
+        if (checkTokenValidity(exp)) {
+          setAuthUser({
+            user: {
+              email: email,
+              expiration: exp,
+              userId: userId,
+            },
+            status: "done",
+          });
+        } else {
+          logout();
+        }
       } catch (error) {
         console.log("Error in catch from auth useEffect", error);
         logout();
       }
     } else {
-      // do something...
       setAuthUser({ user: null, status: "done" });
     }
   }, []);
-
-  function checkTokenValidity(exp, id, email) {
-    const currentTime = Date.now() / 1000;
-    if (exp < currentTime) {
-      logout();
-    } else {
-      setAuthUser({
-        user: {
-          email: email,
-          expiration: exp,
-          userId: id,
-        },
-        status: "done",
-      });
-    }
-  }
 
   const login = async (userDetails) => {
     try {
@@ -54,8 +51,6 @@ function AuthContextProvider({ children }) {
           },
         },
       );
-
-      console.log(response);
 
       const { exp, userId, email } = jwtDecode(response.data.token);
 

@@ -50,12 +50,12 @@ export function Login() {
     } else if (result.success === true) {
       setShowSnackbar({
         open: true,
-        message: "User logged in",
+        message: "Logging in...",
         status: "success",
       });
       setTimeout(() => {
         navigate("/");
-      }, 2000);
+      }, 1500);
     }
   }
 

@@ -50,7 +50,6 @@ export function WorkoutBuilder() {
           "novi-education-project-id": import.meta.env.VITE_API_KEY,
         },
       });
-      console.warn("SEARCHABLE EXERCISES:", data);
       setAllSearchableExercises(data);
     } catch (error) {
       console.error(error);
@@ -80,7 +79,6 @@ export function WorkoutBuilder() {
             },
           },
         );
-        console.log(response.data);
 
         for (let i = 0; i < exercisesArr.length; i++) {
           const exerciseDataObject = {

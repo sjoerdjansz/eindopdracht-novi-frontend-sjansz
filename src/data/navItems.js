@@ -13,8 +13,9 @@ export const NAV_ITEMS = [
     to: "/",
     icon: faTableColumns,
   },
-  { id: 2, label: "exercise library", to: "/exercise-library", icon: faBook },
-  { id: 3, label: "workouts", to: "/workouts", icon: faDumbbell },
+  { id: 2, label: "workouts", to: "/workouts", icon: faDumbbell },
+
+  { id: 3, label: "exercise library", to: "/exercise-library", icon: faBook },
   {
     id: 4,
     label: "build workout",

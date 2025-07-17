@@ -25,6 +25,11 @@
           "name": "createdByUsersId",
           "type": "reference:users",
           "required": true
+        },
+        {
+          "name": "archivedAt",
+          "type": "date",
+          "required": false
         }
       ],
       "permissions": {
@@ -293,37 +298,43 @@
         "id": 1,
         "name": "Full Body Strength A",
         "createdAt": "2025-06-21",
-        "createdByUsersId": 1
+        "createdByUsersId": 1,
+        "archivedAt": null
       },
       {
         "id": 2,
         "name": "Upper Body Hypertrophy",
         "createdAt": "2025-06-26",
-        "createdByUsersId": 1
+        "createdByUsersId": 1,
+        "archivedAt": null
       },
       {
         "id": 3,
         "name": "Lower Body Power",
         "createdAt": "2025-11-10",
-        "createdByUsersId": 2
+        "createdByUsersId": 2,
+        "archivedAt": null
       },
       {
         "id": 4,
         "name": "Push Pull Legs",
         "createdAt": "2025-04-19",
-        "createdByUsersId": 1
+        "createdByUsersId": 1,
+        "archivedAt": null
       },
       {
         "id": 5,
         "name": "Core Stability Routine",
         "createdAt": "2025-05-04",
-        "createdByUsersId": 1
+        "createdByUsersId": 1,
+        "archivedAt": null
       },
       {
         "id": 6,
         "name": "Full Body Strength B",
         "createdAt": "2025-03-30",
-        "createdByUsersId": 2
+        "createdByUsersId": 2,
+        "archivedAt": null
       }
     ],
     "clients": [

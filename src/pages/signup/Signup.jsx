@@ -4,7 +4,7 @@ import styles from "./Signup.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Components
 import { InputField } from "../../components/inputField/InputField.jsx";
@@ -15,6 +15,7 @@ import { LoadingSpinner } from "../../components/loadingSpinner/LoadingSpinner.j
 import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
 import { passwordValidation } from "../../utils/passwordValidation.js";
 import { Tooltip } from "../../components/tooltip/Tooltip.jsx";
+import { Link, useNavigate } from "react-router-dom";
 
 export function Signup() {
   const [userDetails, setUserDetails] = useState({
@@ -34,7 +35,16 @@ export function Signup() {
     status: "",
   });
 
-  async function registerNewUser(user) {
+  const navigate = useNavigate();
+  const controller = new AbortController();
+
+  useEffect(() => {
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
+  async function registerNewUser(user, signal) {
     if (!user.email || !user.password || !user.email.includes("@")) {
       setShowSnackbar({
         message: `Make sure you add (a valid) email and password`,
@@ -51,6 +61,7 @@ export function Signup() {
         headers: {
           "novi-education-project-id": import.meta.env.VITE_API_KEY,
         },
+        signal,
       });
 
       const matchedUser = existingUsers.data.find((u) => {
@@ -71,6 +82,7 @@ export function Signup() {
           "novi-education-project-id": import.meta.env.VITE_API_KEY,
           "Content-Type": "application/json",
         },
+        signal,
       });
 
       setShowSnackbar({
@@ -78,6 +90,10 @@ export function Signup() {
         open: true,
         status: "success",
       });
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
     } catch (error) {
       setShowSnackbar({
         message: "Something went wrong while creating your account",
@@ -104,7 +120,7 @@ export function Signup() {
 
   function handleSubmit(e, user) {
     e.preventDefault();
-    registerNewUser(user);
+    registerNewUser(user, controller.signal);
     setIsPasswordValid(null);
     setUserDetails((prevState) => ({
       ...prevState,
@@ -181,7 +197,7 @@ export function Signup() {
               <Tooltip content="Password must include an uppercase letter, lowercase letter, number and special character." />
             }
           />
-          <a href="/">Forgot password?</a>
+          <Link to="/signup">Forgot password?</Link>
           <Button
             label="Sign Up"
             type="submit"

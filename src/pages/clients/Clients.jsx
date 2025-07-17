@@ -16,17 +16,19 @@ import placeholderAvatar from "../../assets/no_profile_picture_image.jpeg";
 import { colorCodeText } from "../../utils/colorCodeText.js";
 import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 import axios from "axios";
 import { API_ENDPOINTS } from "../../api/api.js";
 import { formatDate } from "../../utils/formatDate.js";
+import { NoContent } from "../../components/noContent/NoContent.jsx";
 
 export function Clients() {
   const [clients, setClients] = useState([]);
   const [filteredClients, setFilteredClients] = useState([]);
   const [filterOption, setFilterOption] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState({
     message: "",
     open: false,
@@ -89,12 +91,28 @@ export function Clients() {
       console.error(error);
     } finally {
       setIsLoading(false);
+      setHasLoaded(true);
     }
   }
 
   const handleCreateClientClick = () => {
     navigate("/clients/create");
   };
+
+  if (!hasLoaded || isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (filteredClients.length === 0) {
+    return (
+      <NoContent
+        title="No clients yet"
+        message="Make sure to add your first client."
+        buttonLabel="Add client"
+        handleClick={() => navigate("/clients/create")}
+      />
+    );
+  }
 
   return (
     <div className={styles["clients-page"]}>
@@ -112,7 +130,6 @@ export function Clients() {
           status={showSnackbar.status}
         />
       )}
-      {isLoading && <LoadingSpinner />}
       <section className={styles["clients-page__header"]}>
         <div className={styles["clients-page__header-text"]}>
           <h1>Clients</h1>
