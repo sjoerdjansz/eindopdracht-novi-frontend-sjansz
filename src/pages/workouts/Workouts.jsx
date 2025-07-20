@@ -330,6 +330,7 @@ export function Workouts() {
     }
   }
 
+  // TODO: fix buggy loading spinner & snackbar ui flickering
   if (!hasLoaded || loadingState.workouts || loadingState.archive) {
     return <LoadingSpinner />;
   }

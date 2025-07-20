@@ -80,7 +80,15 @@ export function Clients() {
           "novi-education-project-id": import.meta.env.VITE_API_KEY,
         },
       });
-      setClients(data);
+
+      const changedData = data.map((client) => ({
+        ...client,
+        imageUrl: client["imageUrl[data]"]
+          ? `data:${client["imageUrl[contentType]"]};base64,${client["imageUrl[data]"]}`
+          : "",
+      }));
+
+      setClients(changedData);
     } catch (error) {
       setShowSnackbar({
         message: "Couldn't fetch client profiles",
@@ -170,7 +178,9 @@ export function Clients() {
                       <div className={styles["clients-page__avatar-wrapper"]}>
                         <img
                           src={
-                            client.avatar ? client.avatar : placeholderAvatar
+                            client.imageUrl
+                              ? client.imageUrl
+                              : placeholderAvatar
                           }
                           alt={`client ${client.firstName} ${client.lastName} `}
                         />

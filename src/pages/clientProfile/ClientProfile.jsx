@@ -18,6 +18,8 @@ import { useEffect, useState } from "react";
 import { API_ENDPOINTS } from "../../api/api.js";
 import { formatDate } from "../../utils/formatDate.js";
 import { DeleteConfirmation } from "../../components/deleteConfirmation/DeleteConfirmation.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCamera, faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 export function ClientProfile() {
   const [showSnackbar, setShowSnackbar] = useState(false);
@@ -27,18 +29,22 @@ export function ClientProfile() {
     lastName: "",
     phone: "",
     gender: "",
-    imageUrl: "",
     joinedAt: "",
+    imageUrl: null,
     completedWorkouts: 0,
     compliance: 0,
-    wellbeing: "",
+    currentPlan: "",
+    userId: "",
   });
+  const [originalProfile, setOriginalProfile] = useState(null);
+
   const [clientWorkouts, setClientWorkouts] = useState([]);
   const [workoutTemplates, setWorkoutTemplates] = useState([]);
   const [isWorkoutsLoaded, setIsWorkoutsLoaded] = useState(false);
   const [isProfileLoaded, setIsProfileLoaded] = useState(false);
   const [profileHasError, setProfileHasError] = useState(false);
   const [toggleDelete, setToggleDelete] = useState(false);
+  const [isAvatarLoading, setIsAvatarLoading] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -55,6 +61,65 @@ export function ClientProfile() {
       controller.abort();
     };
   }, [id]);
+
+  function handleAvatarChange(e) {
+    const avatar = e.target.files[0];
+    if (!avatar) {
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      const base64String = reader.result;
+
+      setProfile((prevState) => ({
+        ...prevState,
+        imageUrl: base64String,
+      }));
+
+      const base64Data = base64String.split(",")[1];
+
+      const imgPayload = {
+        data: base64Data,
+        fileName: avatar.name,
+        contentType: avatar.type,
+      };
+
+      addUserAvatar(imgPayload);
+    };
+    reader.readAsDataURL(avatar);
+  }
+
+  async function addUserAvatar(base64String) {
+    try {
+      setIsAvatarLoading(true);
+      const response = await axios.patch(
+        `${API_ENDPOINTS.clients}/${id}`,
+        { imageUrl: base64String },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "novi-education-project-id": import.meta.env.VITE_API_KEY,
+          },
+        },
+      );
+      setShowSnackbar({
+        open: true,
+        message: "Profile picture added",
+        status: "success",
+      });
+    } catch (error) {
+      console.error(error);
+      setShowSnackbar({
+        open: true,
+        message: "Couldn't fetch user avatar",
+        status: "error",
+      });
+    } finally {
+      setIsAvatarLoading(false);
+    }
+  }
 
   async function fetchWorkouts(signal) {
     try {
@@ -126,8 +191,6 @@ export function ClientProfile() {
     }
   }
 
-  // TODO also create fetch user email for specific user profile at users collection
-
   async function fetchProfile(signal) {
     try {
       setIsLoading(true);
@@ -137,8 +200,16 @@ export function ClientProfile() {
           signal,
         },
       });
-      setProfile(data);
 
+      const profileData = {
+        ...data,
+        imageUrl: data["imageUrl[data]"]
+          ? `data:${data["imageUrl[contentType]"]};base64,${data["imageUrl[data]"]}`
+          : "",
+      };
+
+      setProfile(profileData);
+      setOriginalProfile(profileData);
       setIsProfileLoaded(true);
     } catch (error) {
       console.error(error);
@@ -160,18 +231,41 @@ export function ClientProfile() {
   }
 
   async function updateProfile() {
+    if (!originalProfile) {
+      return;
+    }
+
+    const updatedValues = {};
+    const excludedFields = [
+      "joinedAt",
+      "imageUrl",
+      "compliance",
+      "completedWorkouts",
+      "currentPlan",
+      "userId",
+    ];
+
+    for (const key in profile) {
+      if (excludedFields.includes(key)) continue;
+      if (profile[key] !== originalProfile[key]) {
+        updatedValues[key] = profile[key];
+      }
+    }
+
+    if (Object.keys(updatedValues).length === 0) {
+      setShowSnackbar({
+        open: true,
+        message: "No changes to save",
+        status: "warning",
+      });
+      return;
+    }
+
     try {
       setIsLoading(true);
-      const response = await axios.put(
+      const response = await axios.patch(
         `${API_ENDPOINTS.clients}/${id}`,
-        {
-          ...profile,
-          id: id,
-          firstName: profile.firstName,
-          lastName: profile.lastName,
-          phone: profile.phone,
-          gender: profile.gender,
-        },
+        updatedValues,
         {
           headers: {
             "novi-education-project-id": import.meta.env.VITE_API_KEY,
@@ -179,7 +273,13 @@ export function ClientProfile() {
           },
         },
       );
-      console.log(response);
+      console.log("Updated", response.data);
+      setOriginalProfile(profile);
+      setShowSnackbar({
+        open: true,
+        message: "Changes saved",
+        status: "success",
+      });
     } catch (error) {
       console.error(error);
     } finally {
@@ -269,6 +369,24 @@ export function ClientProfile() {
               <div className={styles["profile-page__card-container"]}>
                 <div className={styles["profile-page__card-header"]}>
                   <div className={styles["profile-page__avatar-wrapper"]}>
+                    <input
+                      className={styles["upload-user-avatar-input"]}
+                      type="file"
+                      id="avatar"
+                      name="avatar"
+                      accept="image/jpeg, image/png, image/gif, image/webp, image/svg+xml"
+                      onChange={handleAvatarChange}
+                    />
+                    <label
+                      htmlFor="avatar"
+                      className={styles["upload-user-avatar-label"]}
+                    >
+                      {isAvatarLoading ? (
+                        <FontAwesomeIcon icon={faSpinner} spin />
+                      ) : (
+                        <FontAwesomeIcon icon={faCamera} />
+                      )}
+                    </label>
                     <img
                       className={styles["user-avatar"]}
                       src={
