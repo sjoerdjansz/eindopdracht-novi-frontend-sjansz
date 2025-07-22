@@ -1,7 +1,7 @@
 import styles from "./Workouts.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 
 // Components
@@ -28,13 +28,11 @@ import { API_ENDPOINTS } from "../../api/api.js";
 import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 import { formatDate } from "../../utils/formatDate.js";
 import { NoContent } from "../../components/noContent/NoContent.jsx";
-import { useApiRequest } from "../../hooks/useApiRequest.js";
+import useFetch from "../../hooks/useFetch.jsx";
 
 export function Workouts() {
   const [selectedWorkouts, setSelectedWorkouts] = useState([]);
-  const [allWorkoutTemplates, setAllWorkoutTemplates] = useState([]);
   const [filteredWorkoutTemplates, setFilteredWorkoutTemplates] = useState([]);
-  const [workoutExercises, setWorkoutExercises] = useState({});
   const [loadingState, setLoadingState] = useState({
     workouts: false,
     assign: false,
@@ -47,39 +45,49 @@ export function Workouts() {
   });
   const [workoutFilter, setWorkoutFilter] = useState("");
   const [searchWorkouts, setSearchWorkouts] = useState("");
+
   const [selectClient, setSelectClient] = useState("");
-  const [allClients, setAllClients] = useState([]);
-  const [hasLoaded, setHasLoaded] = useState(false);
 
   const navigate = useNavigate();
 
   // Custom hook
-  const { isLoading: isClientLoading, sendRequest } = useApiRequest();
+
+  // useMemo zodat deze waarde als "constant" wordt gezien door de customHook
+  const clientConfig = useMemo(
+    () => ({
+      method: "GET",
+      url: `${API_ENDPOINTS.clients}`,
+    }),
+    [],
+  );
+
+  const workoutTemplateConfig = useMemo(
+    () => ({
+      method: "GET",
+      url: `${API_ENDPOINTS.workoutTemplates}`,
+    }),
+    [],
+  );
+
+  const {
+    isLoading: isClientsLoading,
+    error: isClientError,
+    data: clientData,
+  } = useFetch(clientConfig);
+
+  const {
+    isLoading: isWorkoutTemplateLoading,
+    error: isWorkoutTemplateError,
+    data: workoutTemplateData,
+    reload,
+  } = useFetch(workoutTemplateConfig);
 
   useEffect(() => {
-    fetchWorkoutTemplates();
-
-    // usage of custom hook
-    async function getClients() {
-      const result = await sendRequest({
-        method: "GET",
-        url: `${API_ENDPOINTS.clients}`,
-      });
-      if (result) {
-        setAllClients(result);
-      } else {
-        setShowSnackbar({
-          open: true,
-          message: "Failed to fetch clients",
-          status: "error",
-        });
-      }
+    if (!workoutTemplateData) {
+      return;
     }
-    getClients();
-  }, []);
 
-  useEffect(() => {
-    let filteredArr = [...allWorkoutTemplates];
+    let filteredArr = [...workoutTemplateData];
 
     // filtering on search query
     if (searchWorkouts) {
@@ -101,50 +109,38 @@ export function Workouts() {
       });
     }
     setFilteredWorkoutTemplates(filteredArr);
-  }, [allWorkoutTemplates, searchWorkouts, workoutFilter]);
+  }, [searchWorkouts, workoutFilter]);
 
-  async function fetchWorkoutTemplates() {
-    try {
-      setLoadingState((prevState) => ({ ...prevState, workouts: true }));
-      const { data } = await axios.get(API_ENDPOINTS.workoutTemplates, {
-        headers: {
-          "novi-education-project-id": import.meta.env.VITE_API_KEY,
-        },
-      });
-
-      setWorkoutExercises({});
-
-      const filteredTemplatesData = data.filter(
-        (template) => !template.archivedAt,
-      );
-
-      await Promise.all(
-        data.map((template) => fetchWorkoutExercises(template.id)),
-      );
-
-      setAllWorkoutTemplates(filteredTemplatesData);
-      setFilteredWorkoutTemplates(filteredTemplatesData);
-    } catch (error) {
+  useEffect(() => {
+    if (isWorkoutTemplateError || isClientError) {
       setShowSnackbar({
         open: true,
-        message: "Couldn't fetch workout templates",
-        status: "warning",
+        message:
+          "Something went wrong while fetching client and workout template data",
+        status: "error",
       });
-      console.error(error);
-    } finally {
-      setLoadingState((prevState) => ({ ...prevState, workouts: false }));
-      setHasLoaded(true);
     }
-  }
+  }, [isWorkoutTemplateError, isClientError]);
 
-  async function pairUserWorkoutsToUser(clientId, workoutTemplates) {
+  async function assignUserWorkoutsToUser(clientId, workoutTemplates) {
     if (!clientId || !workoutTemplates?.length) {
       return;
     }
 
     try {
-      setLoadingState((prevState) => ({ ...prevState, assign: true }));
-      const existingWorkoutTemplates = await fetchClientWorkouts(clientId);
+      setLoadingState((prevState) => ({
+        ...prevState,
+        assign: true,
+      }));
+
+      const { data: existingWorkoutTemplates } = await axios.get(
+        `${API_ENDPOINTS.clients}/${clientId}/userWorkouts`,
+        {
+          headers: {
+            "novi-education-project-id": import.meta.env.VITE_API_KEY,
+          },
+        },
+      );
 
       const existingTemplateIds = existingWorkoutTemplates.map((template) => {
         return template.workoutTemplateId;
@@ -166,7 +162,6 @@ export function Workouts() {
       for (let i = 0; i < newTemplatesToAssign.length; i++) {
         await axios.post(
           `${API_ENDPOINTS.userWorkouts}`,
-
           {
             userProfileId: parseInt(clientId),
             workoutTemplateId: parseInt(newTemplatesToAssign[i]),
@@ -179,7 +174,8 @@ export function Workouts() {
           },
         );
       }
-      const matchedClient = allClients.find(
+
+      const matchedClient = clientData.find(
         (client) => parseInt(selectClient) === parseInt(client.id),
       );
 
@@ -198,58 +194,16 @@ export function Workouts() {
       });
       console.error(error);
     } finally {
-      setLoadingState((prevState) => ({ ...prevState, assign: false }));
-    }
-  }
-
-  async function fetchClientWorkouts(clientId) {
-    try {
-      setLoadingState((prevState) => ({ ...prevState, workouts: true }));
-      const { data } = await axios.get(
-        `${API_ENDPOINTS.clients}/${clientId}/userWorkouts`,
-        {
-          headers: {
-            "novi-education-project-id": import.meta.env.VITE_API_KEY,
-          },
-        },
-      );
-      return data;
-    } catch (error) {
-      setShowSnackbar({
-        open: true,
-        status: "error",
-        message: "Couldn't fetch the client workout templates",
-      });
-      console.error(error);
-    } finally {
-      setLoadingState((prevState) => ({ ...prevState, workouts: false }));
-    }
-  }
-
-  async function fetchWorkoutExercises(templateId) {
-    if (!templateId) {
-      return;
-    }
-    try {
-      const { data } = await axios.get(
-        `${API_ENDPOINTS.workoutTemplates}/${templateId}/workoutExercises`,
-        {
-          headers: {
-            "novi-education-project-id": import.meta.env.VITE_API_KEY,
-          },
-        },
-      );
-      setWorkoutExercises((prevState) => ({
+      setLoadingState((prevState) => ({
         ...prevState,
-        [templateId]: data,
+        assign: false,
       }));
-    } catch (error) {
-      console.error(error);
     }
   }
 
   // deleting is actually archiving (TODO: create archived workouts component)
   async function handleDeleteWorkout(workoutTemplateId) {
+    console.log(workoutTemplateId);
     if (!workoutTemplateId) {
       setShowSnackbar({
         message: "Workout couldn't be archived",
@@ -259,15 +213,21 @@ export function Workouts() {
       return;
     }
 
-    const result = filteredWorkoutTemplates.find((template) => {
+    const result = workoutTemplateData.find((template) => {
       return template.id === workoutTemplateId;
     });
 
     try {
-      setLoadingState((prevState) => ({ ...prevState, archive: true }));
+      setLoadingState((prevState) => ({
+        ...prevState,
+        archive: true,
+      }));
       await axios.put(
         `${API_ENDPOINTS.workoutTemplates}/${workoutTemplateId}`,
-        { ...result, archivedAt: new Date().toISOString() },
+        {
+          ...result,
+          archivedAt: new Date().toISOString(),
+        },
         {
           headers: {
             "novi-education-project-id": import.meta.env.VITE_API_KEY,
@@ -276,7 +236,7 @@ export function Workouts() {
         },
       );
 
-      await fetchWorkoutTemplates();
+      reload();
     } catch (error) {
       setShowSnackbar({
         message: "Something went wrong while trying to archive the workout",
@@ -285,7 +245,10 @@ export function Workouts() {
       });
       console.error(error);
     } finally {
-      setLoadingState((prevState) => ({ ...prevState, archive: false }));
+      setLoadingState((prevState) => ({
+        ...prevState,
+        archive: false,
+      }));
     }
   }
 
@@ -330,12 +293,17 @@ export function Workouts() {
     }
   }
 
-  // TODO: fix buggy loading spinner & snackbar ui flickering
-  if (!hasLoaded || loadingState.workouts || loadingState.archive) {
+  if (
+    isWorkoutTemplateLoading ||
+    isClientsLoading ||
+    loadingState.workouts ||
+    loadingState.archive ||
+    loadingState.assign
+  ) {
     return <LoadingSpinner />;
   }
 
-  if (filteredWorkoutTemplates.length === 0) {
+  if (!workoutTemplateData) {
     return (
       <NoContent
         title="No workout templates yet"
@@ -356,7 +324,12 @@ export function Workouts() {
           open={showSnackbar.open}
           status={showSnackbar.status}
           durationVisible={3000}
-          onClose={() => setShowSnackbar({ ...showSnackbar, open: false })}
+          onClose={() =>
+            setShowSnackbar({
+              ...showSnackbar,
+              open: false,
+            })
+          }
         />
       )}
       <div className={styles["workouts-page__header"]}>
@@ -372,14 +345,12 @@ export function Workouts() {
       <section className={styles["workouts-page__controls"]}>
         <div>
           <InputWrapper width="small">
-            {isClientLoading ? (
-              <p>Loading clients...</p>
-            ) : (
+            {clientData && (
               <SelectField
                 id="client-select"
                 name="client-select"
                 title="Select client"
-                options={allClients.map((client) => ({
+                options={clientData.map((client) => ({
                   label: `${client.firstName} ${client.lastName}`,
                   value: client.id.toString(),
                 }))}
@@ -389,7 +360,7 @@ export function Workouts() {
                 buttonLabel="Add"
                 buttonStyle="secondary"
                 onButtonClick={() => {
-                  pairUserWorkoutsToUser(selectClient, selectedWorkouts);
+                  assignUserWorkoutsToUser(selectClient, selectedWorkouts);
                 }}
                 disabled={selectClient.length <= 0}
               />
@@ -424,44 +395,49 @@ export function Workouts() {
         </InputWrapper>
       </section>
       <section className={styles["workout-page__list"]}>
-        {filteredWorkoutTemplates.map((template) => {
+        {(filteredWorkoutTemplates.length > 0
+          ? filteredWorkoutTemplates
+          : workoutTemplateData
+        ).map((template) => {
           return (
-            <Card key={template.id} variant="horizontal" size="medium">
-              <div className={styles["workout-page__card-container"]}>
-                <CardHeader>
-                  <div className={styles["workouts-page__card-header"]}>
-                    <CustomCheckbox
-                      className={styles["workouts__card-select"]}
-                      type="button"
-                      name="select-workout"
-                      onClick={() => {
-                        selectWorkout(template.id);
-                      }}
-                      selected={selectedWorkouts.find((id) => {
-                        return id === template.id;
-                      })}
-                    />
-                    <div>
-                      <h4>{template.name}</h4>
-                      <p>
-                        {workoutExercises[template.id]?.length || "No"}{" "}
-                        exercises in workout
-                      </p>
-                      <p>{formatDate(template.createdAt)}</p>
+            !template.archivedAt && (
+              <Card key={template.id} variant="horizontal" size="medium">
+                <div className={styles["workout-page__card-container"]}>
+                  <CardHeader>
+                    <div className={styles["workouts-page__card-header"]}>
+                      <CustomCheckbox
+                        className={styles["workouts__card-select"]}
+                        type="button"
+                        name="select-workout"
+                        onClick={() => {
+                          selectWorkout(template.id);
+                        }}
+                        selected={selectedWorkouts.find((id) => {
+                          return id === template.id;
+                        })}
+                      />
+                      <div>
+                        <h4>{template.name}</h4>
+                        <p>
+                          {template.numberOfExercises || "BANAAN"} exercises in
+                          workout
+                        </p>
+                        <p>{formatDate(template.createdAt)}</p>
+                      </div>
                     </div>
-                  </div>
-                </CardHeader>
+                  </CardHeader>
 
-                <CardFooter>
-                  <div className={styles["workouts__icons-container"]}>
-                    <FontAwesomeIcon
-                      icon={faBoxArchive}
-                      onClick={() => handleDeleteWorkout(template.id)}
-                    />
-                  </div>
-                </CardFooter>
-              </div>
-            </Card>
+                  <CardFooter>
+                    <div className={styles["workouts__icons-container"]}>
+                      <FontAwesomeIcon
+                        icon={faBoxArchive}
+                        onClick={() => handleDeleteWorkout(template.id)}
+                      />
+                    </div>
+                  </CardFooter>
+                </div>
+              </Card>
+            )
           );
         })}
       </section>

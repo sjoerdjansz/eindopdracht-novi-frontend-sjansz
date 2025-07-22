@@ -64,6 +64,7 @@ export function WorkoutBuilder() {
       name: templateName ? templateName : "Workout",
       createdAt: new Date().toISOString(),
       createdByUsersId: 1, // change to userId from userContext (which is the logged in trainer)
+      numberOfExercises: exercises.length,
     };
 
     try {
