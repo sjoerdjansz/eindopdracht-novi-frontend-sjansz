@@ -419,7 +419,7 @@ export function WorkoutBuilder() {
               </tr>
             </thead>
             <tbody>
-              {/*Onderstaande inline manier is niet de meest performance efficiente blijkbaar*/}
+              {/*I read that this 'inline' way is not the most efficient one to use*/}
               {exercises.length > 0 &&
                 exercises.map((exercise) => {
                   return (

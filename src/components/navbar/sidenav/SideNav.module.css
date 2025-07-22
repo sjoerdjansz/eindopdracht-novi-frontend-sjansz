@@ -44,10 +44,9 @@
 }
 
 .side-nav img {
-  height: 50px;
+  height: 35px;
   margin: 1rem;
-  border-radius: 50%;
-  border: 2px solid var(--color-primary);
+  transform: rotateY(180deg);
 }
 
 .side-nav ul {

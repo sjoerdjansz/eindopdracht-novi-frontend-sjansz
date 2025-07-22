@@ -15,8 +15,8 @@ import placeholderAvatar from "../../assets/no_profile_picture_image.jpeg";
 // Helpers
 import { colorCodeText } from "../../utils/colorCodeText.js";
 import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
-import { Link, useNavigate } from "react-router-dom";
-import { use, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 import axios from "axios";
 import { API_ENDPOINTS } from "../../api/api.js";

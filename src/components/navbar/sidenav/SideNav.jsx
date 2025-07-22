@@ -1,5 +1,5 @@
 import styles from "./SideNav.module.css";
-import appLogo from "../../../assets/Sweat-daddy-app-logo.jpeg";
+import appLogo from "../../../assets/Sweat-daddy-app-logo.svg";
 
 import { NavLink } from "react-router-dom";
 

@@ -474,7 +474,6 @@ export function ClientProfile() {
           </>
         )}
       </div>
-
       <footer className={styles["profile-page__footer"]}>
         <button
           onClick={() => {

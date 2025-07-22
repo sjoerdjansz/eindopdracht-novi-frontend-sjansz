@@ -14,11 +14,11 @@
 }
 
 .profile-page__container > :nth-child(1) {
-  flex: 0 1 400px;
+  flex: 1 1 400px;
 }
 
 .profile-page__container > :nth-child(2) {
-  flex: 6 1 auto;
+  flex: 2 1 800px;
 }
 /* Profile page stats (left) inner card styling */
 

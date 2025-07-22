@@ -21,9 +21,9 @@ export function InputField({
       if (bool === null) {
         return "";
       } else if (bool) {
-        return styles["password-invalid"];
-      } else {
         return styles["password-valid"];
+      } else {
+        return styles["password-invalid"];
       }
     } else {
       return "";

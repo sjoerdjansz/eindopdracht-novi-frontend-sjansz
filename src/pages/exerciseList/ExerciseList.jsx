@@ -185,7 +185,7 @@ export function ExerciseList() {
               name="bodypart"
               options={BODYPART_FILTER_OPTIONS}
               value={bodyPartFilter}
-              title="Bodypart"
+              title="Body part"
               handleChange={filterBodypartChangeHandler}
               onButtonClick={resetAllFilters}
               button={true}
@@ -221,7 +221,7 @@ export function ExerciseList() {
         <thead>
           <tr className={styles["exercise-list__header"]}>
             <th className={styles["exercise-name--th"]}>Name</th>
-            <th className={styles["exercise-bodypart--th"]}>Bodypart</th>
+            <th className={styles["exercise-bodypart--th"]}>Body part</th>
             <th className={styles["exercise-movement--th"]}>Movement</th>
             <th className={styles["exercise-muscle--th"]}>Primary</th>
             <th></th>

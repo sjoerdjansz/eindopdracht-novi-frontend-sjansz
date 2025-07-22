@@ -9,27 +9,25 @@
 .create-exercise-form {
   display: flex;
   flex-direction: column;
+  flex: 2 1 600px;
   gap: 1rem;
   width: 100%;
 }
 
-.create-exercise__iframe {
-  aspect-ratio: 16 / 9;
-  width: 100% !important;
-  background-color: var(--color-gray-mediumlight);
-  border-radius: 0.3rem;
-  border: 3px solid var(--color-gray-mediumlight);
-}
+/*.create-exercise__iframe {*/
+/*  aspect-ratio: 16 / 9;*/
+/*  width: 100% !important;*/
+/*  background-color: var(--color-gray-mediumlight);*/
+/*  border-radius: 0.3rem;*/
+/*  border: 3px solid var(--color-gray-mediumlight);*/
+/*}*/
 
 .container__layout {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
   justify-content: space-between;
   gap: 2rem;
-  flex: 1;
 }
-
 .container__selected-items {
   flex: 1 1 350px;
   display: flex;
@@ -76,6 +74,21 @@ textarea {
   padding: var(--space-sm);
   background-color: var(--color-white);
   box-shadow: 0 2px 3px -2px rgba(0, 0, 0, 0.1);
+}
+
+/* Bodyparts SVG image section */
+
+.bodypart-image-container {
+  display: flex;
+  flex: 1 1 400px;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.bodypart-image-container > img {
+  display: flex;
+  padding: 1rem;
 }
 
 /* Media Queries */

@@ -16,6 +16,7 @@ import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
 import { passwordValidation } from "../../utils/passwordValidation.js";
 import { Tooltip } from "../../components/tooltip/Tooltip.jsx";
 import { Link, useNavigate } from "react-router-dom";
+import { checkEmailValidity } from "../../utils/emailValidation.js";
 
 export function Signup() {
   const [userDetails, setUserDetails] = useState({
@@ -93,7 +94,7 @@ export function Signup() {
 
       setTimeout(() => {
         navigate("/login");
-      }, 1500);
+      }, 1000);
     } catch (error) {
       setShowSnackbar({
         message: "Something went wrong while creating your account",
@@ -120,6 +121,15 @@ export function Signup() {
 
   function handleSubmit(e, user) {
     e.preventDefault();
+    if (checkEmailValidity(user.email) === false) {
+      setShowSnackbar({
+        open: true,
+        message: "Enter a valid email",
+        status: "error",
+      });
+      return;
+    }
+
     registerNewUser(user, controller.signal);
     setIsPasswordValid(null);
     setUserDetails((prevState) => ({
