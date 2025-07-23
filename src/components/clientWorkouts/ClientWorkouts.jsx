@@ -18,7 +18,7 @@ export function ClientWorkouts() {
               >
                 <div>
                   {" "}
-                  <Link to={"/"}>View</Link>
+                  <Link to={`/track-workout/${workouts.id}`}>Start</Link>
                   <p>{workouts.name}</p>
                 </div>
                 <FontAwesomeIcon

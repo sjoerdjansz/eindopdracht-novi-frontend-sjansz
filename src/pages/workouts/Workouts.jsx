@@ -57,11 +57,7 @@ export function Workouts() {
     doRequest: getWorkouts,
   } = useApiRequest();
 
-  const {
-    data: deletedWorkout,
-    error: errorDeleteWorkout,
-    doRequest: deleteWorkout,
-  } = useApiRequest();
+  const { doRequest: deleteWorkout } = useApiRequest();
 
   useEffect(() => {
     async function fetchData() {
@@ -207,7 +203,6 @@ export function Workouts() {
 
   // deleting is actually archiving (TODO: create archived workouts component)
   async function handleDeleteWorkout(workoutTemplateId) {
-    console.log(workoutTemplateId);
     if (!workoutTemplateId) {
       setShowSnackbar({
         message: "Workout couldn't be archived",

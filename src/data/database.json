@@ -27,6 +27,11 @@
           "required": true
         },
         {
+          "name": "numberOfExercises",
+          "type": "number",
+          "required": false
+        },
+        {
           "name": "archivedAt",
           "type": "date",
           "required": false
@@ -309,6 +314,7 @@
         "name": "Full Body Strength A",
         "createdAt": "2025-06-21",
         "createdByUsersId": 1,
+        "numberOfExercises": 4,
         "archivedAt": null
       },
       {
@@ -316,6 +322,7 @@
         "name": "Upper Body Hypertrophy",
         "createdAt": "2025-06-26",
         "createdByUsersId": 1,
+        "numberOfExercises": 5,
         "archivedAt": null
       },
       {
@@ -323,6 +330,7 @@
         "name": "Lower Body Power",
         "createdAt": "2025-11-10",
         "createdByUsersId": 2,
+        "numberOfExercises": 0,
         "archivedAt": null
       },
       {
@@ -330,20 +338,7 @@
         "name": "Push Pull Legs",
         "createdAt": "2025-04-19",
         "createdByUsersId": 1,
-        "archivedAt": null
-      },
-      {
-        "id": 5,
-        "name": "Core Stability Routine",
-        "createdAt": "2025-05-04",
-        "createdByUsersId": 1,
-        "archivedAt": null
-      },
-      {
-        "id": 6,
-        "name": "Full Body Strength B",
-        "createdAt": "2025-03-30",
-        "createdByUsersId": 2,
+        "numberOfExercises": 0,
         "archivedAt": null
       }
     ],

@@ -1,0 +1,59 @@
+.track-exercise-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.track-exercise-card__title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.track-exercise-card__title > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.track-exercise-card__title > div > :nth-child(2) {
+  font-size: var(--font-xs);
+  padding: var(--space-sm);
+  background-color: var(--color-gray-mediumlight);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.track-exercise-card__header-row {
+  margin-bottom: var(--space-md);
+}
+
+.track-exercise-card__header-row > :last-child {
+  text-align: center;
+}
+
+.track-exercise-card__header-row,
+.track-exercise-card__result-rows-container {
+  display: grid;
+  grid-template-columns: 25px 1fr 60px 15px 60px 40px;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.exercise-card__caret,
+.exercise-card__camera {
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.exercise-card__caret:hover,
+.exercise-card__camera:hover {
+  color: var(--color-primary);
+}
+
+.open-card {
+  display: none;
+}

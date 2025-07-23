@@ -1,0 +1,45 @@
+.track-workout {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 720px;
+  padding: var(--space-md);
+  gap: var(--space-lg);
+}
+
+/* Track workout header and title */
+
+.track-workout__header {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.track-workout__header > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  gap: 1rem;
+}
+
+.track-workout__header > :last-child {
+  margin-top: 0.5rem;
+}
+
+/* Track workout main */
+
+.track-workout__exercises-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Track workout footer */
+
+.track-workout__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

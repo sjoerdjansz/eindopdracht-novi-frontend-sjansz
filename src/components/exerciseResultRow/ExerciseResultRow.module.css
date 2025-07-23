@@ -1,0 +1,22 @@
+.last-result {
+  color: var(--color-gray-medium);
+  font-size: var(--font-xs);
+  text-align: center;
+}
+
+.reps-input,
+.weight-input {
+  width: 100%;
+  padding: var(--space-sm);
+  -webkit-appearance: none;
+}
+
+.multiply-symbol {
+  text-align: center;
+  color: var(--color-gray-medium);
+}
+
+.checkbox-container {
+  display: flex;
+  justify-content: center;
+}
