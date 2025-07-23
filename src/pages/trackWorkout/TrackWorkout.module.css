@@ -1,5 +1,6 @@
 .track-workout {
   display: flex;
+  position: relative;
   flex-direction: column;
   flex: 0 1 720px;
   padding: var(--space-md);

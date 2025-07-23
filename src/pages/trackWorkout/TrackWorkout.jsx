@@ -6,22 +6,27 @@ import { useApiRequest } from "../../hooks/useApiRequest.jsx";
 import { useEffect, useState } from "react";
 import { API_ENDPOINTS } from "../../api/api.js";
 import { formatDate } from "../../utils/formatDate.js";
+import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
+import { LoadingSpinner } from "../../components/loadingSpinner/LoadingSpinner.jsx";
 
 export function TrackWorkout() {
   const [exercisesState, setExercisesState] = useState([]);
+  const [showSnackbar, setShowSnackbar] = useState({
+    open: false,
+    message: "",
+    status: "",
+  });
 
   const { id } = useParams();
 
   // Custom hooks
   const {
-    data: workoutExercisesData,
     error: workoutExercisesError,
     isLoading: workoutExercisesIsLoading,
     doRequest: getWorkoutExercises,
   } = useApiRequest();
 
   const {
-    data: exercisesData,
     error: exercisesError,
     isLoading: exercisesIsLoading,
     doRequest: getExercises,
@@ -83,8 +88,33 @@ export function TrackWorkout() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (exercisesError || workoutExercisesError) {
+      setShowSnackbar({
+        open: true,
+        message: "Couldn't fetch workout data",
+        status: "error",
+      });
+    }
+  }, [exercisesError, workoutExercisesError]);
+
   return (
     <div className={styles["track-workout"]}>
+      {exercisesIsLoading || (workoutExercisesIsLoading && <LoadingSpinner />)}
+      {showSnackbar.open && (
+        <Snackbar
+          message={showSnackbar.message}
+          open={showSnackbar.open}
+          status={showSnackbar.status}
+          durationVisible={3000}
+          onClose={() =>
+            setShowSnackbar({
+              ...showSnackbar,
+              open: false,
+            })
+          }
+        />
+      )}
       <header className={styles["track-workout__header"]}>
         <div>
           <h1>{!workoutTemplateData ? "" : workoutTemplateData.name}</h1>
