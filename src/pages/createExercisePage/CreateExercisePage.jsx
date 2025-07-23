@@ -255,8 +255,6 @@ export function CreateExercisePage() {
                 options={MUSCLE_GROUPS}
                 title="Select primary muscle"
                 required={true}
-                // button={true}
-                // onButtonClick={onAddMuscleClick}
                 buttonLabel="Add"
                 value={formData.primaryMuscle}
                 handleChange={handleChange}
@@ -269,6 +267,7 @@ export function CreateExercisePage() {
                 placeholder="Exercise instructions"
                 cols="20"
                 rows="4"
+                required={true}
                 value={formData.instructions}
                 onChange={(e) => {
                   handleChange(e);

@@ -6,9 +6,12 @@ export function useApiRequest() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const sendRequest = useCallback(async (config) => {
+  const doRequest = useCallback(async (config) => {
     setIsLoading(true);
     setError(null);
+
+    const controller = new AbortController();
+    const signal = controller.signal;
 
     try {
       const response = await axios({
@@ -18,17 +21,22 @@ export function useApiRequest() {
           "Content-Type": "application/json",
           ...(config.headers || {}),
         },
+        signal,
       });
       setData(response.data);
       return response.data;
     } catch (error) {
       setError(error);
-      console.error("Error in custom hook", error);
+      if (axios.isCancel(error)) {
+        console.log(`Request has been cancelled: ${error}`);
+      } else {
+        console.error(`Error in custom hook: ${error}`);
+      }
       return null;
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  return { data, error, isLoading, sendRequest };
+  return { data, error, isLoading, doRequest };
 }

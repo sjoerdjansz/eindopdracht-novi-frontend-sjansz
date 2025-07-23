@@ -10,7 +10,6 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { API_ENDPOINTS } from "../../api/api.js";
 import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
 import { LoadingSpinner } from "../../components/loadingSpinner/LoadingSpinner.jsx";
@@ -19,7 +18,7 @@ import { BODYPART_FILTER_OPTIONS } from "../../data/clientFilterOptions.js";
 import { DeleteConfirmation } from "../../components/deleteConfirmation/DeleteConfirmation.jsx";
 import { MOVEMENTS } from "../../data/workoutFilterOptions.js";
 import { MUSCLE_GROUPS } from "../../data/muscleGroups.js";
-import { useApiRequest } from "../../hooks/useApiRequest.js";
+import { useApiRequest } from "../../hooks/useApiRequest.jsx";
 
 export function ExerciseList() {
   const navigate = useNavigate();
@@ -38,12 +37,40 @@ export function ExerciseList() {
     name: "",
   });
 
-  // custom hook
-  const { isLoading: exercisesLoading, sendRequest } = useApiRequest();
+  const {
+    data: exercisesData,
+    error: getError,
+    isLoading: loadingExercises,
+    doRequest: getExercises,
+  } = useApiRequest();
+
+  const { doRequest: deleteExercise } = useApiRequest();
 
   useEffect(() => {
-    getExercises();
+    async function fetchExercises() {
+      const result = await getExercises({
+        method: "GET",
+        url: API_ENDPOINTS.exercises,
+      });
+
+      if (result) {
+        const cleaned = cleanExerciseData(result);
+        setOriginalExercises(cleaned);
+        setFindExercises(cleaned);
+      }
+    }
+    void fetchExercises();
   }, []);
+
+  useEffect(() => {
+    if (getError) {
+      setShowSnackbar({
+        message: "Failed to load exercises.",
+        open: true,
+        status: "error",
+      });
+    }
+  }, [exercisesData, getError, loadingExercises]);
 
   useEffect(() => {
     let filteredExercises = originalExercises;
@@ -66,24 +93,13 @@ export function ExerciseList() {
     setFindExercises(filteredExercises);
   }, [bodyPartFilter, exerciseSearchQuery, originalExercises]);
 
-  // Using custom hook
-  async function getExercises() {
-    const result = await sendRequest({
-      method: "GET",
-      url: API_ENDPOINTS.exercises,
-    });
-
-    if (!result) {
-      setShowSnackbar({
-        message: "Failed to load exercises.",
-        open: true,
-        status: "error",
-      });
-      return;
-    }
-
-    if (result) {
-      let cleanedExercises = valueToLabel(result, MOVEMENTS, "movement");
+  function cleanExerciseData(exercisesDataToClean) {
+    if (exercisesDataToClean) {
+      let cleanedExercises = valueToLabel(
+        exercisesDataToClean,
+        MOVEMENTS,
+        "movement",
+      );
       cleanedExercises = valueToLabel(
         cleanedExercises,
         MUSCLE_GROUPS,
@@ -94,13 +110,15 @@ export function ExerciseList() {
         return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
       });
 
-      setOriginalExercises(sortedExercises);
-      setFindExercises(sortedExercises);
+      return sortedExercises;
     }
   }
 
   // Adds label values to the data object for correct ui view
   function valueToLabel(data, arr, type) {
+    if (!data) {
+      return;
+    }
     return data.map((item) => {
       const matched = arr.find((val) => {
         return val.value === item[type];
@@ -110,6 +128,36 @@ export function ExerciseList() {
         [`${type}Label`]: matched ? matched.label : "",
       };
     });
+  }
+
+  async function handleDeleteExercise() {
+    try {
+      const result = await deleteExercise({
+        method: "DELETE",
+        url: `${API_ENDPOINTS.exercises}/${exerciseToBeDeleted.id}`,
+      });
+
+      console.log("Result from delete exercise:", result);
+
+      setShowSnackbar({
+        open: true,
+        status: "success",
+        message: `${exerciseToBeDeleted.name} has been deleted`,
+      });
+      setDeleteItem(false);
+      const refreshedExercises = await getExercises({
+        method: "GET",
+        url: API_ENDPOINTS.exercises,
+      });
+
+      if (refreshedExercises) {
+        const cleaned = cleanExerciseData(refreshedExercises);
+        setOriginalExercises(cleaned);
+        setFindExercises(cleaned);
+      }
+    } catch (error) {
+      console.error(`Error in handle delete exercise catch: ${error}`);
+    }
   }
 
   const handleCreateExerciseClick = () => {
@@ -130,30 +178,15 @@ export function ExerciseList() {
   }
 
   function deleteExerciseButtonClick(e, id, name) {
-    setExerciseToBeDeleted({ id: id, name: name });
+    setExerciseToBeDeleted({
+      id: id,
+      name: name,
+    });
     setDeleteItem(true);
   }
 
   function handleCancelDelete() {
     setDeleteItem(false);
-  }
-
-  async function handleDeleteExercise() {
-    try {
-      const response = await axios.delete(
-        `${API_ENDPOINTS.exercises}/${exerciseToBeDeleted.id}`,
-        {
-          headers: {
-            "novi-education-project-id": import.meta.env.VITE_API_KEY,
-          },
-        },
-      );
-      setDeleteItem(false);
-      await getExercises();
-      console.log(response.data);
-    } catch (error) {
-      console.error(`Error in handle delete exercise catch: ${error}`);
-    }
   }
 
   return (
@@ -164,7 +197,12 @@ export function ExerciseList() {
           open={showSnackbar.open}
           status={showSnackbar.status}
           durationVisible={3000}
-          onClose={() => setShowSnackbar({ ...showSnackbar, open: false })}
+          onClose={() =>
+            setShowSnackbar({
+              ...showSnackbar,
+              open: false,
+            })
+          }
         />
       )}
       <section className={styles["exercise-list__controls"]}>
@@ -207,7 +245,7 @@ export function ExerciseList() {
           </InputWrapper>
         </div>
       </section>
-      {exercisesLoading && <LoadingSpinner />}
+      {loadingExercises && <LoadingSpinner />}
 
       {deleteItem && (
         <DeleteConfirmation

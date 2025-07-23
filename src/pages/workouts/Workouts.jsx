@@ -28,16 +28,10 @@ import { API_ENDPOINTS } from "../../api/api.js";
 import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 import { formatDate } from "../../utils/formatDate.js";
 import { NoContent } from "../../components/noContent/NoContent.jsx";
-import useFetch from "../../hooks/useFetch.jsx";
+import { useApiRequest } from "../../hooks/useApiRequest.jsx";
 
 export function Workouts() {
   const [selectedWorkouts, setSelectedWorkouts] = useState([]);
-  const [filteredWorkoutTemplates, setFilteredWorkoutTemplates] = useState([]);
-  const [loadingState, setLoadingState] = useState({
-    workouts: false,
-    assign: false,
-    archive: false,
-  });
   const [showSnackbar, setShowSnackbar] = useState({
     open: false,
     message: "",
@@ -45,49 +39,69 @@ export function Workouts() {
   });
   const [workoutFilter, setWorkoutFilter] = useState("");
   const [searchWorkouts, setSearchWorkouts] = useState("");
-
+  const [hasFetchedData, setHasFetchedData] = useState(false);
   const [selectClient, setSelectClient] = useState("");
 
   const navigate = useNavigate();
 
   // Custom hook
-
-  // useMemo zodat deze waarde als "constant" wordt gezien door de customHook
-  const clientConfig = useMemo(
-    () => ({
-      method: "GET",
-      url: `${API_ENDPOINTS.clients}`,
-    }),
-    [],
-  );
-
-  const workoutTemplateConfig = useMemo(
-    () => ({
-      method: "GET",
-      url: `${API_ENDPOINTS.workoutTemplates}`,
-    }),
-    [],
-  );
-
   const {
-    isLoading: isClientsLoading,
-    error: isClientError,
     data: clientData,
-  } = useFetch(clientConfig);
+    error: clientError,
+    doRequest: getClients,
+  } = useApiRequest();
 
   const {
-    isLoading: isWorkoutTemplateLoading,
-    error: isWorkoutTemplateError,
-    data: workoutTemplateData,
-    reload,
-  } = useFetch(workoutTemplateConfig);
+    data: workoutData,
+    error: workoutError,
+    doRequest: getWorkouts,
+  } = useApiRequest();
+
+  const {
+    data: deletedWorkout,
+    error: errorDeleteWorkout,
+    doRequest: deleteWorkout,
+  } = useApiRequest();
 
   useEffect(() => {
-    if (!workoutTemplateData) {
-      return;
+    async function fetchData() {
+      const clients = await getClients({
+        method: "GET",
+        url: `${API_ENDPOINTS.clients}`,
+      });
+
+      const workouts = await getWorkouts({
+        method: "GET",
+        url: `${API_ENDPOINTS.workoutTemplates}`,
+      });
+      setHasFetchedData(true);
+      if (!clients) {
+        setShowSnackbar({
+          open: true,
+          message: `Couldn't fetch clients: ${clientError}`,
+          status: "error",
+        });
+      }
+      if (!workouts) {
+        setShowSnackbar({
+          open: true,
+          message: `Couldn't fetch workouts: ${workoutError}`,
+          status: "error",
+        });
+      }
+    }
+    void fetchData();
+  }, []);
+
+  // Deze useMemo maakt een memoized versie van de filtered workouts en voert de callback alleen uit wanneer
+  // een dependency verandert. Hij retourneert dus de return value van de callback en onthoudt deze tot een
+  // dependency verandert. Hierdoor hebben we geen extra useEffect en state nodig.
+  const filteredWorkoutTemplates = useMemo(() => {
+    if (!workoutData) {
+      return [];
     }
 
-    let filteredArr = [...workoutTemplateData];
+    let filteredArr = [...workoutData];
 
     // filtering on search query
     if (searchWorkouts) {
@@ -108,11 +122,11 @@ export function Workouts() {
         return a.name.localeCompare(b.name);
       });
     }
-    setFilteredWorkoutTemplates(filteredArr);
-  }, [searchWorkouts, workoutFilter]);
+    return filteredArr;
+  }, [workoutData, searchWorkouts, workoutFilter]);
 
   useEffect(() => {
-    if (isWorkoutTemplateError || isClientError) {
+    if (workoutError || clientError) {
       setShowSnackbar({
         open: true,
         message:
@@ -120,7 +134,7 @@ export function Workouts() {
         status: "error",
       });
     }
-  }, [isWorkoutTemplateError, isClientError]);
+  }, [workoutError, clientError]);
 
   async function assignUserWorkoutsToUser(clientId, workoutTemplates) {
     if (!clientId || !workoutTemplates?.length) {
@@ -128,11 +142,6 @@ export function Workouts() {
     }
 
     try {
-      setLoadingState((prevState) => ({
-        ...prevState,
-        assign: true,
-      }));
-
       const { data: existingWorkoutTemplates } = await axios.get(
         `${API_ENDPOINTS.clients}/${clientId}/userWorkouts`,
         {
@@ -193,11 +202,6 @@ export function Workouts() {
         status: "error",
       });
       console.error(error);
-    } finally {
-      setLoadingState((prevState) => ({
-        ...prevState,
-        assign: false,
-      }));
     }
   }
 
@@ -213,30 +217,24 @@ export function Workouts() {
       return;
     }
 
-    const result = workoutTemplateData.find((template) => {
+    const result = workoutData.find((template) => {
       return template.id === workoutTemplateId;
     });
 
     try {
-      setLoadingState((prevState) => ({
-        ...prevState,
-        archive: true,
-      }));
-      await axios.put(
-        `${API_ENDPOINTS.workoutTemplates}/${workoutTemplateId}`,
-        {
+      await deleteWorkout({
+        method: "PUT",
+        url: `${API_ENDPOINTS.workoutTemplates}/${workoutTemplateId}`,
+        data: {
           ...result,
           archivedAt: new Date().toISOString(),
         },
-        {
-          headers: {
-            "novi-education-project-id": import.meta.env.VITE_API_KEY,
-            "Content-Type": "application/json",
-          },
-        },
-      );
+      });
 
-      reload();
+      await getWorkouts({
+        method: "GET",
+        url: `${API_ENDPOINTS.workoutTemplates}`,
+      });
     } catch (error) {
       setShowSnackbar({
         message: "Something went wrong while trying to archive the workout",
@@ -244,11 +242,6 @@ export function Workouts() {
         status: "error",
       });
       console.error(error);
-    } finally {
-      setLoadingState((prevState) => ({
-        ...prevState,
-        archive: false,
-      }));
     }
   }
 
@@ -293,17 +286,11 @@ export function Workouts() {
     }
   }
 
-  if (
-    isWorkoutTemplateLoading ||
-    isClientsLoading ||
-    loadingState.workouts ||
-    loadingState.archive ||
-    loadingState.assign
-  ) {
+  if (!hasFetchedData) {
     return <LoadingSpinner />;
   }
 
-  if (!workoutTemplateData) {
+  if (!workoutData) {
     return (
       <NoContent
         title="No workout templates yet"
@@ -395,10 +382,7 @@ export function Workouts() {
         </InputWrapper>
       </section>
       <section className={styles["workout-page__list"]}>
-        {(filteredWorkoutTemplates.length > 0
-          ? filteredWorkoutTemplates
-          : workoutTemplateData
-        ).map((template) => {
+        {filteredWorkoutTemplates.map((template) => {
           return (
             !template.archivedAt && (
               <Card key={template.id} variant="horizontal" size="medium">
@@ -419,7 +403,7 @@ export function Workouts() {
                       <div>
                         <h4>{template.name}</h4>
                         <p>
-                          {template.numberOfExercises || "BANAAN"} exercises in
+                          {template.numberOfExercises || "No"} exercises in
                           workout
                         </p>
                         <p>{formatDate(template.createdAt)}</p>
