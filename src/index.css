@@ -68,6 +68,12 @@ select {
   color: inherit;
 }
 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 a {
   color: var(--color-accent);
   cursor: pointer;
@@ -179,7 +185,7 @@ tr:nth-of-type(2n) {
   /* 3. Grays */
   --color-gray-light: hsl(228 18 96);
   --color-gray-mediumlight: hsl(228 12 92);
-  --color-gray-medium: hsl(225 7 34);
+  --color-gray-medium: hsl(225 7 55);
   --color-gray-dark: hsl(226 13 20);
   --color-white: hsl(0 0 98);
   --color-black: hsl(0 0 10);

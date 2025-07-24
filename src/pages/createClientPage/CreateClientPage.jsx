@@ -2,13 +2,16 @@ import styles from "./CreateClientPage.module.css";
 import axios from "axios";
 import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
 import { Modal } from "../../components/modal/Modal.jsx";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { InputField } from "../../components/inputField/InputField.jsx";
 import { Button } from "../../components/button/Button.jsx";
 import { RadioButton } from "../../components/radioButton/RadioButton.jsx";
 import { API_ENDPOINTS } from "../../api/api.js";
+import { AuthContext } from "../../context/AuthContextProvider.jsx";
 
 export function CreateClientPage() {
+  const { authUser } = useContext(AuthContext);
+  console.log(authUser);
   const [showSnackbar, setShowSnackbar] = useState({
     message: "",
     open: false,
@@ -18,13 +21,14 @@ export function CreateClientPage() {
     firstName: "",
     lastName: "",
     phone: "",
+    email: "",
     gender: "",
     joinedAt: "",
     imageUrl: null,
     completedWorkouts: 0,
     compliance: 0,
     currentPlan: "",
-    userId: 1, // this is the trainer id that made the client (while logged in i.e.)
+    userId: authUser.user.userId, // this is the trainer id that made the client (while logged in i.e.)
   });
 
   async function addNewClient() {
@@ -45,6 +49,7 @@ export function CreateClientPage() {
           firstName: userDetails.firstName.trim(),
           lastName: userDetails.lastName.trim(),
           phone: userDetails.phone.trim(),
+          email: userDetails.email.trim(),
           gender: userDetails.gender,
         },
         {
@@ -120,7 +125,17 @@ export function CreateClientPage() {
                   handleChange={handleUserDetailsChange}
                 />
               </div>
-
+              <div className={styles["form-group"]}>
+                <InputField
+                  label="Email"
+                  name="email"
+                  id="email"
+                  type="email"
+                  value={userDetails.email}
+                  handleChange={handleUserDetailsChange}
+                  required={true}
+                />
+              </div>
               <div className={styles["form-group"]}>
                 <InputField
                   label="Phone"
@@ -129,6 +144,7 @@ export function CreateClientPage() {
                   type="number"
                   value={userDetails.phone}
                   handleChange={handleUserDetailsChange}
+                  required={true}
                 />
               </div>
               <div className={styles["form-group"]}>

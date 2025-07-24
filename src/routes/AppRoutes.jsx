@@ -16,6 +16,7 @@ import { Login } from "../pages/login/Login.jsx";
 import { ProtectedRoute } from "./ProtectedRoute.jsx";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContextProvider.jsx";
+import { TrackWorkout } from "../pages/trackWorkout/TrackWorkout.jsx";
 
 export function AppRoutes() {
   const { authUser } = useContext(AuthContext);
@@ -30,6 +31,7 @@ export function AppRoutes() {
             <Route index element={<Workouts />} />
             <Route path="new-workout" element={<WorkoutBuilder />} />
           </Route>
+          <Route path="track-workout/:id" element={<TrackWorkout />} />
           <Route path="exercise-library">
             <Route index element={<ExerciseList />} />
             <Route path="create" element={<CreateExercisePage />} />

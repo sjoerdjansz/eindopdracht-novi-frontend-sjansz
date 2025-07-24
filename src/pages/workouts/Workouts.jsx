@@ -1,7 +1,7 @@
 import styles from "./Workouts.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 
 // Components
@@ -28,13 +28,10 @@ import { API_ENDPOINTS } from "../../api/api.js";
 import { InputWrapper } from "../../components/inputWrapper/InputWrapper.jsx";
 import { formatDate } from "../../utils/formatDate.js";
 import { NoContent } from "../../components/noContent/NoContent.jsx";
+import { useApiRequest } from "../../hooks/useApiRequest.jsx";
 
 export function Workouts() {
   const [selectedWorkouts, setSelectedWorkouts] = useState([]);
-  const [allWorkoutTemplates, setAllWorkoutTemplates] = useState([]);
-  const [filteredWorkoutTemplates, setFilteredWorkoutTemplates] = useState([]);
-  const [workoutExercises, setWorkoutExercises] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState({
     open: false,
     message: "",
@@ -42,19 +39,65 @@ export function Workouts() {
   });
   const [workoutFilter, setWorkoutFilter] = useState("");
   const [searchWorkouts, setSearchWorkouts] = useState("");
+  const [hasFetchedData, setHasFetchedData] = useState(false);
   const [selectClient, setSelectClient] = useState("");
-  const [allClients, setAllClients] = useState([]);
-  const [hasLoaded, setHasLoaded] = useState(false);
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchWorkoutTemplates();
-    fetchClients();
-  }, []);
+  // Custom hook
+  const {
+    data: clientData,
+    error: clientError,
+    doRequest: getClients,
+  } = useApiRequest();
+
+  const {
+    data: workoutData,
+    error: workoutError,
+    doRequest: getWorkouts,
+  } = useApiRequest();
+
+  const { doRequest: deleteWorkout } = useApiRequest();
 
   useEffect(() => {
-    let filteredArr = [...allWorkoutTemplates];
+    async function fetchData() {
+      const clients = await getClients({
+        method: "GET",
+        url: `${API_ENDPOINTS.clients}`,
+      });
+
+      const workouts = await getWorkouts({
+        method: "GET",
+        url: `${API_ENDPOINTS.workoutTemplates}`,
+      });
+      setHasFetchedData(true);
+      if (!clients) {
+        setShowSnackbar({
+          open: true,
+          message: `Couldn't fetch clients: ${clientError}`,
+          status: "error",
+        });
+      }
+      if (!workouts) {
+        setShowSnackbar({
+          open: true,
+          message: `Couldn't fetch workouts: ${workoutError}`,
+          status: "error",
+        });
+      }
+    }
+    void fetchData();
+  }, []);
+
+  // Deze useMemo maakt een memoized versie van de filtered workouts en voert de callback alleen uit wanneer
+  // een dependency verandert. Hij retourneert dus de return value van de callback en onthoudt deze tot een
+  // dependency verandert. Hierdoor hebben we geen extra useEffect en state nodig.
+  const filteredWorkoutTemplates = useMemo(() => {
+    if (!workoutData) {
+      return [];
+    }
+
+    let filteredArr = [...workoutData];
 
     // filtering on search query
     if (searchWorkouts) {
@@ -75,51 +118,34 @@ export function Workouts() {
         return a.name.localeCompare(b.name);
       });
     }
-    setFilteredWorkoutTemplates(filteredArr);
-  }, [allWorkoutTemplates, searchWorkouts, workoutFilter]);
+    return filteredArr;
+  }, [workoutData, searchWorkouts, workoutFilter]);
 
-  async function fetchWorkoutTemplates() {
-    try {
-      setIsLoading(true);
-      const { data } = await axios.get(API_ENDPOINTS.workoutTemplates, {
-        headers: {
-          "novi-education-project-id": import.meta.env.VITE_API_KEY,
-        },
-      });
-
-      setWorkoutExercises({});
-
-      const filteredTemplatesData = data.filter(
-        (template) => !template.archivedAt,
-      );
-
-      await Promise.all(
-        data.map((template) => fetchWorkoutExercises(template.id)),
-      );
-
-      setAllWorkoutTemplates(filteredTemplatesData);
-      setFilteredWorkoutTemplates(filteredTemplatesData);
-    } catch (error) {
+  useEffect(() => {
+    if (workoutError || clientError) {
       setShowSnackbar({
         open: true,
-        message: "Couldn't fetch workout templates",
-        status: "warning",
+        message:
+          "Something went wrong while fetching client and workout template data",
+        status: "error",
       });
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-      setHasLoaded(true);
     }
-  }
+  }, [workoutError, clientError]);
 
-  async function pairUserWorkoutsToUser(clientId, workoutTemplates) {
+  async function assignUserWorkoutsToUser(clientId, workoutTemplates) {
     if (!clientId || !workoutTemplates?.length) {
       return;
     }
 
     try {
-      setIsLoading(true);
-      const existingWorkoutTemplates = await fetchClientWorkouts(clientId);
+      const { data: existingWorkoutTemplates } = await axios.get(
+        `${API_ENDPOINTS.clients}/${clientId}/userWorkouts`,
+        {
+          headers: {
+            "novi-education-project-id": import.meta.env.VITE_API_KEY,
+          },
+        },
+      );
 
       const existingTemplateIds = existingWorkoutTemplates.map((template) => {
         return template.workoutTemplateId;
@@ -141,7 +167,6 @@ export function Workouts() {
       for (let i = 0; i < newTemplatesToAssign.length; i++) {
         await axios.post(
           `${API_ENDPOINTS.userWorkouts}`,
-
           {
             userProfileId: parseInt(clientId),
             workoutTemplateId: parseInt(newTemplatesToAssign[i]),
@@ -153,16 +178,19 @@ export function Workouts() {
             },
           },
         );
-
-        const matchedClientId = allClients.find(
-          (client) => parseInt(selectClient) === parseInt(client.id),
-        );
-        setShowSnackbar({
-          open: true,
-          message: `Workout(s) successfully assigned to ${matchedClientId.firstName} ${matchedClientId.lastName}`,
-          status: "success",
-        });
       }
+
+      const matchedClient = clientData.find(
+        (client) => parseInt(selectClient) === parseInt(client.id),
+      );
+
+      setSelectedWorkouts([]);
+
+      setShowSnackbar({
+        open: true,
+        message: `Workout(s) successfully assigned to ${matchedClient.firstName} ${matchedClient.lastName}`,
+        status: "success",
+      });
     } catch (error) {
       setShowSnackbar({
         open: true,
@@ -170,75 +198,6 @@ export function Workouts() {
         status: "error",
       });
       console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  async function fetchClientWorkouts(clientId) {
-    try {
-      setIsLoading(true);
-      const { data } = await axios.get(
-        `${API_ENDPOINTS.clients}/${clientId}/userWorkouts`,
-        {
-          headers: {
-            "novi-education-project-id": import.meta.env.VITE_API_KEY,
-          },
-        },
-      );
-      return data;
-    } catch (error) {
-      setShowSnackbar({
-        open: true,
-        status: "error",
-        message: "Couldn't fetch the client workout templates",
-      });
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  async function fetchWorkoutExercises(templateId) {
-    if (!templateId) {
-      return;
-    }
-    try {
-      const { data } = await axios.get(
-        `${API_ENDPOINTS.workoutTemplates}/${templateId}/workoutExercises`,
-        {
-          headers: {
-            "novi-education-project-id": import.meta.env.VITE_API_KEY,
-          },
-        },
-      );
-      setWorkoutExercises((prevState) => ({
-        ...prevState,
-        [templateId]: data,
-      }));
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  async function fetchClients() {
-    try {
-      setIsLoading(true);
-      const { data } = await axios.get(`${API_ENDPOINTS.clients}`, {
-        headers: {
-          "novi-education-project-id": import.meta.env.VITE_API_KEY,
-        },
-      });
-      setAllClients(data);
-    } catch (error) {
-      setShowSnackbar({
-        open: true,
-        message: "Failed to fetch clients",
-        status: "error",
-      });
-      console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   }
 
@@ -253,24 +212,24 @@ export function Workouts() {
       return;
     }
 
-    const result = filteredWorkoutTemplates.find((template) => {
+    const result = workoutData.find((template) => {
       return template.id === workoutTemplateId;
     });
 
     try {
-      setIsLoading(true);
-      await axios.put(
-        `${API_ENDPOINTS.workoutTemplates}/${workoutTemplateId}`,
-        { ...result, archivedAt: new Date().toISOString() },
-        {
-          headers: {
-            "novi-education-project-id": import.meta.env.VITE_API_KEY,
-            "Content-Type": "application/json",
-          },
+      await deleteWorkout({
+        method: "PUT",
+        url: `${API_ENDPOINTS.workoutTemplates}/${workoutTemplateId}`,
+        data: {
+          ...result,
+          archivedAt: new Date().toISOString(),
         },
-      );
+      });
 
-      await fetchWorkoutTemplates();
+      await getWorkouts({
+        method: "GET",
+        url: `${API_ENDPOINTS.workoutTemplates}`,
+      });
     } catch (error) {
       setShowSnackbar({
         message: "Something went wrong while trying to archive the workout",
@@ -278,8 +237,6 @@ export function Workouts() {
         status: "error",
       });
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   }
 
@@ -324,11 +281,11 @@ export function Workouts() {
     }
   }
 
-  if (!hasLoaded || isLoading) {
+  if (!hasFetchedData) {
     return <LoadingSpinner />;
   }
 
-  if (filteredWorkoutTemplates.length === 0) {
+  if (!workoutData) {
     return (
       <NoContent
         title="No workout templates yet"
@@ -349,7 +306,12 @@ export function Workouts() {
           open={showSnackbar.open}
           status={showSnackbar.status}
           durationVisible={3000}
-          onClose={() => setShowSnackbar(false)}
+          onClose={() =>
+            setShowSnackbar({
+              ...showSnackbar,
+              open: false,
+            })
+          }
         />
       )}
       <div className={styles["workouts-page__header"]}>
@@ -365,24 +327,26 @@ export function Workouts() {
       <section className={styles["workouts-page__controls"]}>
         <div>
           <InputWrapper width="small">
-            <SelectField
-              id="client-select"
-              name="client-select"
-              title="Select client"
-              options={allClients.map((client) => ({
-                label: `${client.firstName} ${client.lastName}`,
-                value: client.id.toString(),
-              }))}
-              value={selectClient}
-              handleChange={handleSelectClient}
-              button={true}
-              buttonLabel="Add"
-              buttonStyle="secondary"
-              onButtonClick={() => {
-                pairUserWorkoutsToUser(selectClient, selectedWorkouts);
-              }}
-              disabled={selectClient.length <= 0}
-            />
+            {clientData && (
+              <SelectField
+                id="client-select"
+                name="client-select"
+                title="Select client"
+                options={clientData.map((client) => ({
+                  label: `${client.firstName} ${client.lastName}`,
+                  value: client.id.toString(),
+                }))}
+                value={selectClient}
+                handleChange={handleSelectClient}
+                button={true}
+                buttonLabel="Add"
+                buttonStyle="secondary"
+                onButtonClick={() => {
+                  assignUserWorkoutsToUser(selectClient, selectedWorkouts);
+                }}
+                disabled={selectClient.length <= 0}
+              />
+            )}
           </InputWrapper>
 
           <InputWrapper width="small">
@@ -415,42 +379,44 @@ export function Workouts() {
       <section className={styles["workout-page__list"]}>
         {filteredWorkoutTemplates.map((template) => {
           return (
-            <Card key={template.id} variant="horizontal" size="medium">
-              <div className={styles["workout-page__card-container"]}>
-                <CardHeader>
-                  <div className={styles["workouts-page__card-header"]}>
-                    <CustomCheckbox
-                      className={styles["workouts__card-select"]}
-                      type="button"
-                      name="select-workout"
-                      onClick={() => {
-                        selectWorkout(template.id);
-                      }}
-                      selected={selectedWorkouts.find((id) => {
-                        return id === template.id;
-                      })}
-                    />
-                    <div>
-                      <h4>{template.name}</h4>
-                      <p>
-                        {workoutExercises[template.id]?.length || "No"}{" "}
-                        exercises in workout
-                      </p>
-                      <p>{formatDate(template.createdAt)}</p>
+            !template.archivedAt && (
+              <Card key={template.id} variant="horizontal" size="medium">
+                <div className={styles["workout-page__card-container"]}>
+                  <CardHeader>
+                    <div className={styles["workouts-page__card-header"]}>
+                      <CustomCheckbox
+                        className={styles["workouts__card-select"]}
+                        type="button"
+                        name="select-workout"
+                        onClick={() => {
+                          selectWorkout(template.id);
+                        }}
+                        selected={selectedWorkouts.find((id) => {
+                          return id === template.id;
+                        })}
+                      />
+                      <div>
+                        <h4>{template.name}</h4>
+                        <p>
+                          {template.numberOfExercises || "No"} exercises in
+                          workout
+                        </p>
+                        <p>{formatDate(template.createdAt)}</p>
+                      </div>
                     </div>
-                  </div>
-                </CardHeader>
+                  </CardHeader>
 
-                <CardFooter>
-                  <div className={styles["workouts__icons-container"]}>
-                    <FontAwesomeIcon
-                      icon={faBoxArchive}
-                      onClick={() => handleDeleteWorkout(template.id)}
-                    />
-                  </div>
-                </CardFooter>
-              </div>
-            </Card>
+                  <CardFooter>
+                    <div className={styles["workouts__icons-container"]}>
+                      <FontAwesomeIcon
+                        icon={faBoxArchive}
+                        onClick={() => handleDeleteWorkout(template.id)}
+                      />
+                    </div>
+                  </CardFooter>
+                </div>
+              </Card>
+            )
           );
         })}
       </section>

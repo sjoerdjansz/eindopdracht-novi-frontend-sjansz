@@ -11,6 +11,7 @@ import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { API_ENDPOINTS } from "../../api/api.js";
+import blankBodyparts from "../../assets/bodyparts/blank-bodyparts.svg";
 
 export function CreateExercisePage() {
   const { id } = useParams();
@@ -187,6 +188,13 @@ export function CreateExercisePage() {
     }
   }
 
+  function selectBodypartImage(bodypart) {
+    const match = BODYPARTS.find((item) => {
+      return bodypart.toLowerCase() === item.value;
+    });
+    return match.image;
+  }
+
   return (
     <div className={styles["create-exercise__container"]}>
       {showSnackbar.open && (
@@ -219,7 +227,7 @@ export function CreateExercisePage() {
               <SelectField
                 id="bodypart"
                 name="bodypart"
-                label="Bodypart"
+                label="Body part"
                 options={BODYPARTS}
                 title="Select bodypart"
                 required={true}
@@ -247,8 +255,6 @@ export function CreateExercisePage() {
                 options={MUSCLE_GROUPS}
                 title="Select primary muscle"
                 required={true}
-                // button={true}
-                // onButtonClick={onAddMuscleClick}
                 buttonLabel="Add"
                 value={formData.primaryMuscle}
                 handleChange={handleChange}
@@ -261,6 +267,7 @@ export function CreateExercisePage() {
                 placeholder="Exercise instructions"
                 cols="20"
                 rows="4"
+                required={true}
                 value={formData.instructions}
                 onChange={(e) => {
                   handleChange(e);
@@ -285,6 +292,17 @@ export function CreateExercisePage() {
               handleClick={(e) => handleSubmit(e, id, formData.exerciseName)}
             />
           </form>
+          <div className={styles["bodypart-image-container"]}>
+            <h4>Body part and muscles</h4>
+            {formData.bodypart ? (
+              <img
+                src={selectBodypartImage(formData.bodypart)}
+                alt="active-muscles-and-bodypart"
+              />
+            ) : (
+              <img src={blankBodyparts} alt="blank-muscles-and-bodypart" />
+            )}
+          </div>
         </div>
       </Modal>
     </div>

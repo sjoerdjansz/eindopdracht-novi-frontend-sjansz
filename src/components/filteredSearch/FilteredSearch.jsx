@@ -25,7 +25,7 @@ export function FilteredSearch({
   // usEffect for click outside of component
   useEffect(() => {
     function handleClick(e) {
-      // TODO: understand refs better, copy paste code.
+      // TODO: understand refs better
       if (
         searchFilterRef.current && // check if the reference is true (this is the DOM node of filtered search). .current is filled with the DOM node.
         !searchFilterRef.current.contains(e.target) // and if the click didn't happen in the DOM node

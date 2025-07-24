@@ -14,11 +14,11 @@
 }
 
 .profile-page__container > :nth-child(1) {
-  flex: 0 1 400px;
+  flex: 1 1 400px;
 }
 
 .profile-page__container > :nth-child(2) {
-  flex: 6 1 auto;
+  flex: 2 1 800px;
 }
 /* Profile page stats (left) inner card styling */
 
@@ -47,10 +47,10 @@
 }
 
 .profile-page__avatar-wrapper {
-  width: clamp(100px, 15vw, 160px);
-  aspect-ratio: 1/1;
+  position: relative;
   border-radius: 50%;
-  overflow: hidden;
+  width: 140px;
+  height: 140px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -58,10 +58,39 @@
 }
 
 .user-avatar {
+  border-radius: 50%;
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.upload-user-avatar-input {
+  display: none;
+}
+
+.upload-user-avatar-label {
+  position: absolute;
+  display: flex;
+  bottom: 15px;
+  right: 15px;
+  transform: translate(25%, 25%);
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-sm);
+  border-radius: 50%;
+  background-color: var(--color-gray-light);
+  color: var(--color-black);
+  cursor: pointer;
+  box-shadow: var(--element-shadow-regular);
+}
+
+.upload-user-avatar-label:hover {
+  background-color: var(--color-gray-mediumlight);
+}
+
+.upload-user-avatar-label i {
+  font-size: 1rem;
 }
 
 .profile-page__workout-buttons {

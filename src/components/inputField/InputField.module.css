@@ -40,10 +40,10 @@
   margin-left: 0.3rem;
 }
 
-.password-valid {
-  background-color: var(--color-primary-verylight);
+.password-invalid {
+  box-shadow: 0 0 0 2px var(--color-primary-light);
 }
 
-.password-invalid {
-  background-color: var(--color-secondary-verylight);
+.password-valid {
+  box-shadow: 0 0 0 2px var(--color-secondary-light);
 }

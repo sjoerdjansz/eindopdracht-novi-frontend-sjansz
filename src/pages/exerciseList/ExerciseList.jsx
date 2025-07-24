@@ -10,7 +10,6 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { API_ENDPOINTS } from "../../api/api.js";
 import { Snackbar } from "../../components/snackbar/Snackbar.jsx";
 import { LoadingSpinner } from "../../components/loadingSpinner/LoadingSpinner.jsx";
@@ -19,15 +18,18 @@ import { BODYPART_FILTER_OPTIONS } from "../../data/clientFilterOptions.js";
 import { DeleteConfirmation } from "../../components/deleteConfirmation/DeleteConfirmation.jsx";
 import { MOVEMENTS } from "../../data/workoutFilterOptions.js";
 import { MUSCLE_GROUPS } from "../../data/muscleGroups.js";
+import { useApiRequest } from "../../hooks/useApiRequest.jsx";
 
 export function ExerciseList() {
   const navigate = useNavigate();
   const [exerciseSearchQuery, setExerciseSearchQuery] = useState("");
   const [originalExercises, setOriginalExercises] = useState([]);
   const [findExercises, setFindExercises] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState({
+    open: false,
+    message: "",
+    status: "",
+  });
   const [bodyPartFilter, setBodyPartFilter] = useState("");
   const [deleteItem, setDeleteItem] = useState(false);
   const [exerciseToBeDeleted, setExerciseToBeDeleted] = useState({
@@ -35,9 +37,40 @@ export function ExerciseList() {
     name: "",
   });
 
+  const {
+    data: exercisesData,
+    error: getError,
+    isLoading: loadingExercises,
+    doRequest: getExercises,
+  } = useApiRequest();
+
+  const { doRequest: deleteExercise } = useApiRequest();
+
   useEffect(() => {
-    getExercises();
+    async function fetchExercises() {
+      const result = await getExercises({
+        method: "GET",
+        url: API_ENDPOINTS.exercises,
+      });
+
+      if (result) {
+        const cleaned = cleanExerciseData(result);
+        setOriginalExercises(cleaned);
+        setFindExercises(cleaned);
+      }
+    }
+    void fetchExercises();
   }, []);
+
+  useEffect(() => {
+    if (getError) {
+      setShowSnackbar({
+        message: "Failed to load exercises.",
+        open: true,
+        status: "error",
+      });
+    }
+  }, [exercisesData, getError, loadingExercises]);
 
   useEffect(() => {
     let filteredExercises = originalExercises;
@@ -60,8 +93,32 @@ export function ExerciseList() {
     setFindExercises(filteredExercises);
   }, [bodyPartFilter, exerciseSearchQuery, originalExercises]);
 
+  function cleanExerciseData(exercisesDataToClean) {
+    if (exercisesDataToClean) {
+      let cleanedExercises = valueToLabel(
+        exercisesDataToClean,
+        MOVEMENTS,
+        "movement",
+      );
+      cleanedExercises = valueToLabel(
+        cleanedExercises,
+        MUSCLE_GROUPS,
+        "primaryMuscle",
+      );
+
+      const sortedExercises = cleanedExercises.sort((a, b) => {
+        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+      });
+
+      return sortedExercises;
+    }
+  }
+
   // Adds label values to the data object for correct ui view
   function valueToLabel(data, arr, type) {
+    if (!data) {
+      return;
+    }
     return data.map((item) => {
       const matched = arr.find((val) => {
         return val.value === item[type];
@@ -73,37 +130,33 @@ export function ExerciseList() {
     });
   }
 
-  // Get exercises api call
-  async function getExercises() {
+  async function handleDeleteExercise() {
     try {
-      setIsLoading(true);
-      const response = await axios.get(API_ENDPOINTS.exercises, {
-        headers: {
-          "novi-education-project-id": import.meta.env.VITE_API_KEY,
-        },
+      const result = await deleteExercise({
+        method: "DELETE",
+        url: `${API_ENDPOINTS.exercises}/${exerciseToBeDeleted.id}`,
       });
 
-      let cleanedExercises = valueToLabel(response.data, MOVEMENTS, "movement");
-      cleanedExercises = valueToLabel(
-        cleanedExercises,
-        MUSCLE_GROUPS,
-        "primaryMuscle",
-      );
+      console.log("Result from delete exercise:", result);
 
-      const sortedExercises = cleanedExercises.sort((a, b) => {
-        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+      setShowSnackbar({
+        open: true,
+        status: "success",
+        message: `${exerciseToBeDeleted.name} has been deleted`,
+      });
+      setDeleteItem(false);
+      const refreshedExercises = await getExercises({
+        method: "GET",
+        url: API_ENDPOINTS.exercises,
       });
 
-      setOriginalExercises(sortedExercises);
-      setFindExercises(sortedExercises);
-    } catch (e) {
-      setErrorMessage(
-        `${e.response.status}: ${e.code}. Failed to load exercises.`,
-      );
-      setShowSnackbar(true);
-      console.error(e);
-    } finally {
-      setIsLoading(false);
+      if (refreshedExercises) {
+        const cleaned = cleanExerciseData(refreshedExercises);
+        setOriginalExercises(cleaned);
+        setFindExercises(cleaned);
+      }
+    } catch (error) {
+      console.error(`Error in handle delete exercise catch: ${error}`);
     }
   }
 
@@ -125,7 +178,10 @@ export function ExerciseList() {
   }
 
   function deleteExerciseButtonClick(e, id, name) {
-    setExerciseToBeDeleted({ id: id, name: name });
+    setExerciseToBeDeleted({
+      id: id,
+      name: name,
+    });
     setDeleteItem(true);
   }
 
@@ -133,27 +189,22 @@ export function ExerciseList() {
     setDeleteItem(false);
   }
 
-  async function handleDeleteExercise() {
-    try {
-      const response = await axios.delete(
-        `${API_ENDPOINTS.exercises}/${exerciseToBeDeleted.id}`,
-        {
-          headers: {
-            "novi-education-project-id": import.meta.env.VITE_API_KEY,
-          },
-        },
-      );
-      setDeleteItem(false);
-      console.log("Exercise successfully deleted");
-      await getExercises();
-      console.log(response.data);
-    } catch (error) {
-      console.error(`Error in handle delete exercise catch: ${error}`);
-    }
-  }
-
   return (
     <div className={styles["exercise-list"]}>
+      {showSnackbar.open && (
+        <Snackbar
+          message={showSnackbar.message}
+          open={showSnackbar.open}
+          status={showSnackbar.status}
+          durationVisible={3000}
+          onClose={() =>
+            setShowSnackbar({
+              ...showSnackbar,
+              open: false,
+            })
+          }
+        />
+      )}
       <section className={styles["exercise-list__controls"]}>
         <div>
           <h1>Exercise List</h1>
@@ -172,7 +223,7 @@ export function ExerciseList() {
               name="bodypart"
               options={BODYPART_FILTER_OPTIONS}
               value={bodyPartFilter}
-              title="Bodypart"
+              title="Body part"
               handleChange={filterBodypartChangeHandler}
               onButtonClick={resetAllFilters}
               button={true}
@@ -194,7 +245,7 @@ export function ExerciseList() {
           </InputWrapper>
         </div>
       </section>
-      {isLoading && <LoadingSpinner />}
+      {loadingExercises && <LoadingSpinner />}
 
       {deleteItem && (
         <DeleteConfirmation
@@ -204,23 +255,11 @@ export function ExerciseList() {
           onDelete={handleDeleteExercise}
         />
       )}
-
-      {showSnackbar && (
-        <Snackbar
-          message={errorMessage}
-          open={showSnackbar}
-          status="warning"
-          durationVisible={3000}
-          onClose={() => {
-            setShowSnackbar(false);
-          }}
-        />
-      )}
       <table>
         <thead>
           <tr className={styles["exercise-list__header"]}>
             <th className={styles["exercise-name--th"]}>Name</th>
-            <th className={styles["exercise-bodypart--th"]}>Bodypart</th>
+            <th className={styles["exercise-bodypart--th"]}>Body part</th>
             <th className={styles["exercise-movement--th"]}>Movement</th>
             <th className={styles["exercise-muscle--th"]}>Primary</th>
             <th></th>

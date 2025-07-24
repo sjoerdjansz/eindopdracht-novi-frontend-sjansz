@@ -44,7 +44,7 @@
 }
 
 .side-nav img {
-  height: 30px;
+  height: 35px;
   margin: 1rem;
   transform: rotateY(180deg);
 }
@@ -112,4 +112,11 @@
 
 .collapsed .side-nav__sign-out span {
   display: none;
+}
+
+/* Media Queries */
+
+/* TODO: Media query schrijven voor het collapsen van de side nav bij < 768px schermen. Moet icm kunnen met de toggle.*/
+
+@media (max-width: 768px) {
 }

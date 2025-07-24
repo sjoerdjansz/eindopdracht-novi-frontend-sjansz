@@ -64,6 +64,7 @@ export function WorkoutBuilder() {
       name: templateName ? templateName : "Workout",
       createdAt: new Date().toISOString(),
       createdByUsersId: 1, // change to userId from userContext (which is the logged in trainer)
+      numberOfExercises: exercises.length,
     };
 
     try {
@@ -419,7 +420,7 @@ export function WorkoutBuilder() {
               </tr>
             </thead>
             <tbody>
-              {/*Onderstaande inline manier is niet de meest performance efficiente blijkbaar*/}
+              {/*I read that this 'inline' way is not the most efficient one to use*/}
               {exercises.length > 0 &&
                 exercises.map((exercise) => {
                   return (

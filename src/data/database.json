@@ -27,6 +27,11 @@
           "required": true
         },
         {
+          "name": "numberOfExercises",
+          "type": "number",
+          "required": false
+        },
+        {
           "name": "archivedAt",
           "type": "date",
           "required": false
@@ -196,6 +201,13 @@
           "required": true
         },
         {
+          "name": "email",
+          "type": "string",
+          "required": true,
+          "min": 0,
+          "max": 99
+        },
+        {
           "name": "gender",
           "type": "string",
           "required": false
@@ -240,6 +252,9 @@
           "anonymous"
         ],
         "PUT": [
+          "anonymous"
+        ],
+        "PATCH": [
           "anonymous"
         ],
         "DELETE": [
@@ -299,6 +314,7 @@
         "name": "Full Body Strength A",
         "createdAt": "2025-06-21",
         "createdByUsersId": 1,
+        "numberOfExercises": 4,
         "archivedAt": null
       },
       {
@@ -306,6 +322,7 @@
         "name": "Upper Body Hypertrophy",
         "createdAt": "2025-06-26",
         "createdByUsersId": 1,
+        "numberOfExercises": 5,
         "archivedAt": null
       },
       {
@@ -313,6 +330,7 @@
         "name": "Lower Body Power",
         "createdAt": "2025-11-10",
         "createdByUsersId": 2,
+        "numberOfExercises": 0,
         "archivedAt": null
       },
       {
@@ -320,20 +338,7 @@
         "name": "Push Pull Legs",
         "createdAt": "2025-04-19",
         "createdByUsersId": 1,
-        "archivedAt": null
-      },
-      {
-        "id": 5,
-        "name": "Core Stability Routine",
-        "createdAt": "2025-05-04",
-        "createdByUsersId": 1,
-        "archivedAt": null
-      },
-      {
-        "id": 6,
-        "name": "Full Body Strength B",
-        "createdAt": "2025-03-30",
-        "createdByUsersId": 2,
+        "numberOfExercises": 0,
         "archivedAt": null
       }
     ],
@@ -343,6 +348,7 @@
         "firstName": "Hank",
         "lastName": "the Tank",
         "phone": 612345678,
+        "email": "hank@email.com",
         "gender": "male",
         "joinedAt": "2025-06-01",
         "imageUrl": null,
@@ -356,6 +362,7 @@
         "firstName": "Swole",
         "lastName": "Molly",
         "phone": 612345679,
+        "email": "molly@email.com",
         "gender": "female",
         "joinedAt": "2025-06-01",
         "imageUrl": null,
@@ -369,6 +376,7 @@
         "firstName": "Flex",
         "lastName": "McThunder",
         "phone": 612345680,
+        "email": "flex@email.com",
         "gender": "male",
         "joinedAt": "2025-06-03",
         "imageUrl": null,
@@ -382,6 +390,7 @@
         "firstName": "Luna",
         "lastName": "Barbell",
         "phone": 612345681,
+        "email": "luna@email.com",
         "gender": "female",
         "joinedAt": "2025-06-05",
         "imageUrl": null,
@@ -395,6 +404,7 @@
         "firstName": "Chad",
         "lastName": "Beefcake",
         "phone": 612345682,
+        "email": "chad@email.com",
         "gender": "male",
         "joinedAt": "2025-06-07",
         "imageUrl": null,
@@ -408,6 +418,7 @@
         "firstName": "Vera",
         "lastName": "Deadlift",
         "phone": 612345683,
+        "email": "vera@email.com",
         "gender": "female",
         "joinedAt": "2025-06-10",
         "imageUrl": null,
@@ -732,11 +743,6 @@
         "id": 1,
         "userProfileId": 2,
         "workoutTemplateId": 1
-      },
-      {
-        "id": 2,
-        "userProfileId": 2,
-        "workoutTemplateId": 2
       }
     ]
   }
