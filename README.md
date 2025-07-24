@@ -50,8 +50,8 @@ npm install
 Maak een .env file in de root directory van het project en plaats de volgende gegevens in de .env file.
 
 ```env
-VITE_API_KEY=6528bba2-b1b4-4ab4-beb8-01354a92c74e
-VITE_BASE_URL=https://novi-backend-api-wgsgz.ondigitalocean.app/api
+VITE_API_KEY=
+VITE_BASE_URL=
 ```
 
 ------
