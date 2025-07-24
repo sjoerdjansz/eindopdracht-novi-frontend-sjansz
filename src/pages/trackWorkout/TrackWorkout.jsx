@@ -80,7 +80,7 @@ export function TrackWorkout() {
         // object, which is the exercise.
         return { ...workoutItem, ...matchedResult };
       });
-      console.log(mergedExercisesData);
+      // console.log(mergedExercisesData);
       // place the matchedObject in state to be able to easily render the data together
       setExercisesState(mergedExercisesData);
     }

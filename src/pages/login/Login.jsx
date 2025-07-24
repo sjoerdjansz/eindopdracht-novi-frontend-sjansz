@@ -116,7 +116,7 @@ export function Login() {
           />
         </InputWrapper>
         <Button label="login" buttonSize="small" buttonType="primary" />
-        <Link to={"/"}>Forgot password?</Link>
+        <Link to={""}>Forgot password?</Link>
       </form>
       <p>
         No account yet? <Link to={"/signup"}>Signup here</Link>

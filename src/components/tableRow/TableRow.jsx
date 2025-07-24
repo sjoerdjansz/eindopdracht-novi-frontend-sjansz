@@ -27,7 +27,7 @@ export function TableRow({
       <td className={styles["td-sets"]}>
         <input
           className={styles["exercise-parameter-input"]}
-          type="text"
+          type="number"
           id="sets"
           name="sets"
           onChange={(e) => handleChange(e, exercise.exerciseId)}
@@ -37,7 +37,7 @@ export function TableRow({
       <td className={styles["td-reps"]}>
         <input
           className={styles["exercise-parameter-input"]}
-          type="text"
+          type="number"
           id="reps"
           name="reps"
           onChange={(e) => handleChange(e, exercise.exerciseId)}
@@ -47,7 +47,7 @@ export function TableRow({
       <td className={styles["td-rest"]}>
         <input
           className={styles["exercise-parameter-input"]}
-          type="text"
+          type="number"
           id="rest"
           name="rest"
           onChange={(e) => handleChange(e, exercise.exerciseId)}

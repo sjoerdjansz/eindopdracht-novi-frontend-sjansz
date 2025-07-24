@@ -19,7 +19,7 @@ export function TrackExerciseCard({ exerciseName, setCount }) {
     <article className={styles["track-exercise-card"]}>
       <div className={styles["track-exercise-card__title"]}>
         <div>
-          <h3>{exerciseName}</h3>
+          <h3>{exerciseName ? exerciseName : "Unknown exercise"}</h3>
           <FontAwesomeIcon icon={faHistory} />
         </div>
         <Link to="">Delete</Link>
