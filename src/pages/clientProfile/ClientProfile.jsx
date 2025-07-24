@@ -94,7 +94,7 @@ export function ClientProfile() {
   async function addUserAvatar(base64String) {
     try {
       setIsAvatarLoading(true);
-      const response = await axios.patch(
+      await axios.patch(
         `${API_ENDPOINTS.clients}/${id}`,
         { imageUrl: base64String },
         {
@@ -263,17 +263,12 @@ export function ClientProfile() {
 
     try {
       setIsLoading(true);
-      const response = await axios.patch(
-        `${API_ENDPOINTS.clients}/${id}`,
-        updatedValues,
-        {
-          headers: {
-            "novi-education-project-id": import.meta.env.VITE_API_KEY,
-            "Content-Type": "application/json",
-          },
+      await axios.patch(`${API_ENDPOINTS.clients}/${id}`, updatedValues, {
+        headers: {
+          "novi-education-project-id": import.meta.env.VITE_API_KEY,
+          "Content-Type": "application/json",
         },
-      );
-      console.log("Updated", response.data);
+      });
       setOriginalProfile(profile);
       setShowSnackbar({
         open: true,
@@ -282,6 +277,11 @@ export function ClientProfile() {
       });
     } catch (error) {
       console.error(error);
+      setShowSnackbar({
+        open: true,
+        status: "error",
+        message: "Client update failed. Make sure to input valid data.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -294,13 +294,11 @@ export function ClientProfile() {
   async function handleDeleteClient() {
     try {
       setIsLoading(true);
-      const response = await axios.delete(`${API_ENDPOINTS.clients}/${id}`, {
+      await axios.delete(`${API_ENDPOINTS.clients}/${id}`, {
         headers: {
           "novi-education-project-id": import.meta.env.VITE_API_KEY,
         },
       });
-
-      console.log(response);
 
       setShowSnackbar({
         message: "Client deleted",

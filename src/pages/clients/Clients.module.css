@@ -98,12 +98,12 @@
 }
 
 .medium {
-  color: var(--color-error);
+  color: var(--color-warning);
   font-weight: 600;
 }
 
 .low {
-  color: var(--color-warning);
+  color: var(--color-error);
   font-weight: 600;
 }
 

@@ -91,16 +91,14 @@
         {
           "name": "instructions",
           "type": "string",
-          "required": true,
-          "min": 2,
+          "required": false,
           "max": 999
         },
         {
           "name": "videoURL",
           "type": "string",
           "required": false,
-          "min": 2,
-          "max": 300
+          "max": 999
         }
       ],
       "permissions": {
@@ -329,14 +327,6 @@
         "id": 3,
         "name": "Lower Body Power",
         "createdAt": "2025-11-10",
-        "createdByUsersId": 2,
-        "numberOfExercises": 0,
-        "archivedAt": null
-      },
-      {
-        "id": 4,
-        "name": "Push Pull Legs",
-        "createdAt": "2025-04-19",
         "createdByUsersId": 1,
         "numberOfExercises": 0,
         "archivedAt": null
@@ -345,15 +335,15 @@
     "clients": [
       {
         "id": 1,
-        "firstName": "Hank",
-        "lastName": "the Tank",
+        "firstName": "Billy",
+        "lastName": "Bicep",
         "phone": 612345678,
-        "email": "hank@email.com",
+        "email": "billy@email.com",
         "gender": "male",
         "joinedAt": "2025-06-01",
         "imageUrl": null,
         "completedWorkouts": 24,
-        "compliance": 90,
+        "compliance": 75,
         "currentPlan": "Hybrid training",
         "userId": 1
       },
@@ -373,15 +363,15 @@
       },
       {
         "id": 3,
-        "firstName": "Flex",
-        "lastName": "McThunder",
+        "firstName": "Chad",
+        "lastName": "Beefcake",
         "phone": 612345680,
-        "email": "flex@email.com",
+        "email": "chad@email.com",
         "gender": "male",
         "joinedAt": "2025-06-03",
         "imageUrl": null,
         "completedWorkouts": 31,
-        "compliance": 88,
+        "compliance": 48,
         "currentPlan": "Explosive Power",
         "userId": 1
       },
@@ -397,34 +387,6 @@
         "completedWorkouts": 42,
         "compliance": 95,
         "currentPlan": "Functional Flow",
-        "userId": 1
-      },
-      {
-        "id": 5,
-        "firstName": "Chad",
-        "lastName": "Beefcake",
-        "phone": 612345682,
-        "email": "chad@email.com",
-        "gender": "male",
-        "joinedAt": "2025-06-07",
-        "imageUrl": null,
-        "completedWorkouts": 15,
-        "compliance": 73,
-        "currentPlan": "Beach Body Blast",
-        "userId": 1
-      },
-      {
-        "id": 6,
-        "firstName": "Vera",
-        "lastName": "Deadlift",
-        "phone": 612345683,
-        "email": "vera@email.com",
-        "gender": "female",
-        "joinedAt": "2025-06-10",
-        "imageUrl": null,
-        "completedWorkouts": 66,
-        "compliance": 91,
-        "currentPlan": "Olympic Prep",
         "userId": 1
       }
     ],
@@ -741,8 +703,13 @@
     "userWorkouts": [
       {
         "id": 1,
-        "userProfileId": 2,
+        "userProfileId": 1,
         "workoutTemplateId": 1
+      },
+      {
+        "id": 2,
+        "userProfileId": 2,
+        "workoutTemplateId": 2
       }
     ]
   }

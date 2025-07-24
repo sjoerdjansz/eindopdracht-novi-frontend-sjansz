@@ -11,7 +11,6 @@ import { AuthContext } from "../../context/AuthContextProvider.jsx";
 
 export function CreateClientPage() {
   const { authUser } = useContext(AuthContext);
-  console.log(authUser);
   const [showSnackbar, setShowSnackbar] = useState({
     message: "",
     open: false,
@@ -42,6 +41,28 @@ export function CreateClientPage() {
     }
 
     try {
+      const { data } = await axios.get(
+        `${API_ENDPOINTS.clients}?email=${userDetails.email}`,
+        {
+          headers: {
+            "novi-education-project-id": import.meta.env.VITE_API_KEY,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      if (
+        data.length > 0 &&
+        data[0].email.trim().toLowerCase() ===
+          userDetails.email.trim().toLowerCase()
+      ) {
+        setShowSnackbar({
+          open: true,
+          message: "A user with this email already exists",
+          status: "error",
+        });
+        return;
+      }
       const response = await axios.post(
         `${API_ENDPOINTS.clients}`,
         {
@@ -59,7 +80,6 @@ export function CreateClientPage() {
           },
         },
       );
-      console.log(response);
       setShowSnackbar({
         message: `New client ${response.data.firstName} created`,
         open: true,

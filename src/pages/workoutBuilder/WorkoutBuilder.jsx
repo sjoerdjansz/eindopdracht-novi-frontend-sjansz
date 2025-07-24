@@ -104,7 +104,7 @@ export function WorkoutBuilder() {
 
         setShowSnackbar({
           open: true,
-          message: `Workout ${workoutTemplateObject.name} has been added`,
+          message: `Workout "${workoutTemplateObject.name}" has been added`,
           status: "success",
         });
       } else {
@@ -160,8 +160,6 @@ export function WorkoutBuilder() {
     if (!id) {
       return;
     }
-    console.log("deleted:", id);
-
     // update state/ui
     // temporary array copy that keeps all the exercises that don't have matching ids
     const updatedExerciseArray = exercises.filter((exercise) => {
@@ -325,7 +323,6 @@ export function WorkoutBuilder() {
     arrCopy.splice(newItemPosition, 0, draggedItem[0]);
 
     setExercises(arrCopy);
-    console.log(exercises);
   }
 
   return (

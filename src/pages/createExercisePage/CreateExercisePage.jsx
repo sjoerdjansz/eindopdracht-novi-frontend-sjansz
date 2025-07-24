@@ -65,7 +65,7 @@ export function CreateExercisePage() {
 
   async function editExercise(id) {
     try {
-      const response = await axios.put(
+      await axios.put(
         `${API_ENDPOINTS.exercises}/${id}`,
         {
           id: id,
@@ -83,7 +83,6 @@ export function CreateExercisePage() {
           },
         },
       );
-      console.log(response.data);
       setShowSnackbar({
         open: true,
         message: `Exercise ${formData.exerciseName} has been edited`,
@@ -101,7 +100,7 @@ export function CreateExercisePage() {
 
   async function addExercise() {
     try {
-      const response = await axios.post(
+      await axios.post(
         `${API_ENDPOINTS.exercises}`,
         {
           name: formData.exerciseName,
@@ -118,7 +117,6 @@ export function CreateExercisePage() {
         },
       );
 
-      console.log(response.data);
       setShowSnackbar({
         open: true,
         message: `Exercise ${formData.exerciseName} has been added`,

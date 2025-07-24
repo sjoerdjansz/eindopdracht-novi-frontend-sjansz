@@ -121,10 +121,11 @@ export function Signup() {
 
   function handleSubmit(e, user) {
     e.preventDefault();
+
     if (checkEmailValidity(user.email) === false) {
       setShowSnackbar({
         open: true,
-        message: "Enter a valid email",
+        message: "Email is invalid",
         status: "error",
       });
       return;
@@ -181,7 +182,7 @@ export function Signup() {
             type="button"
             buttonSize="medium"
             buttonType="secondary"
-            disabled={true}
+            disabled={false}
           />
           <hr />
           <InputField

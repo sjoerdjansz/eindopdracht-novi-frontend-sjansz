@@ -132,12 +132,10 @@ export function ExerciseList() {
 
   async function handleDeleteExercise() {
     try {
-      const result = await deleteExercise({
+      await deleteExercise({
         method: "DELETE",
         url: `${API_ENDPOINTS.exercises}/${exerciseToBeDeleted.id}`,
       });
-
-      console.log("Result from delete exercise:", result);
 
       setShowSnackbar({
         open: true,
@@ -261,7 +259,7 @@ export function ExerciseList() {
             <th className={styles["exercise-name--th"]}>Name</th>
             <th className={styles["exercise-bodypart--th"]}>Body part</th>
             <th className={styles["exercise-movement--th"]}>Movement</th>
-            <th className={styles["exercise-muscle--th"]}>Primary</th>
+            <th className={styles["exercise-muscle--th"]}>Primary Muscle</th>
             <th></th>
           </tr>
         </thead>
