@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { Card } from "../card/Card.jsx";
 import { ExerciseResultRow } from "../exerciseResultRow/ExerciseResultRow.jsx";
 import { useState } from "react";
+import { Button } from "../button/Button.jsx";
 
 export function TrackExerciseCard({ exerciseName, setCount }) {
   const [toggleExerciseCard, setToggleExerciseCard] = useState(true);
@@ -30,9 +31,9 @@ export function TrackExerciseCard({ exerciseName, setCount }) {
               <FontAwesomeIcon icon={faVideoCamera} />
             </div>
             <div></div>
-            {<div>Reps</div>}
+            <div>{!toggleExerciseCard ? "Reps" : ""}</div>
             <div></div>
-            <div>Weight</div>
+            <div>{!toggleExerciseCard ? "Weight" : ""}</div>
             <div
               className={styles["exercise-card__caret"]}
               onClick={() => {
@@ -53,6 +54,19 @@ export function TrackExerciseCard({ exerciseName, setCount }) {
           </div>
         </div>
       </Card>
+      <div className={styles["track-exercise-card__footer"]}>
+        {!toggleExerciseCard && (
+          <>
+            <Link to={""}>Notes</Link>
+            <Button
+              buttonType="success"
+              buttonSize="extra-small"
+              type="button"
+              label="Add set"
+            />
+          </>
+        )}
+      </div>
     </article>
   );
 }

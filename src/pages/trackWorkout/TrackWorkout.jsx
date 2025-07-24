@@ -120,7 +120,7 @@ export function TrackWorkout() {
           <h1>{!workoutTemplateData ? "" : workoutTemplateData.name}</h1>
           <p>{formatDate(Date.now())}</p>
         </div>
-        <Link to="track-workout/1">View workout notes</Link>
+        <Link to="">View workout notes</Link>
       </header>
 
       <main className={styles["track-workout__exercises-container"]}>

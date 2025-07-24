@@ -205,7 +205,10 @@ export function Clients() {
                         </span>
                       </p>
                       <p>
-                        Plan: <span>{client.currentPlan}</span>
+                        Plan:{" "}
+                        <span>
+                          {client.currentPlan ? client.currentPlan : "None"}
+                        </span>
                       </p>
                     </div>
                   </CardContent>
